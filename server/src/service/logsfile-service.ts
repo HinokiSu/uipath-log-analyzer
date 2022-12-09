@@ -4,7 +4,8 @@ import db from '../db/index'
 import { insertLogsFileInfoSql, selectLogsFileInfoSql } from '../db/sql/logsfile-info-sql'
 import { IFileInfoObj } from '../types/log-types'
 import { nowTime } from '../utils/time'
-import { fileNameAnalyer } from './file-name-analyer'
+import { fileNameAnalyzer } from './file-name-analyzer'
+
 
 /* 单个文件的插入 */
 const insertSingleFileInfoToDB = (fileObj: IFileInfoObj): boolean => {
@@ -53,7 +54,7 @@ export const doParseAllLogsFile = () => {
     status: 200
   }
   // uipath logs file info Array
-  const filesObjArr = fileNameAnalyer()
+  const filesObjArr = fileNameAnalyzer()
 
   // log file info insert to DB
   for (let i = 0, len = filesObjArr.length; i < len; i++) {

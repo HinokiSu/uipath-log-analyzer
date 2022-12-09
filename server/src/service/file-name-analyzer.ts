@@ -30,7 +30,7 @@ export const getFileObj = (fileName: string, rootPath: string): IFileInfoObj => 
 /**
  * @returns parsered file name
  */
-export const fileNameAnalyer = () => {
+export const fileNameAnalyzer = () => {
   // TODO: get uipath logs folder path .env config
   const uipathLogsFolderPath: string = process.env.UIPATH_LOGS_FOLDER_PATH || ''
   const fileNameArr = getFilesName(uipathLogsFolderPath)

@@ -1,5 +1,5 @@
 import logFormatter from './log-formatter'
-import { getFileObj } from './file-name-analyer'
+import { getFileObj } from './file-name-analyzer'
 import { IFileInfoObj, ILogObj } from '../types/log-types'
 import db from '../db/index'
 import { deleteLogSql, insertLogSql } from '../db/sql/logs-sql'
