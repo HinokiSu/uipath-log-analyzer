@@ -1,27 +1,23 @@
-import express from 'express'
-const dotenv = require('dotenv')
-
-import { readLogsFile } from './log-formatter'
+// The order imports is important
+// refer to: https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import * as dotenv from 'dotenv'
 dotenv.config()
+import express from 'express'
+// router
+import logsFileRouter from './routes/logs-file-route'
+import logsRouter from './routes/logs-route'
 
 const app = express()
 
-// 获取post参数middleware
-app.use(express.urlencoded({ extended: false }))
-app.use(express.json())
-
 const port = process.env.PORT
-// const port = 4000
 
 app.get('/', (req, res) => {
   res.send('Express + TypeScript Server')
 })
+app.use('/logs', logsRouter)
+app.use('/file', logsFileRouter)
 
 // log file path
-const logFilePath = './test/static/test-logs.log'
-readLogsFile(logFilePath)
-
 app.listen(port, () => {
-  // tslint:disable-next-line:no-console
   console.log(`You are listening : http://localhost:${port}`)
 })
