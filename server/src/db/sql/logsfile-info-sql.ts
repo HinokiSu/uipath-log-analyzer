@@ -7,4 +7,4 @@ export const insertLogsFileInfoSql = `INSERT INTO logsfile_info (${createSqlFiel
   fieldOfLogsFileInfoTBArr
 )}) VALUES (${createSqlValuesMark(fieldOfLogsFileInfoTBArr)})`
 
-export const selectLogsFileInfoSql: string = `SELECT * FROM "logsfile_info" WHERE file_name = ? `
+export const selectLogsFileInfoSql = `SELECT * FROM "logsfile_info" WHERE file_name = ? `

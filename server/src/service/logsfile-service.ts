@@ -18,7 +18,7 @@ const insertSingleFileInfoToDB = (fileObj: IFileInfoObj): boolean => {
         fileObj.name,
         fileObj.time,
         0,
-        nowTime(),
+        nowTime()
       ])
       if (!addRes.changes) {
         return false
@@ -50,14 +50,14 @@ const insertSingleFileInfoToDB = (fileObj: IFileInfoObj): boolean => {
 export const doParseAllLogsFile = () => {
   const resObj = {
     message: 'Info: 日志文件信息解析&写入DB成功',
-    status: 200,
+    status: 200
   }
   // uipath logs file info Array
   const filesObjArr = fileNameAnalyer()
 
   // log file info insert to DB
   for (let i = 0, len = filesObjArr.length; i < len; i++) {
-    let _res = insertSingleFileInfoToDB(filesObjArr[i])
+    const _res = insertSingleFileInfoToDB(filesObjArr[i])
     if (!_res) {
       resObj.message = 'Error: 日志文件信息解析&写入DB失败!'
       resObj.status = 0

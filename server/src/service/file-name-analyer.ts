@@ -2,7 +2,9 @@ import fs from 'fs'
 import { IFileInfoObj } from '../types/log-types'
 const getFilesName = (uipathFolderPath: string): string[] => {
   // get all files name
-  const filesNameArr = fs.readdirSync(uipathFolderPath, 'utf8').filter((_t: string) => _t.includes('Execution'))
+  const filesNameArr = fs
+    .readdirSync(uipathFolderPath, 'utf8')
+    .filter((_t: string) => _t.includes('Execution'))
   return filesNameArr
 }
 
@@ -17,7 +19,7 @@ export const getFileObj = (fileName: string, rootPath: string): IFileInfoObj => 
   const _obj: IFileInfoObj = {
     name: '',
     path: '',
-    time: '',
+    time: ''
   }
   _obj.name = fileName
   _obj.path = rootPath.concat('\\', fileName)
@@ -34,10 +36,9 @@ export const fileNameAnalyer = () => {
   const fileNameArr = getFilesName(uipathLogsFolderPath)
   const resultArr: IFileInfoObj[] = []
   // loop to build file obj
-  for (let _fName of fileNameArr) {
-    const fileObj = getFileObj(_fName, uipathLogsFolderPath)
+  for (const fName of fileNameArr) {
+    const fileObj = getFileObj(fName, uipathLogsFolderPath)
     resultArr.push(fileObj)
   }
   return resultArr
 }
-

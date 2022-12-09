@@ -30,13 +30,13 @@ const createSeparatorArr = () => {
     'jobId',
     'robotName',
     'machineId',
-    'organizationUnitId',
+    'organizationUnitId'
   ]
 
   sepFlagArr.forEach((item: string) => {
     logSepFlagArr.push({
       name: item,
-      flag: `,"${item}":`,
+      flag: `,"${item}":`
     })
   })
 
@@ -50,7 +50,11 @@ const createSeparatorArr = () => {
  * @param sepArr for split log string
  * @returns
  */
-const singleLogHandler = (fileTime: string, logData: string, sepArr: ILogDataObjItem[]): ILogObj => {
+const singleLogHandler = (
+  fileTime: string,
+  logData: string,
+  sepArr: ILogDataObjItem[]
+): ILogObj => {
   const logObj = Object.create(null)
   const logInfo = logData.split(' ', 2)
   // use uuid v4 as uniq id
@@ -64,7 +68,7 @@ const singleLogHandler = (fileTime: string, logData: string, sepArr: ILogDataObj
 
   let _temp: string[] = []
   // temporay storage logObj key
-  let _key: string = ''
+  let _key = ''
   // loop handle
   for (let i = 0, len = sepArr.length; i < len - 1; i++) {
     // whether has sep flag

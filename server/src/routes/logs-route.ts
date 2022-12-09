@@ -10,7 +10,7 @@ logsRouter.get('/', (req: any, res, next) => {
     } else {
       res.json({
         messgae: 'log文件名称参数为空',
-        status: 0,
+        status: 0
       })
     }
   } catch (err: any) {

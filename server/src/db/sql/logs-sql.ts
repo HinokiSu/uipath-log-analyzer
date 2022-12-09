@@ -1,4 +1,4 @@
-import { createSqlField, createSqlValuesMark } from '.'
+import { createSqlField, createSqlValuesMark } from './index'
 
 // logs table name
 const tbName = 'logs'
@@ -23,7 +23,7 @@ const fieldOfLogsTBArr = [
   'job_id',
   'robot_name',
   'machine_id',
-  'organization_unit_id',
+  'organization_unit_id'
 ]
 
 export const insertLogSql = `INSERT INTO ${tbName} (${createSqlField(
