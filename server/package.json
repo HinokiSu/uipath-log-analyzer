@@ -1,23 +1,32 @@
 {
-  "name": "server",
+  "name": "uipath-logs-analyer_server",
   "version": "1.0.0",
+  "author": "Hinoki",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "yarn tsc",
+    "lint": "eslint .",
     "start": "tsc && node dist/index.js",
-    "watch-server": "nodemon  --watch src/**/* -e ts,tsx --exec ts-node src/index.ts",
-    "dev-start": "set NODE_ENV=dev&& nodemon  --watch src/**/* -e ts,tsx --exec ts-node src/index.ts"
+    "watch:server": "nodemon  --watch src/**/* -e ts,tsx --exec ts-node src/index.ts",
+    "dev:server": "set NODE_ENV=dev&& nodemon  --watch src/**/* -e ts,tsx --exec ts-node src/index.ts"
   },
   "dependencies": {
+    "@types/better-sqlite3": "^7.6.2",
+    "@types/uuid": "^9.0.0",
+    "better-sqlite3": "^8.0.0",
+    "dayjs": "^1.11.6",
     "dotenv": "^16.0.3",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.14",
     "@types/node": "^18.11.9",
+    "@typescript-eslint/eslint-plugin": "^5.46.0",
+    "@typescript-eslint/parser": "^5.46.0",
+    "eslint": "^8.29.0",
     "nodemon": "^2.0.20",
     "ts-node": "^10.9.1",
-    "typescript": "^4.9.3"
+    "typescript": "^4.9.4"
   }
 }
