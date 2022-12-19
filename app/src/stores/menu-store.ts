@@ -4,16 +4,25 @@ import { defineStore } from 'pinia'
 type State = {
   collapsed: boolean
   menuList: MenuItemType[]
+  selectedKeys: string[]
 }
 export const useMenuStore = defineStore('MenuStore', {
   state: (): State => ({
     collapsed: false,
+    selectedKeys: ['1'],
     menuList: []
   }),
-  getters: {},
+  getters: {
+    getSelectedKeys: (state) =>
+      (state.selectedKeys = JSON.parse(sessionStorage.getItem('menu_select_keys') || '') || ['1'])
+  },
   actions: {
     changeCollapsed() {
       this.collapsed = !this.collapsed
+    },
+    updateSelectedKeys(keys: string[]) {
+      this.selectedKeys = keys
+      sessionStorage.setItem('menu_select_keys', JSON.stringify(this.selectedKeys))
     },
     getMenuList() {
       // menu item

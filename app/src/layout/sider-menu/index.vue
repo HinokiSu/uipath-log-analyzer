@@ -1,7 +1,6 @@
 <template>
   <div class="sider-menu_wrapper" :style="'width:' + menuWidth">
     <a-menu
-      v-model:openKeys="openKeys"
       v-model:selectedKeys="selectedKeys"
       mode="inline"
       theme="dark"
@@ -15,7 +14,18 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, ref, toRefs, watch } from 'vue'
+import {
+  computed,
+  defineComponent,
+  onBeforeUnmount,
+  onMounted,
+  onUnmounted,
+  onUpdated,
+  reactive,
+  ref,
+  toRefs,
+  watch
+} from 'vue'
 import MenuItem from '@components/menu/menu-item.vue'
 import { useMenuStore } from '@stores/menu-store'
 import type { MenuProps } from 'ant-design-vue'
@@ -31,15 +41,19 @@ export default defineComponent({
     const state = reactive({
       collapsed: computed(() => menuStore.collapsed),
       selectedKeys: ['1'],
-      openKeys: ['1'],
-      preOpenKeys: ['1'],
       menuWidth: '256px'
     })
 
+    onMounted(() => {
+      state.selectedKeys = menuStore.getSelectedKeys
+    })
+
+    onBeforeUnmount(() => {})
+
     watch(
-      () => state.openKeys,
-      (_val, oldVal) => {
-        state.preOpenKeys = oldVal
+      () => state.selectedKeys,
+      (newVal, oldVal) => {
+        menuStore.updateSelectedKeys(newVal)
       }
     )
 
@@ -47,10 +61,8 @@ export default defineComponent({
       () => state.collapsed,
       (_val) => {
         if (_val) {
-          state.openKeys = []
           state.menuWidth = '80px'
         } else {
-          state.openKeys = state.preOpenKeys
           state.menuWidth = '240px'
         }
       }
