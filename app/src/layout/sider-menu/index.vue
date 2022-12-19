@@ -1,0 +1,96 @@
+<template>
+  <div class="sider-menu_wrapper" :style="'width:' + menuWidth">
+    <a-menu
+      v-model:openKeys="openKeys"
+      v-model:selectedKeys="selectedKeys"
+      mode="inline"
+      theme="dark"
+      :inline-collapsed="collapsed"
+      @click="handleClick"
+    >
+      <template v-for="item in menuListRef" :key="item.key">
+        <menu-item :menu-item="item"></menu-item>
+      </template>
+    </a-menu>
+  </div>
+</template>
+<script lang="ts">
+import { computed, defineComponent, onMounted, reactive, ref, toRefs, watch } from 'vue'
+import MenuItem from '@components/menu/menu-item.vue'
+import { useMenuStore } from '@stores/menu-store'
+import type { MenuProps } from 'ant-design-vue'
+import router from '@routes/index'
+export default defineComponent({
+  name: 'SiderMenu',
+  components: {
+    MenuItem
+  },
+
+  setup() {
+    const menuStore = useMenuStore()
+    const state = reactive({
+      collapsed: computed(() => menuStore.collapsed),
+      selectedKeys: ['1'],
+      openKeys: ['1'],
+      preOpenKeys: ['1'],
+      menuWidth: '256px'
+    })
+
+    watch(
+      () => state.openKeys,
+      (_val, oldVal) => {
+        state.preOpenKeys = oldVal
+      }
+    )
+
+    watch(
+      () => state.collapsed,
+      (_val) => {
+        if (_val) {
+          state.openKeys = []
+          state.menuWidth = '80px'
+        } else {
+          state.openKeys = state.preOpenKeys
+          state.menuWidth = '240px'
+        }
+      }
+    )
+
+    onMounted(() => {
+      menuStore.getMenuList()
+    })
+
+    const menuListRef = computed(() => menuStore.menuList)
+    // go path(use route name)
+    const handleClick: MenuProps['onClick'] = (menuInfo) => {
+      const curKey = menuInfo.key
+      console.log(curKey)
+      menuListRef.value.forEach((item) => {
+        if (item.key === curKey) {
+          console.log(item.path)
+          router.push({ path: item.path as string })
+        }
+      })
+    }
+
+    return {
+      ...toRefs(state),
+      menuListRef,
+      handleClick
+    }
+  }
+})
+</script>
+
+<style lang="less" scoped>
+.sider-menu_wrapper {
+  background-color: var(--menu-background-color);
+
+  .menu-collapse_btn {
+    margin: 0 auto;
+    width: 100px;
+
+    font-size: 16px;
+  }
+}
+</style>
