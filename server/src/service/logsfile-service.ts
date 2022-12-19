@@ -1,19 +1,28 @@
 import { v4 as uuidv4 } from 'uuid'
 import db from '../db/index'
 
-import { insertLogsFileInfoSql, selectLogsFileInfoSql } from '../db/sql/logsfile-info-sql'
+import {
+  insertLogsFileInfoSql,
+  selectCountLogsFileInfoSql,
+  selectLogsFileInfoById,
+  selectLogsFileInfoByPaginationSql,
+  selectLogsFileInfoSql
+} from '../db/sql/logsfile-info-sql'
 import { IFileInfoObj } from '../types/log-types'
 import { nowTime } from '../utils/time'
 import { fileNameAnalyzer } from './file-name-analyzer'
 
-
-/* 单个文件的插入 */
+/**
+ * 
+ * @param fileObj log file info object
+ * @returns boolean
+ */
 const insertSingleFileInfoToDB = (fileObj: IFileInfoObj): boolean => {
   const selectRes = db.query(selectLogsFileInfoSql, [fileObj.name])
-  // 判断该log文件信息是否不存在
+  // judge whether the log file exists
   if (selectRes.length === 0) {
     try {
-      // 插入
+      // insert
       const addRes = db.run(insertLogsFileInfoSql, [
         uuidv4(),
         fileObj.name,
@@ -32,7 +41,7 @@ const insertSingleFileInfoToDB = (fileObj: IFileInfoObj): boolean => {
   return true
 }
 
-// log文件 主服务
+// log file main service
 /* const addLogsFileInfo = () => {
   let message = 'Error: in adding log'
   for (let i = 0, len = filesObjArr.length; i < len; i++) {
@@ -64,6 +73,64 @@ export const doParseAllLogsFile = () => {
       resObj.status = 0
       break
     }
+  }
+  return resObj
+}
+
+/**
+ * get logs file info by pagination
+ * @param curPage current page
+ * @param pageSize pagination size
+ * @returns log file info by pagination
+ */
+export const getLogsFileDataByPagination = (curPage: string, pageSize: string) => {
+  const offsetPage = (parseInt(curPage) - 1) * parseInt(pageSize)
+  const res = db.query(selectLogsFileInfoByPaginationSql, [pageSize, offsetPage])
+  const resObj = {
+    message: 'Info: 分页获取日志文件信息成功',
+    status: 200,
+    data: res
+  }
+  if (!res.length) {
+    resObj.message = 'Error: 分页获取日志文件信失败!'
+    resObj.status = 0
+  }
+  return resObj
+}
+
+/**
+ * get total of logs file
+ * @returns total
+ */
+export const getTotalOfLogsFile = () => {
+  const res = db.query(selectCountLogsFileInfoSql)
+  const resObj = {
+    message: 'Info: 获取日志文件总数成功',
+    status: 200,
+    data: res
+  }
+  if (!res.length) {
+    resObj.message = 'Error: 获取日志文件总数失败!'
+    resObj.status = 0
+  }
+  return resObj
+}
+
+/**
+ * get log file info by uuid
+ * @param id log file id
+ * @returns log file info
+ */
+export const getLogsFileDataById = (id: string) => {
+  const res = db.query(selectLogsFileInfoById, [id])
+  const resObj = {
+    message: 'Info: 根据Id获取日志文件信息成功',
+    status: 200,
+    data: res
+  }
+  if (!res.length) {
+    resObj.message = 'Error: 根据Id获取日志文件信息失败!'
+    resObj.status = 0
   }
   return resObj
 }
