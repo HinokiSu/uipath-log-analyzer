@@ -1,0 +1,79 @@
+import axios from 'axios'
+import NProgress from '@plugin/nprogress-plugin'
+
+// dev or prod
+axios.defaults.baseURL = import.meta.env.VITE_API_URL as string
+
+axios.defaults.timeout = 10000
+// Request header information is set for post request
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
+
+// 请求拦截器
+axios.interceptors.request.use(
+  (config) => {
+    NProgress.start()
+    return config
+  },
+  (err) => {
+    console.log(err)
+  }
+)
+
+// 封装 get post put delete请求
+// 请求参数接口
+interface IHttpParams {
+  url: string
+  data?: object
+}
+
+// Get request
+export const httpGet = ({ url }: IHttpParams) =>
+  new Promise((resolve, reject) => {
+    axios
+      .get(url, {})
+      .then((res) => {
+        resolve(res.data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
+// Post request
+export const httpPost = ({ url, data }: IHttpParams) =>
+  new Promise((resolve, reject) => {
+    axios
+      .post(url, data)
+      .then((res) => {
+        resolve(res.data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
+// Delete request
+export const httpDelete = ({ url }: IHttpParams) =>
+  new Promise((resolve, reject) => {
+    axios
+      .delete(url)
+      .then((res) => {
+        resolve(res)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+
+// Put request
+export const httpPut = ({ url, data }: IHttpParams) =>
+  new Promise((resolve, reject) => {
+    axios
+      .put(url, data)
+      .then((res) => {
+        resolve(res)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
