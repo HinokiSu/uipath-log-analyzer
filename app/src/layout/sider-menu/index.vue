@@ -14,18 +14,7 @@
   </div>
 </template>
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  onBeforeUnmount,
-  onMounted,
-  onUnmounted,
-  onUpdated,
-  reactive,
-  ref,
-  toRefs,
-  watch
-} from 'vue'
+import { computed, defineComponent, onBeforeUnmount, onMounted, toRefs, watch } from 'vue'
 import MenuItem from '@components/menu/menu-item.vue'
 import { useMenuStore } from '@stores/menu-store'
 import type { MenuProps } from 'ant-design-vue'
@@ -38,32 +27,34 @@ export default defineComponent({
 
   setup() {
     const menuStore = useMenuStore()
-    const state = reactive({
+    /* const state = reactive({
       collapsed: computed(() => menuStore.collapsed),
       selectedKeys: ['1'],
-      menuWidth: '256px'
-    })
+      menuWidth: computed(ah)
+    }) */
+
+    const state = computed(() => menuStore.$state)
 
     onMounted(() => {
-      state.selectedKeys = menuStore.getSelectedKeys
+      state.value.selectedKeys = menuStore.getSelectedKeys
     })
 
     onBeforeUnmount(() => {})
 
     watch(
-      () => state.selectedKeys,
-      (newVal, oldVal) => {
+      () => state.value.selectedKeys,
+      (newVal) => {
         menuStore.updateSelectedKeys(newVal)
       }
     )
 
     watch(
-      () => state.collapsed,
+      () => state.value.collapsed,
       (_val) => {
         if (_val) {
-          state.menuWidth = '80px'
+          menuStore.changeMenuWidth('80px')
         } else {
-          state.menuWidth = '240px'
+          menuStore.changeMenuWidth('240px')
         }
       }
     )
@@ -86,7 +77,7 @@ export default defineComponent({
     }
 
     return {
-      ...toRefs(state),
+      ...toRefs(state.value),
       menuListRef,
       handleClick
     }

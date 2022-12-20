@@ -5,16 +5,21 @@ type State = {
   collapsed: boolean
   menuList: MenuItemType[]
   selectedKeys: string[]
+  menuWidth: string
 }
 export const useMenuStore = defineStore('MenuStore', {
   state: (): State => ({
     collapsed: false,
     selectedKeys: ['1'],
-    menuList: []
+    menuList: [],
+    menuWidth: '256px'
   }),
   getters: {
-    getSelectedKeys: (state) =>
-      (state.selectedKeys = JSON.parse(sessionStorage.getItem('menu_select_keys') || '') || ['1'])
+    getSelectedKeys: (state) => {
+      const key = sessionStorage.getItem('menu_select_keys')
+      state.selectedKeys = key ? JSON.parse(key) : ['1']
+      return state.selectedKeys
+    }
   },
   actions: {
     changeCollapsed() {
@@ -47,6 +52,9 @@ export const useMenuStore = defineStore('MenuStore', {
         }
       ]
       this.menuList = menuList
+    },
+    changeMenuWidth(width: string) {
+      this.menuWidth = width
     }
   }
 })
