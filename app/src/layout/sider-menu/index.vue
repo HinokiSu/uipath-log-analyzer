@@ -27,11 +27,6 @@ export default defineComponent({
 
   setup() {
     const menuStore = useMenuStore()
-    /* const state = reactive({
-      collapsed: computed(() => menuStore.collapsed),
-      selectedKeys: ['1'],
-      menuWidth: computed(ah)
-    }) */
 
     const state = computed(() => menuStore.$state)
 
