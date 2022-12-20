@@ -11,7 +11,6 @@ import { deleteLogSql, insertLogSql } from '../db/sql/logs-sql'
  */
 const logFormatterMain = (fileObj: IFileInfoObj) => {
   const logs = logFormatter.readLogsFile(fileObj.path)
-  const sepFlagArr = logFormatter.createSeparatorArr()
   const logsArr = logs === '' ? [] : logs.split('\n')
   // store parsed logs
   const parsedLogArr = []
@@ -20,7 +19,7 @@ const logFormatterMain = (fileObj: IFileInfoObj) => {
     if (logsArr[i].length === 0) {
       continue
     }
-    const log = logFormatter.singleLogHandler(fileObj.time, logsArr[i], sepFlagArr)
+    const log = logFormatter.singleLogHandler(fileObj.time, logsArr[i])
     parsedLogArr.push(log)
   }
   return parsedLogArr

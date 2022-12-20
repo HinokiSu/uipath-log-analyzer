@@ -47,20 +47,16 @@ const createSeparatorArr = () => {
  * handle single log data
  * @param fileTime file name of prefix time
  * @param logData log content
- * @param sepArr for split log string
  * @returns
  */
-const singleLogHandler = (
-  fileTime: string,
-  logData: string,
-  sepArr: ILogDataObjItem[]
-): ILogObj => {
+const singleLogHandler = (fileTime: string, logData: string): ILogObj => {
+  const sepArr: ILogDataObjItem[] = createSeparatorArr()
   const logObj = Object.create(null)
   const logInfo = logData.split(' ', 2)
   // use uuid v4 as uniq id
   logObj['id'] = uuidv4()
   // log info
-  logObj['logTime'] = fileTime.concat(' ', logInfo[0])
+  logObj['logTime'] = fileTime.concat(' ', logInfo[0].slice(0, logInfo[0].length - 1))
   logObj['logState'] = logInfo[1]
 
   // log main data
@@ -92,9 +88,9 @@ const singleLogHandler = (
         _key = sepArr[i].name
       }
     }
-    // organizationUnitId
-    logObj['organizationUnitId'] = _temp[1].split('}', 2)[0]
   }
+  // organizationUnitId
+  logObj['organizationUnitId'] = _temp[1].split('}', 2)[0]
   return logObj
 }
 
