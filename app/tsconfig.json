@@ -14,13 +14,13 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
+      "@/*": ["src/*"],
       "@views/*": ["src/views/*"],
       "@components/*": ["src/components/*"],
       "@routes/*": ["src/routes/*"],
       "@stores/*": ["src/stores/*"],
       "@interface/*": ["src/interface/*"],
       "@utils/*": ["src/utils/*"],
-      "@plugin/*": ["src/plugins/*"],
       "@api/*": ["src/api/*"]
     }
   },
