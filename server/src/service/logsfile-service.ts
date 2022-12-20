@@ -12,8 +12,20 @@ import { IFileInfoObj } from '../types/log-types'
 import { nowTime } from '../utils/time'
 import { fileNameAnalyzer } from './file-name-analyzer'
 
+type TResultObj = {
+  message: string
+  status: number
+  data: any[]
+}
+
+const resObj: TResultObj = {
+  message: '',
+  status: 200,
+  data: []
+}
+
 /**
- * 
+ *
  * @param fileObj log file info object
  * @returns boolean
  */
@@ -58,10 +70,8 @@ const insertSingleFileInfoToDB = (fileObj: IFileInfoObj): boolean => {
  * @returns execution result
  */
 export const doParseAllLogsFile = () => {
-  const resObj = {
-    message: 'Info: 日志文件信息解析&写入DB成功',
-    status: 200
-  }
+  resObj.message = 'Info: 日志文件信息解析&写入DB成功'
+  resObj.status = 200
   // uipath logs file info Array
   const filesObjArr = fileNameAnalyzer()
 
@@ -86,11 +96,10 @@ export const doParseAllLogsFile = () => {
 export const getLogsFileDataByPagination = (curPage: string, pageSize: string) => {
   const offsetPage = (parseInt(curPage) - 1) * parseInt(pageSize)
   const res = db.query(selectLogsFileInfoByPaginationSql, [pageSize, offsetPage])
-  const resObj = {
-    message: 'Info: 分页获取日志文件信息成功',
-    status: 200,
-    data: res
-  }
+
+  resObj.message = 'Info: 分页获取日志文件信息成功'
+  resObj.status = 200
+  resObj.data = res
   if (!res.length) {
     resObj.message = 'Error: 分页获取日志文件信失败!'
     resObj.status = 0
@@ -104,14 +113,14 @@ export const getLogsFileDataByPagination = (curPage: string, pageSize: string) =
  */
 export const getTotalOfLogsFile = () => {
   const res = db.query(selectCountLogsFileInfoSql)
-  const resObj = {
-    message: 'Info: 获取日志文件总数成功',
-    status: 200,
-    data: res
-  }
+
   if (!res.length) {
     resObj.message = 'Error: 获取日志文件总数失败!'
     resObj.status = 0
+  } else {
+    resObj.message = 'Info: 获取日志文件总数成功'
+    resObj.status = 200
+    resObj.data = res[0]
   }
   return resObj
 }
@@ -123,11 +132,10 @@ export const getTotalOfLogsFile = () => {
  */
 export const getLogsFileDataById = (id: string) => {
   const res = db.query(selectLogsFileInfoById, [id])
-  const resObj = {
-    message: 'Info: 根据Id获取日志文件信息成功',
-    status: 200,
-    data: res
-  }
+  resObj.message = 'Info: 根据Id获取日志文件信息成功'
+  resObj.status = 200
+  resObj.data = res
+
   if (!res.length) {
     resObj.message = 'Error: 根据Id获取日志文件信息失败!'
     resObj.status = 0
