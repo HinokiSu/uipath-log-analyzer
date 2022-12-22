@@ -7,8 +7,12 @@ function query(sql: string, params: any[] = []) {
   return db.prepare(sql).all(params)
 }
 
+function get(sql: string, params: any[] = []): object | undefined {
+  return db.prepare(sql).get(params)
+}
+
 function run(sql: string, params: any[]) {
   return db.prepare(sql).run(params)
 }
 
-export default { run, query }
+export default { run, query, get }
