@@ -4,6 +4,7 @@
 import fs from 'fs'
 import { ILogDataObjItem, ILogObj } from '../types/log-types'
 import { v4 as uuidv4 } from 'uuid'
+import dayjs from 'dayjs'
 
 // read logs file
 const readLogsFile = (fPath: string) => {
@@ -55,8 +56,10 @@ const singleLogHandler = (fileTime: string, logData: string): ILogObj => {
   const logInfo = logData.split(' ', 2)
   // use uuid v4 as uniq id
   logObj['id'] = uuidv4()
-  // log info
-  logObj['logTime'] = fileTime.concat(' ', logInfo[0].slice(0, logInfo[0].length - 1))
+  /* log info */
+  // fix bug: use dayjs parse timestamp.
+  // bug repr: maybe first log in logs file cause bug. when use strftime( '%Y-%m-%d %H:%M:%f', '2022-12-05T10:59:41.6338' ) in sqlite, it will return null
+  logObj['logTime'] = dayjs(fileTime.concat(' ', logInfo[0])).format('YYYY-MM-DD HH:mm:ss.SSS')
   logObj['logState'] = logInfo[1]
 
   // log main data
