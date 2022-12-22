@@ -5,7 +5,6 @@ import db from '../db/index'
 import {
   countByLogTimeSql,
   countNumberByLogStateSql,
-  deleteLogSql,
   insertLogSql,
   selectSpecifyLogTimeSql,
   selectSpecifyProcessVersionSql,
