@@ -10,19 +10,9 @@ import {
 } from '../db/sql/logsfile-info-sql'
 import { IFileInfoObj } from '../types/log-types'
 import { nowTime } from '../utils/time'
-import { fileNameAnalyzer } from './file-name-analyzer'
-
-type TResultObj = {
-  message: string
-  status: number
-  data: any[]
-}
-
-const resObj: TResultObj = {
-  message: '',
-  status: 200,
-  data: []
-}
+import { calcOffset } from './common/pagin-handler'
+import { handleFailed, handleSuccess } from './common/result-handler'
+import { fileNameAnalyzer } from '../core/file-name-analyzer'
 
 /**
  *
@@ -70,8 +60,6 @@ const insertSingleFileInfoToDB = (fileObj: IFileInfoObj): boolean => {
  * @returns execution result
  */
 export const doParseAllLogsFile = () => {
-  resObj.message = 'Info: 日志文件信息解析&写入DB成功'
-  resObj.status = 200
   // uipath logs file info Array
   const filesObjArr = fileNameAnalyzer()
 
@@ -79,12 +67,14 @@ export const doParseAllLogsFile = () => {
   for (let i = 0, len = filesObjArr.length; i < len; i++) {
     const _res = insertSingleFileInfoToDB(filesObjArr[i])
     if (!_res) {
-      resObj.message = 'Error: 日志文件信息解析&写入DB失败!'
-      resObj.status = 0
-      break
+      return handleFailed({
+        message: '日志文件信息解析&写入DB失败!'
+      })
     }
   }
-  return resObj
+  return handleSuccess({
+    message: '日志文件信息解析&写入DB成功'
+  })
 }
 
 /**
@@ -94,17 +84,20 @@ export const doParseAllLogsFile = () => {
  * @returns log file info by pagination
  */
 export const getLogsFileDataByPagination = (curPage: string, pageSize: string) => {
-  const offsetPage = (parseInt(curPage) - 1) * parseInt(pageSize)
+  const offsetPage = calcOffset(curPage, pageSize)
   const res = db.query(selectLogsFileInfoByPaginationSql, [pageSize, offsetPage])
 
-  resObj.message = 'Info: 分页获取日志文件信息成功'
-  resObj.status = 200
-  resObj.data = res
   if (!res.length) {
-    resObj.message = 'Error: 分页获取日志文件信失败!'
-    resObj.status = 0
+    return handleFailed({
+      message: '分页获取日志文件信失败!'
+    })
   }
-  return resObj
+  return handleSuccess({
+    message: '分页获取日志文件信息成功',
+    data: {
+      list: res
+    }
+  })
 }
 
 /**
@@ -115,14 +108,17 @@ export const getTotalOfLogsFile = () => {
   const res = db.query(selectCountLogsFileInfoSql)
 
   if (!res.length) {
-    resObj.message = 'Error: 获取日志文件总数失败!'
-    resObj.status = 0
-  } else {
-    resObj.message = 'Info: 获取日志文件总数成功'
-    resObj.status = 200
-    resObj.data = res[0]
+    return handleFailed({
+      message: '获取日志文件总数失败!'
+    })
   }
-  return resObj
+  const total = res[0] as { total: string }
+  return handleSuccess({
+    message: '获取日志文件总数成功',
+    data: {
+      ...total
+    }
+  })
 }
 
 /**
@@ -132,13 +128,15 @@ export const getTotalOfLogsFile = () => {
  */
 export const getLogsFileDataById = (id: string) => {
   const res = db.query(selectLogsFileInfoById, [id])
-  resObj.message = 'Info: 根据Id获取日志文件信息成功'
-  resObj.status = 200
-  resObj.data = res
-
   if (!res.length) {
-    resObj.message = 'Error: 根据Id获取日志文件信息失败!'
-    resObj.status = 0
+    return handleFailed({
+      message: '根据Id获取日志文件信息失败!'
+    })
   }
-  return resObj
+  return handleSuccess({
+    message: '根据Id获取日志文件信息成功',
+    data: {
+      list: res
+    }
+  })
 }
