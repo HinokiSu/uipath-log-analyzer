@@ -61,12 +61,20 @@ export default defineComponent({
     const menuListRef = computed(() => menuStore.menuList)
     // go path(use route name)
     const handleClick: MenuProps['onClick'] = (menuInfo) => {
-      const curKey = menuInfo.key
+      const curKey = menuInfo.key as string
       console.log(curKey)
       menuListRef.value.forEach((item) => {
-        if (item.key === curKey) {
-          console.log(item.path)
-          router.push({ path: item.path as string })
+        // has children
+        if (item.children) {
+          item.children.forEach((child) => {
+            if (child.key === curKey) {
+              router.push({ path: child.path as string })
+            }
+          })
+        } else {
+          if (item.key === curKey) {
+            router.push({ path: item.path as string })
+          }
         }
       })
     }

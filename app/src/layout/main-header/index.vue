@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons-vue'
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { useMenuStore } from '@stores/menu-store'
 export default defineComponent({
   name: 'MainHeader',
@@ -19,7 +19,7 @@ export default defineComponent({
   },
   setup() {
     const menuStore = useMenuStore()
-    const collapsed = menuStore.collapsed
+    const collapsed = computed(() => menuStore.collapsed)
 
     const toggleCollapsed = () => {
       menuStore.changeCollapsed()
@@ -32,7 +32,7 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .menu-collapse_btn {
-    height: 100%;
-    background-color: #fff;
+  height: 100%;
+  background-color: #fff;
 }
 </style>
