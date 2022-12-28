@@ -30,9 +30,16 @@ export const insertLogSql = `INSERT INTO logs (${createSqlField(
 
 export const deleteLogSql = `DELETE FROM logs WHERE log_time = strftime('%Y-%m-%d', log_time)`
 
-// select logs info by process_version
-export const selectSpecifyProcessVersionSql = `SELECT * FROM logs WHERE process_name = ? ORDER BY log_time DESC limit ? offset ? `
-export const countSpecifyProcessVersionSql = `SELECT count(*) as total FROM logs WHERE process_name = ?`
+// select all logs
+export const selectAllLogsSql = `SELECT * from logs ORDER BY log_time DESC LIMIT ? OFFSET ?`
+export const countAllLogsSql = `SELECT COUNT(*) as total from logs`
+
+// select logs info by process_name
+export const selectSpecifyProcessNameSql = `SELECT * FROM logs WHERE process_name = ? ORDER BY log_time DESC limit ? offset ? `
+export const countSpecifyProcessNameSql = `SELECT count(*) as total FROM logs WHERE process_name = ?`
+
+export const selectRecentlyErrorSpecifyPNSql = `SELECT * from logs WHERE process_name = ? AND log_state = 'Error' ORDER BY log_time DESC LIMIT 1`
+
 // select specify date logs, ex: '2022-12-05 %'
 /* 
 refer: https://stackoverflow.com/questions/14091183/sqlite-order-by-date1530019888000
@@ -40,7 +47,6 @@ note that if you want to order by date and time you need to use datetime() intea
 */
 export const selectSpecifyLogTimeSql = `SELECT * from logs WHERE log_time LIKE ? ORDER BY log_time DESC limit ? offset ?`
 export const countSpecifyLogTimeSql = `SELECT count(*) as total FROM logs WHERE log_time LIKE ?`
-
 
 // find latest log in specify date
 export const findLatestLogInSpecifyDate = `SELECT log_time from logs WHERE log_time LIKE ? ORDER BY log_time DESC LIMIT 1`
@@ -64,3 +70,16 @@ logtime ORDER BY logtime DESC`
 
 // group and count by process_name
 export const countByProcessNameSql = `SELECT process_name,COUNT(*) as total from logs GROUP BY process_name`
+
+// group by process_name and count diff log_state 
+export const countLogStateGroupByPN = `SELECT
+process_name AS pn,
+COUNT( * ) AS totalCount,
+SUM( CASE WHEN log_state = 'Info' THEN 1 ELSE 0 END ) AS infoCount,
+SUM( CASE WHEN log_state = 'Error' THEN 1 ELSE 0 END ) AS errorCount,
+SUM( CASE WHEN log_state = 'Trace' THEN 1 ELSE 0 END ) AS traceCount,
+SUM( CASE WHEN log_state = 'Warn' THEN 1 ELSE 0 END ) AS warnCount 
+FROM
+logs 
+GROUP BY
+process_name LIMIT ? OFFSET ?;`

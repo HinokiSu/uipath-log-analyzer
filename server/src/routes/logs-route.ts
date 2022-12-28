@@ -1,10 +1,13 @@
 import {
   doParseLogsBySpecifyFile,
-  getDataByProcessVersion,
+  getDataByProcessName,
   getLogsSpecifyLogTime,
   getLogsOfRecentlyError,
   getStatsByLogState,
-  getStatsByLogTime
+  getStatsByLogTime,
+  getAllLogs,
+  getPNCountLogState,
+  getLogOfRecentlyErrorByPN
 } from '../service/logs-service'
 import express from 'express'
 const logsRouter = express.Router()
@@ -31,12 +34,28 @@ logsRouter.get('/', (req: any, res, next) => {
   }
 })
 
+logsRouter.get('/all', (req: any, res, next) => {
+  try {
+    const query: TPaginQuery = req.query
+    if (!query.curpage) {
+      res.json({
+        message: '分页查询参数不能为空',
+        status: 0
+      })
+    }
+    res.json(getAllLogs(query.curpage, query.pagesize))
+  } catch (err: any) {
+    console.error(`Error while getting logs `, err.message)
+    next(err)
+  }
+})
+
 logsRouter.get('/pn', (req: any, res, next) => {
   try {
     type TQuery = TPaginQuery & { pn: string }
     const query: TQuery = req.query
     if (query.pn.length) {
-      res.json(getDataByProcessVersion(query.pn, query.pagesize, query.curpage))
+      res.json(getDataByProcessName(query.pn, query.pagesize, query.curpage))
     } else {
       res.json({
         message: 'process version参数不能为空',
@@ -49,6 +68,25 @@ logsRouter.get('/pn', (req: any, res, next) => {
   }
 })
 
+logsRouter.get('/pn/stats', (req: any, res, next) => {
+  try {
+    const query: TPaginQuery = req.query
+    res.json(getPNCountLogState(query.curpage, query.pagesize))
+  } catch (err: any) {
+    console.error(`Error while getting logs `, err.message)
+    next(err)
+  }
+})
+
+logsRouter.get('/pn/recent/error', (req: any, res, next) => {
+  try {
+    const pn = req.query.pn as string || ''
+    return res.json(getLogOfRecentlyErrorByPN(pn))
+  } catch (err: any) {
+    console.error(`Error while getting logs `, err.message)
+    next(err)
+  }
+})
 logsRouter.get('/logtime', (req: any, res, next) => {
   try {
     const query: TQuery = req.query

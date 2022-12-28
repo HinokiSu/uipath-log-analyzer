@@ -7,11 +7,16 @@ import {
   countNumberByLogStateSql,
   insertLogSql,
   selectSpecifyLogTimeSql,
-  selectSpecifyProcessVersionSql,
+  selectSpecifyProcessNameSql,
+  countSpecifyProcessNameSql,
   selectLogsOfRecentlyErrorSql,
   countSpecifyLogTimeSql,
-  countSpecifyProcessVersionSql,
-  findLatestLogInSpecifyDate
+  findLatestLogInSpecifyDate,
+  selectAllLogsSql,
+  countAllLogsSql,
+  countLogStateGroupByPN,
+  countByProcessNameSql,
+  selectRecentlyErrorSpecifyPNSql
 } from '../db/sql/logs-sql'
 import { handleFailed, handleSuccess } from './common/result-handler'
 import { calcOffset } from './common/pagin-handler'
@@ -111,13 +116,39 @@ export const doParseLogsBySpecifyFile = (fileName: string) => {
 }
 
 /**
+ * get all logs by pagin
+ * @param curPage current page
+ * @param pageSize current page size
+ * @returns pagin Data List
+ */
+export const getAllLogs = (curPage: string, pageSize: string) => {
+  const offset = calcOffset(curPage, pageSize)
+  const res = db.query(selectAllLogsSql, [pageSize, offset])
+  const total = db.query(countAllLogsSql)[0] as { total: number }
+
+  if (!res.length) {
+    return handleFailed({
+      message: '获取全部日志信息失败！'
+    })
+  }
+  return handleSuccess({
+    message: '获取全部日志信息成功',
+    data: {
+      ...total,
+      list: res
+    }
+  })
+}
+
+/**
  * obtain logs based on process version
  * @param pn process_version
  * @returns select array data
  */
-export const getDataByProcessVersion = (pn: string, limit: string, offset: string) => {
-  const res = db.query(selectSpecifyProcessVersionSql, [pn, limit, offset])
-  const total = db.query(countSpecifyProcessVersionSql, [pn])
+export const getDataByProcessName = (pn: string, curPage: string, pageSize: string) => {
+  const offset = calcOffset(curPage, pageSize)
+  const res = db.query(selectSpecifyProcessNameSql, [pn, pageSize, offset])
+  const total = db.query(countSpecifyProcessNameSql, [pn])[0] as { total: number }
   if (!res.length) {
     return handleFailed({
       message: `根据process name获取Logs信息失败!`
@@ -209,6 +240,48 @@ export const getStatsByLogTime = () => {
     message: `根据log time统计log数量成功`,
     data: {
       list: res
+    }
+  })
+}
+
+export const getPNCountLogState = (curPage: string, pageSize: string) => {
+  const offset = calcOffset(curPage, pageSize)
+  const res = db.query(countLogStateGroupByPN, [pageSize, offset])
+  const total = db.query(countByProcessNameSql, [])[0] as { total: number }
+  if (!res.length) {
+    return handleFailed({
+      message: `根据Process name统计不同状态的Logs数量失败!`
+    })
+  }
+
+  return handleSuccess({
+    message: `根据Process name统计不同状态的Logs数量成功`,
+    data: {
+      ...total,
+      list: res
+    }
+  })
+}
+
+export const getLogOfRecentlyErrorByPN = (pn: string) => {
+  if(!pn.length) {
+    return handleFailed({
+      message: `根据Process name获取最近的Error日志失败, Process name为空`
+    })
+  }
+  const res = db.query(selectRecentlyErrorSpecifyPNSql, [pn])
+  if (!res.length) {
+    return handleFailed({
+      message: `根据Process name获取最近的Error日志成功, 目前不存在相关数据`,
+      data: {
+        log_data: {}
+      }
+    })
+  }
+  return handleSuccess({
+    message: `根据Process name获取最近的Error日志成功`,
+    data: {
+      log_data: res[0]
     }
   })
 }

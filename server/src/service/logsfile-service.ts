@@ -86,7 +86,7 @@ export const doParseAllLogsFile = () => {
 export const getLogsFileDataByPagination = (curPage: string, pageSize: string) => {
   const offsetPage = calcOffset(curPage, pageSize)
   const res = db.query(selectLogsFileInfoByPaginationSql, [pageSize, offsetPage])
-
+  const total = db.query(selectCountLogsFileInfoSql)[0]
   if (!res.length) {
     return handleFailed({
       message: '分页获取日志文件信失败!'
@@ -95,6 +95,7 @@ export const getLogsFileDataByPagination = (curPage: string, pageSize: string) =
   return handleSuccess({
     message: '分页获取日志文件信息成功',
     data: {
+      ...total,
       list: res
     }
   })
