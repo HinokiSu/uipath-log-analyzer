@@ -69,7 +69,7 @@ GROUP BY
 logtime ORDER BY logtime DESC`
 
 // group and count by process_name
-export const countByProcessNameSql = `SELECT process_name,COUNT(*) as total from logs GROUP BY process_name`
+export const countByProcessNameSql = `SELECT COUNT(*) as total from (SELECT process_name from logs GROUP BY process_name)`
 
 // group by process_name and count diff log_state 
 export const countLogStateGroupByPN = `SELECT
