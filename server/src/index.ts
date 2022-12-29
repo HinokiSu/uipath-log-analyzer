@@ -6,6 +6,7 @@ import express from 'express'
 // router
 import logsFileRouter from './routes/logs-file-route'
 import logsRouter from './routes/logs-route'
+import statsRouter from './routes/stats-route'
 
 const app = express()
 
@@ -16,6 +17,7 @@ app.get('/', (req, res) => {
 })
 app.use('/logs', logsRouter)
 app.use('/file', logsFileRouter)
+app.use('/stats', statsRouter)
 
 // log file path
 app.listen(port, () => {

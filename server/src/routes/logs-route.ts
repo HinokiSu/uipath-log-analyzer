@@ -2,14 +2,13 @@ import {
   doParseLogsBySpecifyFile,
   getDataByProcessName,
   getLogsSpecifyLogTime,
-  getLogsOfRecentlyError,
-  getStatsByLogState,
-  getStatsByLogTime,
   getAllLogs,
   getPNCountLogState,
   getLogOfRecentlyErrorByPN
 } from '../service/logs-service'
 import express from 'express'
+
+// root route path: '/logs'
 const logsRouter = express.Router()
 
 type TPaginQuery = {
@@ -50,6 +49,7 @@ logsRouter.get('/all', (req: any, res, next) => {
   }
 })
 
+// process name
 logsRouter.get('/pn', (req: any, res, next) => {
   try {
     type TQuery = TPaginQuery & { pn: string }
@@ -80,7 +80,7 @@ logsRouter.get('/pn/stats', (req: any, res, next) => {
 
 logsRouter.get('/pn/recent/error', (req: any, res, next) => {
   try {
-    const pn = req.query.pn as string || ''
+    const pn = (req.query.pn as string) || ''
     return res.json(getLogOfRecentlyErrorByPN(pn))
   } catch (err: any) {
     console.error(`Error while getting logs `, err.message)
@@ -99,41 +99,6 @@ logsRouter.get('/logtime', (req: any, res, next) => {
     } else {
       res.json(getLogsSpecifyLogTime(query.logtime, query.pagesize, query.curpage))
     }
-  } catch (err: any) {
-    console.error(`Error while getting logs `, err.message)
-    next(err)
-  }
-})
-
-logsRouter.get('/stats/logstate', (req: any, res, next) => {
-  try {
-    res.json(getStatsByLogState())
-  } catch (err: any) {
-    console.error(`Error while getting logs `, err.message)
-    next(err)
-  }
-})
-
-logsRouter.get('/stats/recent/error', (req: any, res, next) => {
-  try {
-    const limt = req.query?.limt
-    if (limt.length) {
-      res.json(getLogsOfRecentlyError(limt))
-    } else {
-      res.json({
-        message: 'limt参数不能为空',
-        status: 0
-      })
-    }
-  } catch (err: any) {
-    console.error(`Error while getting logs `, err.message)
-    next(err)
-  }
-})
-
-logsRouter.get('/stats/logtime', (req: any, res, next) => {
-  try {
-    res.json(getStatsByLogTime())
   } catch (err: any) {
     console.error(`Error while getting logs `, err.message)
     next(err)

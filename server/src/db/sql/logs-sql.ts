@@ -51,23 +51,6 @@ export const countSpecifyLogTimeSql = `SELECT count(*) as total FROM logs WHERE 
 // find latest log in specify date
 export const findLatestLogInSpecifyDate = `SELECT log_time from logs WHERE log_time LIKE ? ORDER BY log_time DESC LIMIT 1`
 
-/* dashboard */
-// count number by log_state
-export const countNumberByLogStateSql = `SELECT log_state, COUNT(*) as total from logs GROUP BY log_state`
-
-// select recently log_state is Error Data
-// need limit number
-export const selectLogsOfRecentlyErrorSql = `SELECT * FROM logs WHERE log_state='Error' ORDER BY log_time DESC LIMIT ?`
-
-// count all logs number by log time
-export const countByLogTimeSql = `SELECT
-substr( log_time, 1, pos - 1 ) AS logtime,
-count( * ) AS total 
-FROM
-( SELECT *, instr ( log_time, ' ' ) AS pos FROM logs ) 
-GROUP BY
-logtime ORDER BY logtime DESC`
-
 // group and count by process_name
 export const countByProcessNameSql = `SELECT COUNT(*) as total from (SELECT process_name from logs GROUP BY process_name)`
 
