@@ -20,12 +20,12 @@ statsRouter.get('/logstate', (req: any, res, next) => {
 
 statsRouter.get('/recent/error', (req: any, res, next) => {
   try {
-    const limt = req.query?.limt
-    if (limt.length) {
-      res.json(getLogsOfRecentlyError(limt))
+    const qty = req.query?.qty
+    if (qty.length) {
+      res.json(getLogsOfRecentlyError(qty))
     } else {
       res.json({
-        message: 'limt参数不能为空',
+        message: '数量参数不能为空',
         status: 0
       })
     }

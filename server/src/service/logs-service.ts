@@ -1,6 +1,5 @@
 import logFormatter from '../core/log-formatter'
-import { getFileObj } from '../core/file-name-analyzer'
-import { IFileInfoObj, ILogObj } from '../types/log-types'
+import { ILogObj } from '../types/log-types'
 import db from '../db/index'
 import {
   insertLogSql,
@@ -15,16 +14,20 @@ import {
   countByProcessNameSql,
   selectRecentlyErrorSpecifyPNSql
 } from '../db/sql/logs-sql'
+import { selectLogsFileInfoById, updateFileLastParesTime } from '../db/sql/logsfile-info-sql'
 import { handleFailed, handleSuccess } from './common/result-handler'
 import { calcOffset } from './common/pagin-handler'
+import { TLogFile } from '../types/logfile-type'
+import { nowTime } from '../utils/time'
 
 /**
  * log formatter main entry
  * @param fileObj log file path
  * @returns parsed logs array
  */
-const logFormatterMain = (fileObj: IFileInfoObj) => {
-  const logs = logFormatter.readLogsFile(fileObj.path)
+const logFormatterMain = (fileObj: TLogFile) => {
+  // read file
+  const logs = logFormatter.readLogsFile(fileObj.full_path)
   const logsArr = logs === '' ? [] : logs.split('\n')
   // store parsed logs
   const parsedLogArr = []
@@ -33,6 +36,7 @@ const logFormatterMain = (fileObj: IFileInfoObj) => {
     if (logsArr[i].length === 0) {
       continue
     }
+    // time form is 'yyyy-MM-dd'
     const log = logFormatter.singleLogHandler(fileObj.time, logsArr[i])
     parsedLogArr.push(log)
   }
@@ -75,25 +79,27 @@ const insertLogDataIntoDB = (logData: ILogObj): boolean => {
   return res
 } */
 
+const updateFileTime = (id: string) => {
+  db.run(updateFileLastParesTime, [id, nowTime()])
+}
+
 /**
- * parse logs & insert into db
+ * parse logs & insert into db in specify log file
  * @param fileName specify file name
  * @returns execution result
  */
-export const doParseLogsBySpecifyFile = (fileName: string) => {
-  const uipathLogsFolderPath: string = process.env.UIPATH_LOGS_FOLDER_PATH || ''
-  if (!uipathLogsFolderPath) {
+export const doParseLogsBySpecifyFile = (id: string) => {
+  const fileRes = db.get(selectLogsFileInfoById, [id]) as TLogFile
+  if (!fileRes) {
     return handleFailed({
-      message: 'Error: uipath log根文件为空'
+      message: `根据UUId获取文件信息失败!`
     })
   }
-  const fileObj: IFileInfoObj = getFileObj(fileName, uipathLogsFolderPath)
-
-  const formattedLogsArr = logFormatterMain(fileObj)
+  const formattedLogsArr = logFormatterMain(fileRes)
   type TLatestLog = undefined | { log_time: string }
   // find latest log_time of log from db
   const latestLog: { log_time: string } = (db.get(findLatestLogInSpecifyDate, [
-    fileObj.time.concat('%')
+    fileRes.time.concat('%')
   ]) as TLatestLog) || { log_time: '' }
   // filter old log
   const latestLogsArr = formattedLogsArr.filter((item) => {
@@ -106,9 +112,11 @@ export const doParseLogsBySpecifyFile = (fileName: string) => {
   for (let i = 0, len = latestLogsArr.length; i < len; i++) {
     const res = insertLogDataIntoDB(latestLogsArr[i])
     if (!res) {
-      return handleFailed({ message: `当前日志日期: ${fileObj.time}, 日志数据解析&插入DB失败!` })
+      updateFileTime(id)
+      return handleFailed({ message: `当前日志日期: ${fileRes.time}, 日志数据解析&插入DB失败!` })
     }
   }
+  updateFileTime(id)
   return handleSuccess({ message: '日志数据解析&插入DB成功' })
 }
 

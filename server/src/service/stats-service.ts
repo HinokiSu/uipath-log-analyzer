@@ -32,11 +32,13 @@ export const getStatsByLogState = () => {
  * @param limt number of error logs
  * @returns error logs array
  */
-export const getLogsOfRecentlyError = (limt: number) => {
-  const res = db.query(selectLogsOfRecentlyErrorSql, [limt])
-  if (!res.length) {
-    return handleFailed({ message: `获取最近日志状态为Error的数据失败!` })
+export const getLogsOfRecentlyError = (qty: number) => {
+  if (qty === 0) {
+    return handleFailed({
+      message: `获取最近日志状态为Error的数据失败!`
+    })
   }
+  const res = db.query(selectLogsOfRecentlyErrorSql, [qty])
   return handleSuccess({
     message: `获取最近日志状态为Error的数据成功!`,
     data: {
@@ -51,14 +53,10 @@ export const getLogsOfRecentlyError = (limt: number) => {
  */
 export const getStatsByLogTime = () => {
   const res = db.query(countByLogTimeSql)
-  if (!res.length) {
-    return handleFailed({
-      message: `根据log time统计log数量失败!`
-    })
-  }
   return handleSuccess({
     message: `根据log time统计log数量成功`,
     data: {
+      total: res.length,
       list: res
     }
   })
