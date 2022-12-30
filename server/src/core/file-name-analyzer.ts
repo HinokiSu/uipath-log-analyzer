@@ -1,5 +1,11 @@
 import fs from 'fs'
 import { IFileInfoObj } from '../types/log-types'
+
+/**
+ * get all log files name
+ * @param uipathFolderPath uipath log storage path
+ * @returns all log files name
+ */
 const getFilesName = (uipathFolderPath: string): string[] => {
   // get all files name
   const filesNameArr = fs

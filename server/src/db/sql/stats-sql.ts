@@ -9,8 +9,14 @@ export const selectLogsOfRecentlyErrorSql = `SELECT * FROM logs WHERE log_state=
 // count all logs number by log time
 export const countByLogTimeSql = `SELECT
 substr( log_time, 1, pos - 1 ) AS logtime,
-count( * ) AS total 
+COUNT( * ) AS totalCount,
+SUM( CASE WHEN log_state = 'Info' THEN 1 ELSE 0 END ) AS infoCount,
+SUM( CASE WHEN log_state = 'Error' THEN 1 ELSE 0 END ) AS errorCount,
+SUM( CASE WHEN log_state = 'Trace' THEN 1 ELSE 0 END ) AS traceCount,
+SUM( CASE WHEN log_state = 'Warn' THEN 1 ELSE 0 END ) AS warnCount 
 FROM
 ( SELECT *, instr ( log_time, ' ' ) AS pos FROM logs ) 
 GROUP BY
-logtime ORDER BY logtime DESC`
+logtime 
+ORDER BY
+logtime DESC`
