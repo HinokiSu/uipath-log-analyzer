@@ -1,5 +1,5 @@
 import {
-  doParseAllLogsFile,
+  doParseAllLogsFileInfo,
   getLogsFileDataByPagination,
   getTotalOfLogsFile
 } from '../service/logsfile-service'
@@ -9,9 +9,9 @@ const logsFileRouter = express.Router()
 
 // root route path: '/file'
 
-logsFileRouter.get('/', (req, res, next) => {
+logsFileRouter.get('/parse', (req, res, next) => {
   try {
-    res.json(doParseAllLogsFile())
+    res.json(doParseAllLogsFileInfo())
   } catch (err: any) {
     console.error(`Error while getting logs file info`, err.message)
     next(err)

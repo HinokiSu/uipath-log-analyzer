@@ -29,7 +29,9 @@ const insertSingleFileInfoToDB = (fileObj: IFileInfoObj): boolean => {
         uuidv4(),
         fileObj.name,
         fileObj.time,
+        fileObj.path,
         0,
+        nowTime(),
         nowTime()
       ])
       if (!addRes.changes) {
@@ -43,23 +45,11 @@ const insertSingleFileInfoToDB = (fileObj: IFileInfoObj): boolean => {
   return true
 }
 
-// log file main service
-/* const addLogsFileInfo = () => {
-  let message = 'Error: in adding log'
-  for (let i = 0, len = filesObjArr.length; i < len; i++) {
-    let _res = singleFileInfoHandler(filesObjArr[i])
-    if(_res) message = ''
-    // TODO: judge and how to return message
-  }
-
-  return { message }
-} */
-
 /**
  * parse all logs file info & insert into db
  * @returns execution result
  */
-export const doParseAllLogsFile = () => {
+export const doParseAllLogsFileInfo = () => {
   // uipath logs file info Array
   const filesObjArr = fileNameAnalyzer()
 
