@@ -1,27 +1,15 @@
 import ApiClient from '@utils/request'
+import { apiURLHandler } from './common-tools'
+import { TPaginationResult } from './interfaces/common-types'
 const apiBasePath = '/file'
 
-type TResult = {
-  message: string
-  status: string
-  data: any[]
-}
-
-type TTotalResult = Omit<TResult, 'data'> & {
-  data: Partial<{
-    total: number
-  }>
-}
-
-const apiURL = (root: string, url: string) => root.concat(url)
-
-export const fetchList = (curPage: number, pageSize: number): Promise<TResult> => {
-  return ApiClient.get(apiURL(apiBasePath, `/pagin`), {
+export const fetchList = (curPage: number, pageSize: number): Promise<TPaginationResult> => {
+  return ApiClient.get(apiURLHandler(apiBasePath, `/pagin`), {
     curpage: curPage,
     pagesize: pageSize
   })
 }
 
-export const fetchTotal = (): Promise<TTotalResult> => {
+/* export const fetchTotal = (): Promise<TTotalResult> => {
   return ApiClient.get(apiURL(apiBasePath, `/total`))
-}
+} */
