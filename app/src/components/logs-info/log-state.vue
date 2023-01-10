@@ -59,47 +59,59 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .log-state_wrapper {
-  box-sizing: border-box;
-  margin: 0 8px 0 0;
-  color: #000000d9;
-  font-size: 14px;
-  font-variant: tabular-nums;
-  line-height: 1.5715;
-  list-style: none;
-  font-feature-settings: 'tnum';
-  display: inline-block;
-  height: auto;
-  padding: 3px 7px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  line-height: 20px;
+  padding: 4px 8px 4px 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   white-space: nowrap;
-  background: #fafafa;
-  border: 1px solid #d9d9d9;
-  border-radius: 2px;
-  opacity: 1;
-  transition: all 0.3s;
+  cursor: pointer;
+
+  font-family: 'DM Sans', sans-serif;
+  display: inline-flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  height: 24px;
+  white-space: nowrap;
+  transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  outline: 0px;
+  text-decoration: none;
+  border: 0px;
+  vertical-align: middle;
+  box-sizing: border-box;
+  font-weight: 500;
+  font-size: 0.75rem;
+  border-radius: 15px;
 
   &.---default {
     color: #000000d9;
   }
 
   &.---info {
-    color: #389e0d;
-    background: #f6ffed;
-    border-color: #b7eb8f;
+    color: var(--info-status-color);
+    // color: rgb(0, 194, 146);
+    background: var(--info-status-background);
+    border-color: var(--info-status-border-color);
   }
 
   &.---trace {
-    color: #08979c;
-    background: #e6fffb;
-    border-color: #87e8de;
+    color: var(--trace-status-color);
+    background: var(--trace-status-background);
+    border-color: var(--trace-status-border-color);
+  }
+
+  &.---warn {
+    color: var(--warn-status-color);
+    background: var(--warn-status-background);
+    border-color: var(--warn-status-border-color);
   }
 
   &.---error {
-    color: #cf1322;
-    background: #fff1f0;
-    border-color: #ffa39e;
+    color: var(--error-status-color);
+    background: var(--error-status-background);
+    border-color: var(--error-status-border-color);
   }
 }
 </style>

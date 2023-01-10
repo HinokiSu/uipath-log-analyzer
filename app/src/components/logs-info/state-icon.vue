@@ -31,7 +31,7 @@ export default defineComponent({
 <style lang="less" scoped>
 .state-icon {
     font-size: 15px;
-    padding-right: 2px;
+    padding-right: 4px;
     text-align: center;
 }
 </style>
