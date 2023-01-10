@@ -1,5 +1,11 @@
 <template>
-  <div class="logs__wrapper">
+  <div class="logs-time_wrapper">
+    <div class="card-header_container">
+      <a-date-picker v-model:value="pickDate" :disabled-date="disabledDate" />
+      <a-button class="query-btn" @click="onClickQuery" type="primary" :disabled="isDisabled"
+        >查询</a-button
+      >
+    </div>
     <a-table :dataSource="dataSource" :columns="columns" :pagination="false" :loading="loading">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'log_state'">
@@ -19,17 +25,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted, reactive, onUnmounted } from 'vue'
+import { defineComponent, ref, computed, watch, watchEffect, reactive, onUnmounted } from 'vue'
+import dayjs, { Dayjs } from 'dayjs'
 import { TableColumnsType } from '@/interface/common-type'
 import { useLogsStore } from '@/stores/logs-store'
 import LogState from '@components/logs-info/log-state.vue'
+import { useRoute } from 'vue-router'
+import msg from '@/utils/message'
 export default defineComponent({
-  name: 'Logs',
+  name: 'LogsTime',
   components: {
     LogState
   },
   setup() {
     const logsStore = useLogsStore()
+    const pickDate = ref<Dayjs>(dayjs())
     const pagination = reactive({
       curPage: 1,
       pageSize: 10,
@@ -37,20 +47,34 @@ export default defineComponent({
     })
     const loading = ref(false)
     const isDisabled = ref(false)
+    const route = useRoute()
 
+    const disabledDate = (current: Dayjs) => {
+      // Can not select days after today
+      return current && current > dayjs().endOf('day')
+    }
     // get data for table
-    const getAndWaitData = () => {
+    const getAndWaitData = (time: string) => {
       loading.value = true
-      logsStore.getAllLogsOfList(pagination.curPage, pagination.pageSize).then(() => {
+      logsStore.getLogsListByLogTime(time, pagination.curPage, pagination.pageSize).then(() => {
         loading.value = false
       })
     }
+    // fomat pick date value, convert string
+    const formatPickDate = () => pickDate.value.format('YYYY-MM-DD')
+
+    watchEffect(() => {
+      const time = route.query.time as string
+      if (time) {
+        pickDate.value = dayjs(time)
+        getAndWaitData(formatPickDate())
+      }
+    })
 
     const dataSource = computed(() => logsStore.logsList)
     const changeCurrentPage = (page: number, pageSize: number) => {
       pagination.curPage = page
-      pagination.pageSize = pageSize
-      getAndWaitData()
+      getAndWaitData(formatPickDate())
     }
 
     watch(
@@ -59,10 +83,23 @@ export default defineComponent({
         pagination.pageSize = _new
       }
     )
-    onMounted(() => {
-      getAndWaitData()
-    })
 
+    // query button
+    const onClickQuery = () => {
+      if (pickDate.value) {
+        getAndWaitData(formatPickDate())
+      } else {
+        msg.warn('选择的日期为空')
+      }
+    }
+
+    watchEffect(() => {
+      if (!pickDate.value) {
+        isDisabled.value = true
+      } else {
+        isDisabled.value = false
+      }
+    })
     onUnmounted(() => {
       logsStore.clearState()
     })
@@ -109,23 +146,36 @@ export default defineComponent({
       }
     ]
     return {
+      pickDate,
+      disabledDate,
       loading,
       columns,
       dataSource,
       pagination,
       changeCurrentPage,
       onShowSizeChange,
-      isDisabled
+      isDisabled,
+      onClickQuery
     }
   }
 })
 </script>
 
 <style lang="less" scoped>
-.logs__wrapper {
+.logs-time_wrapper {
+  .card-header_container {
+    margin: 16px 0;
+    display: flex;
+    padding-left: 10px;
+    align-items: center;
+
+    .query-btn {
+      margin-left: 16px;
+    }
+  }
   .paging-container {
-    margin-top: 32px;
-    padding-bottom: 35px;
+    margin-top: 30px;
+    padding-bottom: 24px;
     display: flex;
     place-content: center;
   }
