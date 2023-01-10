@@ -9,23 +9,20 @@ jobs:
       run:
         working-directory: ./app
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
-        
+          node-version: "18.x"
+
       - name: PrintPwd
         run: echo $PWD
-        
-      - name: Rm
-        run: rm -f ~/.yarn*
-        
-      - name: Update Yarn
-        run: yarn set version stable
-        
+
+      - name: 📥 install
+        uses: ./.github/actions/yarn-nm-install
+
       - name: See Yarn Ver
         run: yarn -v
-        
+
       - name: Install Dep
         run: yarn
 
