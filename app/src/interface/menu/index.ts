@@ -9,4 +9,6 @@ export type MenuItemType = {
 export type SubMenuItemType = {
   key: string
   title: string
+  path: string
+  icon?: string
 }

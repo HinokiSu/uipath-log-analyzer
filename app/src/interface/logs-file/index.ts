@@ -17,14 +17,4 @@ export type APIResLogsFileType = {
   updated_at: string
 }
 
-// table columns
-export type TableColumnsType = {
-  title: string
-  dataIndex: string
-  sorter?: boolean
-  width?: string
-  filters?: Array<{
-    text: string
-    value: string
-  }>
-}
+
