@@ -17,6 +17,9 @@ jobs:
       - name: PrintPwd
         run: echo $PWD
         
+      - name: Rm
+        run: rm -f ~/.yarn*
+        
       - name: Update Yarn
         run: yarn set version stable
         
