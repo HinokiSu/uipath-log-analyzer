@@ -7,10 +7,8 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    AAlert: typeof import('ant-design-vue/es')['Alert']
     AButton: typeof import('ant-design-vue/es')['Button']
     ACard: typeof import('ant-design-vue/es')['Card']
-    AConfigProvider: typeof import('ant-design-vue/es')['ConfigProvider']
     ADatePicker: typeof import('ant-design-vue/es')['DatePicker']
     AList: typeof import('ant-design-vue/es')['List']
     AListItem: typeof import('ant-design-vue/es')['ListItem']
@@ -26,11 +24,8 @@ declare module '@vue/runtime-core' {
     ATable: typeof import('ant-design-vue/es')['Table']
     LogErrorMsg: typeof import('./src/components/log-message/log-error-msg.vue')['default']
     LogState: typeof import('./src/components/logs-info/log-state.vue')['default']
-    LogStateCard: typeof import('./src/components/log-state-card/index.vue')['default']
     LogStateChart: typeof import('./src/components/charts/log-state-stats/log-state-chart.vue')['default']
-    LogStateStatsPie: typeof import('./src/components/charts/log-state-stats/log-state-stats-pie.vue')['default']
     LogTimeChart: typeof import('./src/components/charts/log-time-stats/log-time-chart.vue')['default']
-    LogTimeLineChart: typeof import('./src/components/charts/log-time-line-chart.vue')['default']
     MenuIcon: typeof import('./src/components/menu/menu-icon.vue')['default']
     MenuItem: typeof import('./src/components/menu/menu-item.vue')['default']
     PnCard: typeof import('./src/components/pn-card/index.vue')['default']

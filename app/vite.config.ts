@@ -4,6 +4,8 @@ import { resolve } from 'path'
 // modular import plugin
 import Components from 'unplugin-vue-components/vite'
 import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers'
+import { compression } from 'vite-plugin-compression2'
+import { visualizer } from 'rollup-plugin-visualizer'
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, __dirname)
@@ -14,6 +16,10 @@ export default defineConfig(({ mode }) => {
       Components({
         // ant-design-vue
         resolvers: [AntDesignVueResolver()]
+      }),
+      compression(),
+      visualizer({
+        filename: 'stats.html'
       })
     ],
     resolve: {
@@ -28,6 +34,20 @@ export default defineConfig(({ mode }) => {
         { find: '@api', replacement: resolve(__dirname, 'src/api') }
       ]
     },
+    build: {
+      assetsDir: 'static/img/',
+      rollupOptions: {
+        output: {
+          chunkFileNames: 'static/js/[name]-[hash].js',
+          entryFileNames: 'static/js/[name]-[hash].js',
+          assetFileNames: 'static/[ext]/[name]-[hash].[ext]',
+          manualChunks: {
+            echarts: ['echarts']
+          }
+        }
+      }
+    },
+
     // config proxy
     server: {
       proxy: {
