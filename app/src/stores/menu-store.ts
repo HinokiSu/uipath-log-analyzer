@@ -6,11 +6,13 @@ type State = {
   menuList: MenuItemType[]
   selectedKeys: string[]
   menuWidth: string
+  openKeys: string[]
 }
 export const useMenuStore = defineStore('MenuStore', {
   state: (): State => ({
     collapsed: false,
     selectedKeys: ['1'],
+    openKeys: ['1'],
     menuList: [],
     menuWidth: '256px'
   }),
@@ -27,6 +29,9 @@ export const useMenuStore = defineStore('MenuStore', {
     },
     updateSelectedKeys(keys: string[]) {
       this.selectedKeys = keys
+      if(keys[0].includes(".")) {
+        this.openKeys = Array.from(keys[0].slice(0, keys[0].indexOf(".")))
+      }
       sessionStorage.setItem('menu_select_keys', JSON.stringify(this.selectedKeys))
     },
     getMenuList() {
@@ -48,7 +53,23 @@ export const useMenuStore = defineStore('MenuStore', {
           key: '3',
           icon: 'file-text-outlined',
           title: '日志',
-          path: '/logs'
+          children: [
+            {
+              title: '全部',
+              key: '3.1',
+              path: '/logs/all'
+            },
+            {
+              title: '时间',
+              key: '3.2',
+              path: '/logs/time'
+            },
+            {
+              title: '进程名称',
+              key: '3.3',
+              path: '/logs/pn'
+            }
+          ]
         }
       ]
       this.menuList = menuList

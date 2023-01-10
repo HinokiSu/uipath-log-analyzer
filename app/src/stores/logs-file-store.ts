@@ -1,5 +1,6 @@
+import { fetchList } from '@/api/logsfile-api'
 import { APIResLogsFileType } from '@/interface/logs-file'
-import { fetchList, fetchTotal } from '@api/logsfile-info'
+
 import { defineStore } from 'pinia'
 
 type State = {
@@ -25,15 +26,11 @@ export const useLogsFileStore = defineStore('logsFileStore', {
   actions: {
     async getLogsFileInfo() {
       const res = await fetchList(this.pagination.curPage, this.pagination.pageSize)
-      this.infoList = res.data.map((item: APIResLogsFileType) => {
+      this.pagination.total = res.data.total
+      this.infoList = res.data.list.map((item: APIResLogsFileType) => {
         item.is_parsed = item.is_parsed ? '是' : '否'
         return item
       })
-    },
-
-    async getTotal() {
-      const res = await fetchTotal()
-      this.pagination.total = res.data.total || 0
     }
   }
 })
