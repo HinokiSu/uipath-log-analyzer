@@ -2,6 +2,7 @@
   <div class="sider-menu_wrapper" :style="'width:' + menuWidth">
     <a-menu
       v-model:selectedKeys="selectedKeys"
+      v-model:openKeys="openKeys"
       mode="inline"
       theme="dark"
       :inline-collapsed="collapsed"
@@ -49,7 +50,7 @@ export default defineComponent({
         if (_val) {
           menuStore.changeMenuWidth('80px')
         } else {
-          menuStore.changeMenuWidth('240px')
+          menuStore.changeMenuWidth('200px')
         }
       }
     )

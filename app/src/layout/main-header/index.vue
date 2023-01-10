@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="layout-header__wrapper">
     <a-button class="menu-collapse_btn" type="text" @click="toggleCollapsed">
       <menu-unfold-outlined v-if="collapsed" />
       <menu-fold-outlined v-else />
@@ -31,6 +31,12 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
+.layout-header__wrapper {
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  width: 100%;
+  
+
+}
 .menu-collapse_btn {
   height: 100%;
   background-color: #fff;

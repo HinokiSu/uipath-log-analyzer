@@ -42,7 +42,7 @@ export default defineComponent({
 }
 
 .sider-menu_body {
-  max-width: 256px;
+  max-width: 200px;
   overflow: auto;
   height: 100vh;
   position: fixed;
@@ -54,19 +54,28 @@ export default defineComponent({
 .main-container {
   width: 100%;
   height: 100%;
-  margin-left: 256px;
+  margin-left: 200px;
   overflow: auto;
   &.collapsed {
     margin-left: 80px;
+  
   }
   .main-header_body {
     height: 60px;
-    background-color: #eaeaea;
+    background-color: rgb(255, 255, 255);
+    box-shadow: rgba(90, 114, 123, 0.11) 0px 7px 30px 0px;
+
+    position: fixed;
+    z-index: 1100;
+    top: 0px;
+    color: rgb(255, 255, 255);
   }
 
   .main-content_body {
-    height: calc(100vh - 70px);
-    margin: 10px 20px 0;
+    // height: calc(100vh - 70px);
+    margin-top: 60px;
+    padding-top: 30px;
+    padding-left: 8px;
   }
 }
 </style>
