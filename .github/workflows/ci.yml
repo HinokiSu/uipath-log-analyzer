@@ -11,8 +11,8 @@ jobs:
         with:
           node-version: '18.x'
 
-      - name: Bootstrap
-        run: make
+      - name: to app
+        run: cd app
 
       - name: Run
         run: yarn dev
