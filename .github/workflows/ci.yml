@@ -5,17 +5,20 @@ on: [push, pull_request]
 jobs:
   app:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
           node-version: '18.x'
-
-      - name: to app
-        run: cd ./app
         
-      - name: current dir
-        run: pwd 
+      - name: PrintPwd
+        run: echo $PWD
+        
+      - name: Install Dep
+        run: yarn
 
       - name: Run
         run: yarn dev
