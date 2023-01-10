@@ -10,12 +10,15 @@
   <template v-else>
     <a-sub-menu :key="menuItem.key">
       <template #icon>
-        <!-- <menu-icon :icon="menuItem.icon" /> -->
+        <menu-icon :name="menuItem.icon" />
       </template>
       <template #title>{{ menuItem.title }}</template>
-
+      <!-- sub menus -->
       <div v-for="item in menuItem.children" :key="item.key">
         <a-menu-item :key="item.key">
+          <template #icon v-if="item.icon">
+            <menu-icon :name="item.icon" />
+          </template>
           {{ item.title }}
         </a-menu-item>
       </div>
