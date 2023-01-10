@@ -17,12 +17,71 @@
 
   /* menu */
   --menu-background-color: #001529;
+
+  /* status */
+  /* info */
+  --info-status-color: #389e0d;
+  --info-status-background: #f6ffed;
+  --info-status-border-color: #b7eb8f;
+
+  /* trace */
+  --trace-status-color: #08979c;
+  --trace-status-background: #e6fffb;
+  --trace-status-border-color: #87e8de;
+  --warn-status-color: #d46b08;
+  --warn-status-background: #fff7e6;
+  --warn-status-border-color: #ffd591;
+  /* error */
+  --error-status-color: #cf1322;
+  --error-status-background: #fff1f0;
+  --error-status-border-color: #ffa39e;
 }
 
+/*  */
+
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: #918d8d #ffffff;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #918d8d;
+  border-radius: 12px;
+  border: 4px solid #ffffff;
+}
+
+*::-webkit-scrollbar:horizontal {
+  height: 12px;
+}
+
+*::-webkit-scrollbar-thumb:horizontal {
+  border-radius: 12px;
+  border: 4px solid #ffffff;
+  background-color: #e5e4e4;
+}
+
+*::-webkit-scrollbar-thumb:horizontal:hover {
+  background-color: #bfbdbd;
+}
+
+html,
 body {
-  width: 100vw;
+  width: 100%;
+  height: 100%;
   min-width: 500px;
-  min-height: 100vh;
+  /* min-height: 100vh; */
+  margin: 0;
 }
 
 h1 {
