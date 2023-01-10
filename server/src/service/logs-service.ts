@@ -14,7 +14,7 @@ import {
   countByProcessNameSql,
   selectRecentlyErrorSpecifyPNSql
 } from '../db/sql/logs-sql'
-import { selectLogsFileInfoById, updateFileLastParesTime } from '../db/sql/logsfile-info-sql'
+import { selectLogsFileInfoById, updateFileLastParseTime } from '../db/sql/logsfile-info-sql'
 import { handleFailed, handleSuccess } from './common/result-handler'
 import { calcOffset } from './common/pagin-handler'
 import { TLogFile } from '../types/logfile-type'
@@ -80,7 +80,7 @@ const insertLogDataIntoDB = (logData: ILogObj): boolean => {
 } */
 
 const updateFileTime = (id: string) => {
-  db.run(updateFileLastParesTime, [id, nowTime()])
+  db.run(updateFileLastParseTime, [nowTime(), id])
 }
 
 /**

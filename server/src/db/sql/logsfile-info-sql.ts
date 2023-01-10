@@ -28,4 +28,4 @@ export const selectCountLogsFileInfoSql = `SELECT count(*) as total FROM logsfil
 export const selectLogsFileInfoById = `SELECT * FROM logsfile_info WHERE id = ? `
 
 // update file of update time
-export const updateFileLastParesTime = `UPDATE logsfile_info SET updated_at = ?, is_parsed= 1 WHERE id = ?`
+export const updateFileLastParseTime = `UPDATE logsfile_info SET updated_at = ?, is_parsed= 1 WHERE id = ?`
