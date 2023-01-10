@@ -3,7 +3,7 @@ name: CI Action
 on: [push, pull_request]
 
 jobs:
-  test:
+  app:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -12,7 +12,10 @@ jobs:
           node-version: '18.x'
 
       - name: to app
-        run: cd app
+        run: cd ./app
+        
+      - name: current dir
+        run: pwd 
 
       - name: Run
         run: yarn dev
