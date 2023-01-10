@@ -11,6 +11,13 @@ import router from '@routes/index'
 // pinia
 const pinia = createPinia()
 
+// echart
+import * as echarts from 'echarts/core'
+import { Charts } from './plugins/echarts'
+
+// antd-vue
+import 'ant-design-vue/es/message/style/css';
+
 // vue app
 const app = createApp(App)
 
@@ -19,4 +26,5 @@ const app = createApp(App)
 
 app.use(router)
 app.use(pinia)
+echarts.use(Charts)
 app.mount('#app')
