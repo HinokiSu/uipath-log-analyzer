@@ -17,6 +17,12 @@ jobs:
       - name: PrintPwd
         run: echo $PWD
         
+      - name: Update Yarn
+        run: yarn set version stable
+        
+      - name: See Yarn Ver
+        run: yarn -v
+        
       - name: Install Dep
         run: yarn
 
