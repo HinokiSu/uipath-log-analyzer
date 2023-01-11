@@ -1,49 +1,62 @@
-import dayjs from 'dayjs'
 import logFormatter from '../../core/log-formatter'
-const logData = `14:20:18.4827 Info {"message":"19340767","level":"Information","logType":"User","timeStamp":"2022-12-05T14:20:18.4823694+08:00","fingerprint":"c8244bbd-5a1d-4a1e-a3f7-6657ac766cc1","windowsIdentity":"DESKTOP-OMS4RCP\\Hinoki","machineName":"DESKTOP-OMS4RCP","fileName":"invoke_list","processName":"Downloads","processVersion":"1.0.0","jobId":"96c97e81-137d-4cba-b1b5-ee3e6a85a1bf","robotName":"yukihinoki@qq.com-attended","machineId":2152810,"organizationUnitId":3103367}`
 
 describe('parsed all right', () => {
-  it('ok', () => {
+  test('no ending log', () => {
+    const logData = `11:52:22.2997 Info {"message":"Downloads run...","level":"Information","logType":"Default","timeStamp":"2022-12-05T11:52:22.2985528+08:00","fingerprint":"85ab69c0-73a0-4b5e-bb7c-c07f88619f6a","windowsIdentity":"DESKTOP-example\\Hinoki","machineName":"DESKTOP-example","fileName":"invoke_list","initiatedBy":"Studio","processName":"Downloads","processVersion":"1.0.0","jobId":"06698f21-e8b0-41f9-9b8c-3c80edf5d503","robotName":"hinoki@example.com-attended","machineId":2152810,"organizationUnitId":3103367}`
     const fileTime = '2022-12-05'
     const res = logFormatter.singleLogHandler(fileTime, logData)
     const exceptRes = {
-      id: '37324c86-b3a2-47f2-a2de-723ead109904',
-      logTime: '2022-12-05 14:20:18.4827',
+      id: res.id,
+      logTime: '2022-12-05 11:52:22.299',
       logState: 'Info',
-      message: '19340767',
-      organizationUnitId: '3103367',
+      message: 'Downloads run...',
       level: 'Information',
-      logType: 'User',
-      timeStamp: '2022-12-05T14:20:18.4823694+08:00',
-      fingerprint: 'c8244bbd-5a1d-4a1e-a3f7-6657ac766cc1',
-      windowsIdentity: 'DESKTOP-OMS4RCP\\Hinoki',
-      machineName: 'DESKTOP-OMS4RCP',
+      logType: 'Default',
+      timeStamp: '2022-12-05T11:52:22.2985528+08:00',
+      fingerprint: '85ab69c0-73a0-4b5e-bb7c-c07f88619f6a',
+      windowsIdentity: 'DESKTOP-example\\Hinoki',
+      machineName: 'DESKTOP-example',
+      fileName: 'invoke_list',
       totalExecutionTimeInSeconds: '',
       totalExecutionTime: '',
-      initiatedBy: '',
-      fileName: 'invoke_list',
+      initiatedBy: 'Studio',
       processName: 'Downloads',
       processVersion: '1.0.0',
-      jobId: '96c97e81-137d-4cba-b1b5-ee3e6a85a1bf',
-      robotName: 'yukihinoki@qq.com-attended',
-      machineId: '2152810'
+      jobId: '06698f21-e8b0-41f9-9b8c-3c80edf5d503',
+      robotName: 'hinoki@example.com-attended',
+      machineId: '2152810',
+      organizationUnitId: '3103367'
     }
 
-    expect(res).toBe(exceptRes)
+    expect(res).toMatchObject(exceptRes)
   })
-})
 
-describe('time ok', () => {
-  it('ok', () => {
-    const _t = `2022-12-05 14:20:18.4827`
-    const res = dayjs(_t).format('YYYY-MM-DDTHH:mm:ss.SSS')
-    console.log(res)
-  })
-})
-
-describe('time > undfined ', () => {
-  it('yes', () => {
-    const _t = undefined || ''
-    console.log('2022-12-05 14:20:18.490' > _t)
+  test('ending log', () => {
+    const fileTime = '2022-12-28'
+    const sourceData = `09:46:36.8541 Info {"message":"GoogleAuth-Demo execution ended","level":"Information","logType":"Default","timeStamp":"2022-12-28T09:46:36.853246+08:00","fingerprint":"15c51dbd-1caa-42e3-bc97-318103674f29","windowsIdentity":"DESKTOP-example\\Hinoki","machineName":"DESKTOP-example","fileName":"Main","totalExecutionTimeInSeconds":5,"totalExecutionTime":"00:00:05","processName":"GoogleAuth-Demo","processVersion":"1.0.0","jobId":"4d06014e-e14a-4406-a015-3e2eac6fca86","robotName":"hinoki@example.com-attended","machineId":2152810,"organizationUnitId":3103367}`
+    const parsedRes = logFormatter.singleLogHandler(fileTime, sourceData)
+    const exceptRes = {
+      id: parsedRes.id,
+      logTime: '2022-12-28 09:46:36.854',
+      logState: 'Info',
+      message: 'GoogleAuth-Demo execution ended',
+      level: 'Information',
+      logType: 'Default',
+      timeStamp: '2022-12-28T09:46:36.853246+08:00',
+      fingerprint: '15c51dbd-1caa-42e3-bc97-318103674f29',
+      windowsIdentity: 'DESKTOP-example\\Hinoki',
+      machineName: 'DESKTOP-example',
+      fileName: 'Main',
+      totalExecutionTimeInSeconds: '5',
+      totalExecutionTime: '00:00:05',
+      initiatedBy: '',
+      processName: 'GoogleAuth-Demo',
+      processVersion: '1.0.0',
+      jobId: '4d06014e-e14a-4406-a015-3e2eac6fca86',
+      robotName: 'hinoki@example.com-attended',
+      machineId: '2152810',
+      organizationUnitId: '3103367'
+    }
+    expect(parsedRes).toMatchObject(exceptRes)
   })
 })

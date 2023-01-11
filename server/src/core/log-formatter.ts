@@ -23,9 +23,9 @@ const createSeparatorArr = () => {
     'windowsIdentity',
     'machineName',
     'fileName',
+    'initiatedBy',
     'totalExecutionTimeInSeconds',
     'totalExecutionTime',
-    'initiatedBy',
     'processName',
     'processVersion',
     'jobId',
@@ -74,6 +74,7 @@ const singleLogHandler = (fileTime: string, logData: string): ILogObj => {
     if (logMainData.includes(sepArr[i + 1].flag)) {
       _temp = logMainData.split(sepArr[i + 1].flag)
       if (_temp[0].charAt(0) === '"' && _temp[0].charAt(_temp[0].length - 1) === '"') {
+        // remove double quotes around
         _temp[0] = _temp[0].slice(1, -1)
       }
       if (_key === '') {

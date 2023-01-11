@@ -29,5 +29,22 @@ jobs:
       - name: Run
         run: yarn build
 
+  server:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./server
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+
+      - name: Install All Deps
+        run: yarn
+
+      - name: Test
+        run: yarn test
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
