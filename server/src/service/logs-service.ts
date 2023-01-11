@@ -49,7 +49,29 @@ const logFormatterMain = (fileObj: TLogFile) => {
  * @returns boolean
  */
 const insertLogDataIntoDB = (logData: ILogObj): boolean => {
-  const exRes = db.run(insertLogSql, Array.from(Object.values(logData)))
+  // fix: object is unordered, inserting into db may go wrong
+  const exRes = db.run(insertLogSql, [
+    logData.id,
+    logData.logTime,
+    logData.logState,
+    logData.message,
+    logData.level,
+    logData.logType,
+    logData.timeStamp,
+    logData.fingerprint,
+    logData.windowsIdentity,
+    logData.machineName,
+    logData.fileName,
+    logData.totalExecutionTimeInSeconds,
+    logData.totalExecutionTime,
+    logData.initiatedBy,
+    logData.processName,
+    logData.processVersion,
+    logData.jobId,
+    logData.robotName,
+    logData.machineId,
+    logData.organizationUnitId
+  ])
   if (!exRes.changes) {
     return false
   }
