@@ -1,4 +1,12 @@
 node_modules
 test/*
-dist/*
 *.env
+
+# front-end dist prj
+views
+public
+
+# build file
+build
+dist
+coverage

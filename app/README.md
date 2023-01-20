@@ -1,7 +1,5 @@
-## Uipath Logs Analyzer
+# Uipath Logs Analyzer · Front-end
 Uipath 日志解析与统计
-> 此为前端项目  
- 
 
 ## Quick Use
 - Install
