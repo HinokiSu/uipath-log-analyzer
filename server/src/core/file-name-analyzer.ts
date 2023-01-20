@@ -1,4 +1,6 @@
 import fs from 'fs'
+import { serverConfig } from '../app-config'
+
 import { IFileInfoObj } from '../types/log-types'
 
 /**
@@ -38,7 +40,9 @@ export const getFileObj = (fileName: string, rootPath: string): IFileInfoObj => 
  */
 export const fileNameAnalyzer = () => {
   // TODO: get uipath logs folder path .env config
-  const uipathLogsFolderPath: string = process.env.UIPATH_LOGS_FOLDER_PATH || ''
+  // const uipathLogsFolderPath: string = process.env.UIPATH_LOGS_FOLDER_PATH || ''
+  const uipathLogsFolderPath: string = serverConfig.UIPATH_LOGS_FOLDER_PATH
+
   const fileNameArr = getFilesName(uipathLogsFolderPath)
   const resultArr: IFileInfoObj[] = []
   // loop to build file obj

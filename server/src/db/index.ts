@@ -1,6 +1,7 @@
 import Database from 'better-sqlite3'
-import path from 'path'
-const db = new Database(path.join(__dirname, '../../../logs_db.db'))
+import { serverConfig } from '../app-config'
+
+const db = new Database(serverConfig.DB_PATH)
 db.pragma('journal_mode = WAL')
 
 function query(sql: string, params: any[] = []) {
