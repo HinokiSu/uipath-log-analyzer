@@ -14,7 +14,8 @@ const handleServiceError = (error: any) => {
   console.log(error)
 }
 
-const apiBaseURL = `/api`
+// const apiBaseURL = `/api`
+const apiBaseURL = import.meta.env.VITE_API_URL as string
 //  import.meta.env.VITE_API_URL as string,
 
 interface IApiClient {
@@ -36,7 +37,7 @@ class ApiClient implements IApiClient {
       baseURL: apiBaseURL,
       responseType: 'json' as const,
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
       },
       timeout: 10 * 1000
     })
