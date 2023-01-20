@@ -40,10 +40,7 @@ export default defineConfig(({ mode }) => {
         output: {
           chunkFileNames: 'static/js/[name]-[hash].js',
           entryFileNames: 'static/js/[name]-[hash].js',
-          assetFileNames: 'static/[ext]/[name]-[hash].[ext]',
-          manualChunks: {
-            echarts: ['echarts']
-          }
+          assetFileNames: 'static/[ext]/[name]-[hash].[ext]'
         }
       }
     },
@@ -52,7 +49,7 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         '/api': {
-          target: 'http://localhost:4201',
+          target: 'http://localhost:4302',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, '')
         }
