@@ -22,6 +22,7 @@ declare module '@vue/runtime-core' {
     AStatistic: typeof import('ant-design-vue/es')['Statistic']
     ASubMenu: typeof import('ant-design-vue/es')['SubMenu']
     ATable: typeof import('ant-design-vue/es')['Table']
+    Clock: typeof import('./src/components/clock/index.vue')['default']
     LogErrorMsg: typeof import('./src/components/log-message/log-error-msg.vue')['default']
     LogState: typeof import('./src/components/logs-info/log-state.vue')['default']
     LogStateChart: typeof import('./src/components/charts/log-state-stats/log-state-chart.vue')['default']

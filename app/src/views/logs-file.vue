@@ -1,9 +1,12 @@
 <template>
   <div class="logs-file-info_wrapper">
+    <div class="header-features">
+      <a-button type="primary" @click="updateLogsFiles"> 获取最新日志文件信息 </a-button>
+    </div>
     <a-table :dataSource="dataSource" :columns="columns" :pagination="false" :loading="loading">
       <template #bodyCell="{ column, text, record }">
         <template v-if="column.dataIndex === 'operation'">
-          <a @click="onViewDetail(record.time)">View</a>
+          <a @click="onViewDetail(record)">View</a>
           <a-popconfirm title="是否解析" @confirm="confirmOfPop(record.id)" @cancel="cancelOfPop">
             <a-button style="margin-left: 20px" type="primary" :disabled="btnDisabled">
               解析
@@ -26,10 +29,11 @@
 import { computed, defineComponent, onMounted, ref, watch } from 'vue'
 import { useLogsFileStore } from '@stores/logs-file-store'
 import { TableColumnsType } from '@/interface/common-type'
-import { fetchParseSpecifyFile } from '@/api/parse-api'
+import { fetchParseAllLogFileInfo, fetchParseSpecifyFile } from '@/api/parse-api'
 import msg from '@/utils/message'
 import { useRouter } from 'vue-router'
 import { useMenuStore } from '@/stores/menu-store'
+import { TLogsFileInfo } from '@/interface/logs-file'
 
 export default defineComponent({
   name: 'LogsFile',
@@ -88,15 +92,26 @@ export default defineComponent({
       })
     }
 
-    const onViewDetail = (val: string) => {
-      // redirect logs time table page
-      router.push({
-        name: 'logsTime',
-        query: {
-          time: val
-        }
+    const updateLogsFiles = async () => {
+      await fetchParseAllLogFileInfo().then(() => {
+        getDataAndWait()
       })
-      menuStore.updateSelectedKeys(['3.2'])
+    }
+
+    const onViewDetail = (val: TLogsFileInfo) => {
+      console.log(val)
+      if (val.is_parsed === '是') {
+        // redirect logs time table page
+        router.push({
+          name: 'logsTime',
+          query: {
+            time: val.time
+          }
+        })
+        menuStore.updateSelectedKeys(['3.2'])
+      } else {
+        msg.info("该日志文件未被解析⚒，请先解析再进行查看")
+      }
     }
 
     const confirmOfPop = (id: string) => {
@@ -126,7 +141,8 @@ export default defineComponent({
       onViewDetail,
       confirmOfPop,
       cancelOfPop,
-      btnDisabled
+      btnDisabled,
+      updateLogsFiles
     }
   }
 })
@@ -134,7 +150,9 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .logs-file-info_wrapper {
-  
+  .header-features {
+    margin: 0 0 8px 8px;
+  }
   .paging-container {
     margin-top: 30px;
     padding-bottom: 24px;

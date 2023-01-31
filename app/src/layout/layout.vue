@@ -58,15 +58,19 @@ export default defineComponent({
   overflow: auto;
   &.collapsed {
     margin-left: 80px;
-  
+
+    .main-header_body {
+      width: calc(100vw - 80px);
+    }
   }
   .main-header_body {
+    width: calc(100vw - 200px);
     height: 60px;
     background-color: rgb(255, 255, 255);
     box-shadow: rgba(90, 114, 123, 0.11) 0px 7px 30px 0px;
 
     position: fixed;
-    z-index: 1100;
+    z-index: 800;
     top: 0px;
     color: rgb(255, 255, 255);
   }

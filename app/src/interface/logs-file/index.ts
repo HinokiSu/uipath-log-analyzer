@@ -1,5 +1,5 @@
 // formatted type
-export type LogsFileTableType = {
+export type TLogsFileTable = {
   fileName: string
   time: string
   isParsed: string
@@ -8,7 +8,7 @@ export type LogsFileTableType = {
 }
 
 // Type from DB field
-export type APIResLogsFileType = {
+export type TLogsFileInfo = {
   id: string
   file_name: string
   time: string
@@ -16,5 +16,3 @@ export type APIResLogsFileType = {
   created_at: string
   updated_at: string
 }
-
-
