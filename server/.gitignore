@@ -10,3 +10,4 @@ public
 build
 dist
 coverage
+*.7z

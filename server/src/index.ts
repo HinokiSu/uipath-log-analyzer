@@ -11,11 +11,8 @@ import parseRoute from './routes/parse-route'
 import statsRouter from './routes/stats-route'
 import cors from 'cors'
 import { serverConfig } from './app-config'
-import { readdirSync } from 'fs'
 
 declare const process: any
-console.log(process.execPath)
-console.log('process.pkg', process.pkg)
 
 try {
   const app = express()
@@ -23,29 +20,12 @@ try {
 
   // Port
   const clientPort = serverConfig.CLIENT_PORT
-  console.log('client port:  ' + clientPort)
   const serverPort = serverConfig.SERVER_PORT
 
   const getDir = () => {
     if (process.pkg) {
-      // console.log(process.cwd() + '/..')
-      // return path.resolve(process.cwd() + '/..')
-
-      /* const { spawn } = require('child_process')
-      const ls = spawn('ls', ['-lh', '/usr'])
-
-      ls.stdout.on('data', (data: any) => {
-        console.log(`stdout: ${data}`)
-      }) */
-      const pkgDir = path.join(__dirname, '../dist')
-      console.log('public in pkg: ' + pkgDir)
-
-      const lsAll = readdirSync(pkgDir)
-      console.log('lsAll: ' + lsAll)
-
-      return pkgDir
+      return path.join(__dirname, '../dist')
     } else {
-      console.log('22: ', require.main ? require.main.path : process.cwd())
       return path.join(require.main ? require.main.path : process.cwd())
     }
   }
