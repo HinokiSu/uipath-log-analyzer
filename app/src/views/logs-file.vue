@@ -6,12 +6,19 @@
     <a-table :dataSource="dataSource" :columns="columns" :pagination="false" :loading="loading">
       <template #bodyCell="{ column, text, record }">
         <template v-if="column.dataIndex === 'operation'">
-          <a @click="onViewDetail(record)">View</a>
-          <a-popconfirm title="是否解析" @confirm="confirmOfPop(record.id)" @cancel="cancelOfPop">
-            <a-button style="margin-left: 20px" type="primary" :disabled="btnDisabled">
-              解析
-            </a-button>
-          </a-popconfirm>
+          <div class="tb-operation__container" style="display: flex">
+            <a @click="onViewDetail(record)">View</a>
+            <a-popconfirm
+              title="是否解析"
+              @confirm="confirmOfPop(record.id)"
+              @cancel="cancelOfPop"
+              overlayClassName="logs-file_custom-popover"
+            >
+              <a-button style="margin-left: 20px" type="primary" :disabled="btnDisabled">
+                解析
+              </a-button>
+            </a-popconfirm>
+          </div>
         </template>
       </template>
     </a-table>
@@ -99,7 +106,6 @@ export default defineComponent({
     }
 
     const onViewDetail = (val: TLogsFileInfo) => {
-      console.log(val)
       if (val.is_parsed === '是') {
         // redirect logs time table page
         router.push({
@@ -110,13 +116,12 @@ export default defineComponent({
         })
         menuStore.updateSelectedKeys(['3.2'])
       } else {
-        msg.info("该日志文件未被解析⚒，请先解析再进行查看")
+        msg.info('该日志文件未被解析⚒，请先解析再进行查看')
       }
     }
 
     const confirmOfPop = (id: string) => {
       btnDisabled.value = true
-      console.log(id)
       msg.info('正在解析...')
       return new Promise((resolve) => {
         setTimeout(() => {

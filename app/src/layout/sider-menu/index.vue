@@ -63,7 +63,6 @@ export default defineComponent({
     // go path(use route name)
     const handleClick: MenuProps['onClick'] = (menuInfo) => {
       const curKey = menuInfo.key as string
-      console.log(curKey)
       menuListRef.value.forEach((item) => {
         // has children
         if (item.children) {

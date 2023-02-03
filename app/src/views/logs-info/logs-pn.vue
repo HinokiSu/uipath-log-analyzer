@@ -5,7 +5,6 @@
       :data-source="dataSource"
       :loading="loading"
     >
-    <!-- TODO: add skeleton & test pagination -->
       <template #renderItem="{ item }">
         <a-list-item>
           <a-card :title="item.pn">
@@ -33,6 +32,7 @@
       class="pagin-container"
       v-model:current="pagination.curPage"
       :total="pagination.total"
+      @change="changeCurrentPage"
       simple
     >
       <template #itemRender="{ type, originalElement }">
@@ -79,10 +79,15 @@ export default defineComponent({
       logsStore.clearState()
     })
 
+    const changeCurrentPage = () => {
+      getDataAndWait()
+    }
+
     return {
       dataSource,
       loading,
-      pagination
+      pagination,
+      changeCurrentPage
     }
   }
 })

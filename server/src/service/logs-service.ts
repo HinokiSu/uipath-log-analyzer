@@ -129,7 +129,6 @@ export const doParseLogsBySpecifyFile = (id: string) => {
       return item
     }
   })
-  console.log(latestLogsArr.length)
   // loop insert log data into db
   for (let i = 0, len = latestLogsArr.length; i < len; i++) {
     const res = insertLogDataIntoDB(latestLogsArr[i])
