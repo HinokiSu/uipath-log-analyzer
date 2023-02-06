@@ -107,7 +107,7 @@ const updateFileTime = (id: string) => {
 
 /**
  * parse logs & insert into db in specify log file
- * @param fileName specify file name
+ * @param id specify file id
  * @returns execution result
  */
 export const doParseLogsBySpecifyFile = (id: string) => {

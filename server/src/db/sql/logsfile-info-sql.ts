@@ -29,3 +29,6 @@ export const selectLogsFileInfoById = `SELECT * FROM logsfile_info WHERE id = ? 
 
 // update file of update time
 export const updateFileLastParseTime = `UPDATE logsfile_info SET updated_at = ?, is_parsed= 1 WHERE id = ?`
+
+// select all id of logs info
+export const selectAllIdLogsFile = `SELECT id FROM logsfile_info`

@@ -8,8 +8,9 @@
   "scripts": {
     "lint": "eslint .",
     "test": "jest",
-    "clean": "rimraf dist/",
-    "copy-views": "copyfiles -u 2 \"./src/public/**/*.*\" \"./dist/public/\"",
+    "clean": "rimraf dist/ && rimraf src/public/",
+    "copy-app-dist": "copyfiles -u 3 \"../app/dist/**/*.*\" \"./src/public/\"",
+    "copy-views": "yarn copy-app-dist && copyfiles -u 2 \"./src/public/**/*.*\" \"./dist/public/\"",
     "build": "yarn clean && yarn tsc && yarn copy-views",
     "preview": "node dist/index.js",
     "watch:server": "nodemon  --watch src/**/* -e ts,tsx --exec ts-node src/index.ts",

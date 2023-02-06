@@ -3,6 +3,7 @@ import db from '../db/index'
 
 import {
   insertLogsFileInfoSql,
+  selectAllIdLogsFile,
   selectCountLogsFileInfoSql,
   selectLogsFileInfoById,
   selectLogsFileInfoByPaginationSql,
@@ -13,6 +14,7 @@ import { nowTime } from '../utils/time'
 import { calcOffset } from './common/pagin-handler'
 import { handleFailed, handleSuccess } from './common/result-handler'
 import { fileNameAnalyzer } from '../core/file-name-analyzer'
+import { doParseLogsBySpecifyFile } from './logs-service'
 
 /**
  *
@@ -77,11 +79,7 @@ export const getLogsFileDataByPagination = (curPage: string, pageSize: string) =
   const offsetPage = calcOffset(curPage, pageSize)
   const res = db.query(selectLogsFileInfoByPaginationSql, [pageSize, offsetPage])
   const total = db.query(selectCountLogsFileInfoSql)[0]
-  if (!res.length) {
-    return handleFailed({
-      message: '分页获取日志文件信失败!'
-    })
-  }
+
   return handleSuccess({
     message: '分页获取日志文件信息成功',
     data: {
@@ -129,5 +127,30 @@ export const getLogsFileDataById = (id: string) => {
     data: {
       list: res
     }
+  })
+}
+
+export const doParseAllLogsByAllLogsFile = () => {
+  // get all log file info id
+  const allIdRes = db.query(selectAllIdLogsFile)
+  if (allIdRes.length === 0) {
+    return handleSuccess({
+      message: '获取所有日志信息的id,数组为空,解析完成',
+      data: {
+        list: []
+      }
+    })
+  }
+  // arr no 0
+  for (const item of allIdRes) {
+    const res = doParseLogsBySpecifyFile(item.id)
+    if (res.status !== 200) {
+      return handleFailed({
+        message: `解析全部日志文件,出现异常!当前日志文件id值为: ${item.id}`
+      })
+    }
+  }
+  return handleSuccess({
+    message: `解析全部日志文件,已完成.`
   })
 }
