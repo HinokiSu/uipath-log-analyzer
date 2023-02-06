@@ -1,4 +1,5 @@
 import { fetchList } from '@/api/logsfile-api'
+import { fetchParseLogsByAllLogFile } from '@/api/parse-api'
 import { TLogsFileInfo } from '@/interface/logs-file'
 
 import { defineStore } from 'pinia'

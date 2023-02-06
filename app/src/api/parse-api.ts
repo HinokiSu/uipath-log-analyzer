@@ -10,3 +10,7 @@ export const fetchParseSpecifyFile = (id: string): Promise<TBaseResult> =>
 
 export const fetchParseAllLogFileInfo = (): Promise<TBaseResult> =>
   ApiClient.get(apiURLHandler(apiBasePath, `/fileinfo/all`))
+
+// parse all log by all log files
+export const fetchParseLogsByAllLogFile = (): Promise<TBaseResult> =>
+  ApiClient.get(apiURLHandler(apiBasePath, `/file/all`))
