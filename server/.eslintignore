@@ -2,3 +2,4 @@ lib
 dist
 types
 .eslintrc.js
+public
