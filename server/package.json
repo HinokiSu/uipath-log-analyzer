@@ -1,10 +1,13 @@
 {
-  "name": "uipath-logs-analyzer_server",
+  "name": "uipath-log-analyzer_server",
   "version": "1.0.0",
   "author": "Hinoki",
   "main": "index.js",
   "license": "MIT",
   "bin": "dist/index.js",
+  "repository": {
+    "url": "https://github.com/HinokiSu/uipath-log-analyzer"
+  },
   "scripts": {
     "lint": "eslint .",
     "test": "jest",

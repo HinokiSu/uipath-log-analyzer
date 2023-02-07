@@ -1,4 +1,4 @@
-# Uipath Logs Analyzer · Back-end
+# Uipath Log Analyzer · Back-end
 
 ## Server configuration
 

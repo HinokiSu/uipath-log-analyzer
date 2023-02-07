@@ -1,4 +1,4 @@
-# Uipath Logs Analyzer · Front-end
+# Uipath Log Analyzer · Front-end
 Uipath 日志解析与统计
 
 ## Quick Use

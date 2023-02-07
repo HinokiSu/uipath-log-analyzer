@@ -1,4 +1,4 @@
-# Uipath logs analyzer
+# Uipath Log Analyzer
 
 ## Description
 

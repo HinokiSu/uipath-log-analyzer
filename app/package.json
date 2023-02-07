@@ -1,8 +1,12 @@
 {
-  "name": "uipath-logs-analyzer_app",
+  "name": "uipath-log-analyzer_app",
   "author": "Hinoki",
   "private": true,
   "version": "1.0.0",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/HinokiSu/uipath-log-analyzer"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
