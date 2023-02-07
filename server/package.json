@@ -1,5 +1,5 @@
 {
-  "name": "uipath-log-analyzer_server",
+  "name": "uipath-logs-analyzer_server",
   "version": "1.0.0",
   "author": "Hinoki",
   "main": "index.js",
