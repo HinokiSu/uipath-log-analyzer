@@ -7,14 +7,10 @@ import {
   getLogOfRecentlyErrorByPN
 } from '../service/logs-service'
 import express from 'express'
+import { TPaginQuery } from './types'
 
 // root route path: '/logs'
 const logsRouter = express.Router()
-
-type TPaginQuery = {
-  pagesize: string
-  curpage: string
-}
 
 logsRouter.get('/', (req: any, res, next) => {
   try {
@@ -87,6 +83,8 @@ logsRouter.get('/pn/recent/error', (req: any, res, next) => {
     next(err)
   }
 })
+
+
 logsRouter.get('/logtime', (req: any, res, next) => {
   try {
     const query: TQuery = req.query

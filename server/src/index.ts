@@ -4,12 +4,14 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 import express from 'express'
 import path from 'path'
+import cors from 'cors'
 // router
 import logsFileRouter from './routes/logs-file-route'
 import logsRouter from './routes/logs-route'
 import parseRoute from './routes/parse-route'
 import statsRouter from './routes/stats-route'
-import cors from 'cors'
+import processRouter from './routes/process-route'
+// config
 import { serverConfig } from './app-config'
 
 declare const process: any
@@ -42,6 +44,7 @@ try {
   app.use('/file', logsFileRouter)
   app.use('/stats', statsRouter)
   app.use('/parse', parseRoute)
+  app.use('/process', processRouter)
 
   clientApp.listen(clientPort, () => {
     console.log(`Web Client listening : http://localhost:${clientPort}`)

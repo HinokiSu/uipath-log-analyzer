@@ -167,8 +167,8 @@ export const getAllLogs = (curPage: string, pageSize: string) => {
 }
 
 /**
- * obtain logs based on process version
- * @param pn process_version
+ * obtain logs based on process name
+ * @param pn process name
  * @returns select array data
  */
 export const getDataByProcessName = (pn: string, curPage: string, pageSize: string) => {
