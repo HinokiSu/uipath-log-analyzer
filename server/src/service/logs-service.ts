@@ -152,11 +152,6 @@ export const getAllLogs = (curPage: string, pageSize: string) => {
   const res = db.query(selectAllLogsSql, [pageSize, offset])
   const total = db.query(countAllLogsSql)[0] as { total: number }
 
-  if (!res.length) {
-    return handleFailed({
-      message: '获取全部日志信息失败！'
-    })
-  }
   return handleSuccess({
     message: '获取全部日志信息成功',
     data: {
@@ -175,11 +170,6 @@ export const getDataByProcessName = (pn: string, curPage: string, pageSize: stri
   const offset = calcOffset(curPage, pageSize)
   const res = db.query(selectSpecifyProcessNameSql, [pn, pageSize, offset])
   const total = db.query(countSpecifyProcessNameSql, [pn])[0] as { total: number }
-  if (!res.length) {
-    return handleFailed({
-      message: `根据process name获取Logs信息失败!`
-    })
-  }
   return handleSuccess({
     message: '根据process name获取Logs信息成功',
     data: {
@@ -199,11 +189,7 @@ export const getLogsSpecifyLogTime = (timeStr: string, pageSize: string, curPage
   const offset = calcOffset(curPage, pageSize)
   const res = db.query(selectSpecifyLogTimeSql, [logTime, pageSize, offset])
   const total = db.query(countSpecifyLogTimeSql, [logTime])[0] as { total: number }
-  if (!res.length) {
-    handleFailed({
-      message: `根据log time获取Logs信息失败!`
-    })
-  }
+
   return handleSuccess({
     message: `根据log time获取Logs信息成功`,
     data: {
@@ -217,11 +203,6 @@ export const getPNCountLogState = (curPage: string, pageSize: string) => {
   const offset = calcOffset(curPage, pageSize)
   const res = db.query(countLogStateGroupByPN, [pageSize, offset])
   const total = db.query(countByProcessNameSql, [])[0] as { total: number }
-  if (!res.length) {
-    return handleFailed({
-      message: `根据Process name统计不同状态的Logs数量失败!`
-    })
-  }
 
   return handleSuccess({
     message: `根据Process name统计不同状态的Logs数量成功`,
@@ -239,18 +220,10 @@ export const getLogOfRecentlyErrorByPN = (pn: string) => {
     })
   }
   const res = db.query(selectRecentlyErrorSpecifyPNSql, [pn])
-  if (!res.length) {
-    return handleFailed({
-      message: `根据Process name获取最近的Error日志成功, 目前不存在相关数据`,
-      data: {
-        log_data: {}
-      }
-    })
-  }
   return handleSuccess({
     message: `根据Process name获取最近的Error日志成功`,
     data: {
-      log_data: res[0]
+      log_data: res[0] || {}
     }
   })
 }
