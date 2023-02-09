@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { DotChartOutlined, FolderOutlined, FileTextOutlined } from '@ant-design/icons-vue'
+import { DotChartOutlined, FolderOutlined, FileTextOutlined,CodeOutlined } from '@ant-design/icons-vue'
 import { defineComponent } from 'vue'
 // refer: https://github.com/ant-design/ant-design/issues/20668
 export default defineComponent({
@@ -27,7 +27,8 @@ export default defineComponent({
   components: {
     DotChartOutlined,
     FolderOutlined,
-    FileTextOutlined
+    FileTextOutlined,
+    CodeOutlined
   }
 })
 </script>

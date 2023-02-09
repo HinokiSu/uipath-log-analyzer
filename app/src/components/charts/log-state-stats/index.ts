@@ -22,23 +22,26 @@ export class CustomRadar {
       }, */
       ...options
     })
-    
   }
   handleChartData() {
     const indicator: TIndicator[] = []
     const seriesData: number[] = []
     const legendData: string[] = []
     this.sourceData.forEach((item) => {
-      seriesData.push(item.total)
+      if (item.log_state !== 'Info') {
+        seriesData.push(item.total)
+      }
     })
     const max = Math.max(...seriesData) + 50
     this.sourceData.forEach((item) => {
-      legendData.push(item.log_state)
-      indicator.push({
-        name: item.log_state,
-        max: max,
-        min: 0
-      })
+      if (item.log_state !== 'Info') {
+        legendData.push(item.log_state)
+        indicator.push({
+          name: item.log_state,
+          max: max,
+          min: 0
+        })
+      }
     })
 
     return {
@@ -53,7 +56,7 @@ export class CustomRadar {
             backgroundColor: '#666',
             borderRadius: 3,
             padding: [3, 5]
-          },
+          }
         }
       ],
 

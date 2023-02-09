@@ -14,7 +14,7 @@
             <template #extra>
               <router-link
                 :to="{
-                  name: 'logsPNDetail',
+                  name: 'ProcessDetail',
                   params: {
                     pn: item.pn
                   }

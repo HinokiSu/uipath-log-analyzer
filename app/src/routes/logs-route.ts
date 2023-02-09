@@ -14,16 +14,6 @@ export const logsRoutes: RouteRecordRaw[] = [
         path: 'time',
         name: 'logsTime',
         component: () => import('@views/logs-info/logs-time.vue')
-      },
-      {
-        path: 'pn',
-        name: 'logsPN',
-        component: () => import('@views/logs-info/logs-pn.vue')
-      },
-      {
-        path: 'pn/detail/:pn',
-        name: 'logsPNDetail',
-        component: () => import('@views/logs-info/logs-pn-detail.vue')
       }
     ]
   }

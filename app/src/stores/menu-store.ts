@@ -29,8 +29,8 @@ export const useMenuStore = defineStore('MenuStore', {
     },
     updateSelectedKeys(keys: string[]) {
       this.selectedKeys = keys
-      if(keys[0].includes(".")) {
-        this.openKeys = Array.from(keys[0].slice(0, keys[0].indexOf(".")))
+      if (keys[0].includes('.')) {
+        this.openKeys = Array.from(keys[0].slice(0, keys[0].indexOf('.')))
       }
       sessionStorage.setItem('menu_select_keys', JSON.stringify(this.selectedKeys))
     },
@@ -63,13 +63,14 @@ export const useMenuStore = defineStore('MenuStore', {
               title: '时间',
               key: '3.2',
               path: '/logs/time'
-            },
-            {
-              title: '进程名称',
-              key: '3.3',
-              path: '/logs/pn'
             }
           ]
+        },
+        {
+          key: '4',
+          icon: 'code-outlined',
+          title: '进程',
+          path: '/process'
         }
       ]
       this.menuList = menuList

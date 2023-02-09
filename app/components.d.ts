@@ -34,5 +34,6 @@ declare module '@vue/runtime-core' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     StateIcon: typeof import('./src/components/logs-info/state-icon.vue')['default']
+    Timeline: typeof import('./src/components/timeline/index.vue')['default']
   }
 }

@@ -1,6 +1,7 @@
 import { createRouter, RouteRecordRaw, createWebHistory } from 'vue-router'
 import { logsFileRoutes } from '@routes/logs-file-route'
 import { logsRoutes } from '@routes/logs-route'
+import { processRoutes } from './process-route'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -15,7 +16,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@views/dashboard.vue')
   },
   ...logsFileRoutes,
-  ...logsRoutes
+  ...logsRoutes,
+  ...processRoutes
 ]
 
 const router = createRouter({

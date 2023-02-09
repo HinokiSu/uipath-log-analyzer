@@ -123,7 +123,7 @@ export default defineComponent({
 
     const onBack = () => {
       router.push({
-        name: 'logsPN'
+        name: 'process'
       })
     }
 
