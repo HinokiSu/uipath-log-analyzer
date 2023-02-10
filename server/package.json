@@ -23,7 +23,8 @@
   },
   "pkg": {
     "assets": [
-      "dist/public/**/*"
+      "dist/public/**/*",
+      "./node_modules/better-sqlite3/**"
     ],
     "targets": [
       "node18-win-x64"
