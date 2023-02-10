@@ -7,8 +7,14 @@ const getServerConfig = () => {
     CLIENT_PORT: string
     SERVER_PORT: string
   }
+  let configPath = ''
 
-  const configPath = process.cwd() + '\\server.config.json'
+  if (process.platform === 'linux') {
+    configPath = process.cwd() + '/server.config.json'
+  } else {
+    // win32 or others
+    configPath = process.cwd() + '\\server.config.json'
+  }
   console.log('Server Config File Path: ' + configPath)
   const serverConfig = fs.readFileSync(configPath, 'utf8')
   if (serverConfig === '') {
