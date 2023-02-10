@@ -8,11 +8,15 @@ import { IFileInfoObj } from '../types/log-types'
  * @param uipathFolderPath uipath log storage path
  * @returns all log files name
  */
-const getFilesName = (uipathFolderPath: string): string[] => {
+export const getFilesName = (uipathFolderPath: string): string[] => {
+  // fixed: At Uipath 2019.10.* old version has `2023-02-10_WorkflowAnalyzer_Execution.log`
   // get all files name
-  const filesNameArr = fs
-    .readdirSync(uipathFolderPath, 'utf8')
-    .filter((_t: string) => _t.includes('Execution'))
+  const filesNameArr = fs.readdirSync(uipathFolderPath, 'utf8').filter((_t: string) => {
+    const splitedArr = _t.split('_')
+    if (splitedArr.length === 2 && _t.includes('Execution')) {
+      return true
+    }
+  })
   return filesNameArr
 }
 
