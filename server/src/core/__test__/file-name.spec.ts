@@ -2,7 +2,7 @@ import path from 'path'
 import { getFilesName } from '../file-name-analyzer'
 
 describe('parse and get file name all right', () => {
-  test('parse file name', () => {
+  it('parse file name', () => {
     const expected = ['2023-02-02_Execution.log', '2023-02-10_Execution.log']
     const testFolderPath = path.join(__dirname, './test-logs')
     const fileNameArr = getFilesName(testFolderPath)
