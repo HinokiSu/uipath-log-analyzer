@@ -2,7 +2,7 @@
  * handle log data
  */
 import fs from 'fs'
-import { ILogDataObjItem, ILogObj } from '../types/log-types'
+import { ILogDataObjItem } from '../types/log-types'
 import { v4 as uuidv4 } from 'uuid'
 import dayjs from 'dayjs'
 
@@ -12,9 +12,20 @@ const readLogsFile = (fPath: string) => {
   return res
 }
 
-const createSeparatorArr = () => {
-  const logSepFlagArr: ILogDataObjItem[] = []
-  const sepFlagArr = [
+const formatDelimiterArr = (sepFlagArr: Array<string>) => {
+  const logDelimiterArray: ILogDataObjItem[] = []
+  sepFlagArr.forEach((item: string) => {
+    logDelimiterArray.push({
+      name: item,
+      flag: `,"${item}":`
+    })
+  })
+  return logDelimiterArray
+}
+
+/* create delimiter array of latest Uipath version */
+const createLatestVerDelimterArr = () => {
+  const separatedFlagArr = [
     'message',
     'level',
     'logType',
@@ -33,25 +44,40 @@ const createSeparatorArr = () => {
     'machineId',
     'organizationUnitId'
   ]
-
-  sepFlagArr.forEach((item: string) => {
-    logSepFlagArr.push({
-      name: item,
-      flag: `,"${item}":`
-    })
-  })
-
-  return logSepFlagArr
+  return formatDelimiterArr(separatedFlagArr)
 }
 
+/* create delimiter array of older Uipath version */
+const createOlderVerDelimeiterArr = () => {
+  const oldseparatedFlagArr = [
+    'message',
+    'level',
+    'logType',
+    'timeStamp',
+    'fingerprint',
+    'windowsIdentity',
+    'machineName',
+    'processName',
+    'processVersion',
+    'jobId',
+    'robotName',
+    'machineId',
+    'totalExecutionTimeInSeconds',
+    'totalExecutionTime',
+    'fileName'
+  ]
+  return formatDelimiterArr(oldseparatedFlagArr)
+}
+
+
 /**
- * handle single log data
- * @param fileTime file name of prefix time
- * @param logData log content
- * @returns
+ * 
+ * @param fileTime time in this log file name
+ * @param logData log string
+ * @param delimiterArr delimiter
+ * @returns 
  */
-const singleLogHandler = (fileTime: string, logData: string): ILogObj => {
-  const sepArr: ILogDataObjItem[] = createSeparatorArr()
+const generalLogHandler = (fileTime: string, logData: string, delimiterArr: ILogDataObjItem[]) => {
   const logObj = Object.create(null)
   const logInfo = logData.split(' ', 2)
   // use uuid v4 as uniq id
@@ -69,17 +95,17 @@ const singleLogHandler = (fileTime: string, logData: string): ILogObj => {
   // temporay storage logObj key
   let _key = ''
   // loop handle
-  for (let i = 0, len = sepArr.length; i < len - 1; i++) {
+  for (let i = 0, len = delimiterArr.length; i < len - 1; i++) {
     // whether has sep flag
-    if (logMainData.includes(sepArr[i + 1].flag)) {
-      _temp = logMainData.split(sepArr[i + 1].flag)
+    if (logMainData.includes(delimiterArr[i + 1].flag)) {
+      _temp = logMainData.split(delimiterArr[i + 1].flag)
       if (_temp[0].charAt(0) === '"' && _temp[0].charAt(_temp[0].length - 1) === '"') {
         // remove double quotes around
         _temp[0] = _temp[0].slice(1, -1)
       }
       if (_key === '') {
         // write in logObj
-        logObj[sepArr[i].name] = _temp[0]
+        logObj[delimiterArr[i].name] = _temp[0]
       } else {
         logObj[_key] = _temp[0]
         _key = ''
@@ -87,15 +113,56 @@ const singleLogHandler = (fileTime: string, logData: string): ILogObj => {
       logMainData = _temp[1]
     } else {
       // when there is no initiatedBy or others,it will is setted empty string
-      logObj[sepArr[i + 1].name] = ''
+      logObj[delimiterArr[i + 1].name] = ''
       if (_key === '') {
-        _key = sepArr[i].name
+        _key = delimiterArr[i].name
       }
     }
   }
-  // organizationUnitId
-  logObj['organizationUnitId'] = _temp[1].split('}', 2)[0]
-  return logObj
+
+  return {
+    handledLogObj: logObj,
+    restData: _temp[1]
+  }
 }
 
-export default { readLogsFile, createSeparatorArr, singleLogHandler }
+const mainLogHandler = (fileTime: string, logData: string) => {
+  const isLatestVer = logData.includes(`,"organizationUnitId":`)
+  if (isLatestVer) {
+    // uipath version >= 2019.10
+    const DelimeiterArr = createLatestVerDelimterArr()
+    // Need reBuild: get organizationUnitId value
+    const { handledLogObj: processedLogObj, restData } = generalLogHandler(
+      fileTime,
+      logData,
+      DelimeiterArr
+    )
+    if (restData === '') {
+      throw 'Error: Latest Uipath version, restData is null'
+    } else {
+      processedLogObj['organizationUnitId'] = restData.split('}', 2)[0]
+    }
+    return processedLogObj
+  } else {
+    const DelimeiterArr: ILogDataObjItem[] = createOlderVerDelimeiterArr()
+    const { handledLogObj: processedLogObj, restData } = generalLogHandler(
+      fileTime,
+      logData,
+      DelimeiterArr
+    )
+    if (restData === '') {
+      throw 'Error: Older Version Uipath, restData is null'
+    }
+    // fixed: uipath 2019.10 version log data struct
+
+    processedLogObj['initiatedBy'] = ''
+    processedLogObj['organizationUnitId'] = ''
+    return processedLogObj
+  }
+}
+
+export default {
+  readLogsFile,
+  createLatestVerDelimterArr,
+  mainLogHandler
+}
