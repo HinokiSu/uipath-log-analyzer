@@ -37,7 +37,7 @@ const logFormatterMain = (fileObj: TLogFile) => {
       continue
     }
     // time form is 'yyyy-MM-dd'
-    const log = logFormatter.singleLogHandler(fileObj.time, logsArr[i])
+    const log = logFormatter.mainLogHandler(fileObj.time, logsArr[i])
     parsedLogArr.push(log)
   }
   return parsedLogArr
