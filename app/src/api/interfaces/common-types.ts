@@ -1,4 +1,4 @@
-import { TLogInfo, TPNOfLogState } from '@/interface/log-info'
+import { TLogInfo } from '@/interface/log-info'
 
 export type TBaseResult = {
   message: string
@@ -12,4 +12,3 @@ export type TPaginationResult = Omit<TBaseResult, 'data'> & {
     list: any[]
   }
 }
-
