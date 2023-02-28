@@ -1,36 +1,38 @@
 <template>
   <div class="error-msg__wrapper">
     <div class="msg_title">❌最新的错误日志</div>
-    <div class="error-msg__container">
-      <div class="left-box">
-        <div class="msg-time__container">
-          <span class="msg-time_title">时 间</span>
-          <div class="msg-time">
-            {{ logData.log_time }}
+    <a-skeleton :loading="loading" :paragraph="{ rows: 4 }" active>
+      <div class="error-msg__container">
+        <div class="left-box">
+          <div class="msg-time__container">
+            <span class="msg-time_title">时 间</span>
+            <div class="msg-time">
+              {{ logData.log_time }}
+            </div>
+          </div>
+          <div class="file-name__container">
+            <div class="file-name_title">文件 名称</div>
+            <div class="file-name">
+              {{ logData.file_name || '无' }}
+            </div>
           </div>
         </div>
-        <div class="file-name__container">
-          <div class="file-name_title">文件 名称</div>
-          <div class="file-name">
-            {{ logData.file_name || '无' }}
-          </div>
-        </div>
-      </div>
 
-      <div class="right-box">
-        <div class="msg-desc_title">错误 信息</div>
-        <div class="msg-description">
-          {{ logData.message }}
+        <div class="right-box">
+          <div class="msg-desc_title">错误 信息</div>
+          <div class="msg-description">
+            {{ logData.message }}
+          </div>
         </div>
       </div>
-    </div>
+    </a-skeleton>
   </div>
 </template>
 
 <script lang="ts">
 import { TLogInfo } from '@/interface/log-info'
-import msg from '@/utils/message'
-import { computed, defineComponent, PropType, ref } from 'vue'
+import { clear } from 'console'
+import { computed, defineComponent, onMounted, PropType, ref, watchEffect } from 'vue'
 
 export default defineComponent({
   name: 'LogErrorMessage',
@@ -41,25 +43,36 @@ export default defineComponent({
   },
   setup(props) {
     const logData = computed(() => props.log as TLogInfo)
-    if (!props.log) {
-      msg.err('Log数据为空, 异常', 2.5)
-    }
+    const loading = ref(true)
+    let timer:NodeJS.Timeout
 
-    return { logData }
+    watchEffect(() => {
+      if (logData.value.log_time || Object.keys(logData.value).length === 0) {
+        timer = setTimeout(() => {
+          loading.value = false
+        }, 500)
+      }
+    })
+
+    onMounted(() => {
+      clearTimeout(timer)
+    })
+
+    return { logData, loading }
   }
 })
 </script>
 
 <style lang="less" scoped>
 .error-msg__wrapper {
-  width: 100%;
   padding: 8px;
-  margin: 16px 8px;
+  margin: 16px 15px;
   border-radius: 8px;
   border: 1px solid var(--error-status-border-color);
   background-color: var(--error-status-background);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 
   .msg_title {
     color: #000000cb;
@@ -107,9 +120,11 @@ export default defineComponent({
   }
   .right-box {
     margin-left: 4px;
+    min-width: 60px;
     .msg-description {
       font-size: 1rem;
       white-space: pre-wrap;
+      text-overflow: ellipsis;
       color: var(--error-status-color);
     }
   }
