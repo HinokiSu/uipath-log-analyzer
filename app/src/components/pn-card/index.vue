@@ -51,14 +51,14 @@
 </template>
 
 <script lang="ts">
-import { TPNOfLogState } from '@/interface/log-info'
+import { TProcessLogStats } from '@/interface/process'
 import { computed, defineComponent, PropType, reactive, ref } from 'vue'
 
 export default defineComponent({
   name: 'ProcessNameCard',
   props: {
     pn: {
-      type: Object as PropType<TPNOfLogState>,
+      type: Object as PropType<TProcessLogStats>,
       default: {
         pn: '',
         totalCount: 0,
