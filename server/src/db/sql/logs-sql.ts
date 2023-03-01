@@ -51,18 +51,3 @@ export const countSpecifyLogTimeSql = `SELECT count(*) as total FROM logs WHERE 
 // find latest log in specify date
 export const findLatestLogInSpecifyDate = `SELECT log_time from logs WHERE log_time LIKE ? ORDER BY log_time DESC LIMIT 1`
 
-// group and count by process_name
-export const countByProcessNameSql = `SELECT COUNT(*) as total from (SELECT process_name from logs GROUP BY process_name)`
-
-// group by process_name and count diff log_state 
-export const countLogStateGroupByPN = `SELECT
-process_name AS pn,
-COUNT( * ) AS totalCount,
-SUM( CASE WHEN log_state = 'Info' THEN 1 ELSE 0 END ) AS infoCount,
-SUM( CASE WHEN log_state = 'Error' THEN 1 ELSE 0 END ) AS errorCount,
-SUM( CASE WHEN log_state = 'Trace' THEN 1 ELSE 0 END ) AS traceCount,
-SUM( CASE WHEN log_state = 'Warn' THEN 1 ELSE 0 END ) AS warnCount 
-FROM
-logs 
-GROUP BY
-process_name LIMIT ? OFFSET ?;`
