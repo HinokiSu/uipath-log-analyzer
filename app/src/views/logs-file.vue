@@ -14,8 +14,13 @@
     </div>
     <a-table :dataSource="dataSource" :columns="columns" :pagination="false" :loading="loading">
       <template #bodyCell="{ column, text, record }">
+        <template v-if="column.dataIndex === 'is_parsed'">
+          <div :style="getStyles(record.is_parsed)">
+            {{ record.is_parsed }}
+          </div>
+        </template>
         <template v-if="column.dataIndex === 'operation'">
-          <div class="tb-operation__container" style="display: flex">
+          <div class="tb-operation__container" style="display: flex;align-items: center;">
             <a @click="onViewDetail(record)">View</a>
             <a-popconfirm
               title="是否解析"
@@ -54,6 +59,7 @@ import msg from '@/utils/message'
 import { useRouter } from 'vue-router'
 import { useMenuStore } from '@/stores/menu-store'
 import { TLogsFileInfo } from '@/interface/logs-file'
+import inlineStyles from '@/hooks/inline-styles'
 
 export default defineComponent({
   name: 'LogsFile',
@@ -100,6 +106,30 @@ export default defineComponent({
       })
     }
 
+    const getStyles = (val: string) => {
+      if (val === '是') {
+        return inlineStyles({
+          'text-align': 'center',
+          'padding': '4px 16px',
+          'border-radius': '12px',
+          'color': 'var(--success-status-color)',
+          'background-color': 'var(--success-status-background)',
+          'display': 'inline-flex',
+          'justify-item': 'center'
+        })
+      } else if(val === '否') {
+        return inlineStyles({
+          'text-align': 'center',
+          'padding': '4px 16px',
+          'border-radius': '12px',
+          'color': 'var(--warn-status-color)',
+          'background-color': 'var(--warn-status-background)',
+          'display': 'inline-flex',
+          'justify-item': 'center'
+        })
+      }
+    }
+
     onMounted(() => {
       getDataAndWait()
     })
@@ -114,7 +144,9 @@ export default defineComponent({
 
     // table operations
     const updateLogsFiles = async () => {
+      msg.info('🕛 开始获取...')
       await fetchParseAllLogFileInfo().then(() => {
+        msg.ok('获取最新日志文件信息，完成 🎉')
         getDataAndWait()
       })
     }
@@ -186,7 +218,8 @@ export default defineComponent({
       parseAllLogsFiles,
       confirmOfParseAll,
       cancelOfParseAll,
-      loadingOfParseAll
+      loadingOfParseAll,
+      getStyles
     }
   }
 })
