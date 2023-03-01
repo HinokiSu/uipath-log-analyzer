@@ -60,7 +60,7 @@ export default defineComponent({
         loading.value = false
       })
     }
-    // fomat pick date value, convert string
+    // format pick date value, convert string
     const formatPickDate = () => pickDate.value.format('YYYY-MM-DD')
 
     watchEffect(() => {
