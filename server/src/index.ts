@@ -1,57 +1,41 @@
-// The order imports is important
-// refer to: https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import * as dotenv from 'dotenv'
 dotenv.config()
-import express from 'express'
-import path from 'path'
-import cors from 'cors'
-// router
-import logsFileRouter from './routes/logs-file-route'
-import logsRouter from './routes/logs-route'
-import parseRoute from './routes/parse-route'
-import statsRouter from './routes/stats-route'
-import processRouter from './routes/process-route'
-// config
-import { serverConfig } from './app-config'
 
-declare const process: any
+import { BootstrapWeb } from './bootstrap-web'
+import { BootstrapServer } from './bootstrap-server'
 
 try {
-  const app = express()
-  const clientApp = express()
-
-  // Port
-  const clientPort = serverConfig.CLIENT_PORT
-  const serverPort = serverConfig.SERVER_PORT
-
-  const getDir = () => {
-    if (process.pkg) {
-      return path.join(__dirname, '../dist')
-    } else {
-      return path.join(require.main ? require.main.path : process.cwd())
+  const Bootstrap = async () => {
+    const web = await BootstrapWeb()
+    if (web) {
+      await BootstrapServer()
     }
   }
 
-  clientApp.use(express.static(getDir() + '/public'))
+  Bootstrap()
 
-  clientApp.use('/', (_req, res) => {
-    res.sendFile(getDir() + '/public/index.html')
+  // bootstrap web and server services
+
+  // refer: https://github.com/http-party/http-server/blob/master/bin/http-server#L261
+  if (process.platform === 'win32') {
+    require('readline')
+      .createInterface({
+        input: process.stdin,
+        output: process.stdout
+      })
+      .on('SIGINT', function () {
+        process.emit('SIGINT')
+      })
+  }
+
+  process.on('SIGINT', function () {
+    console.log('[uipath-log-analyzer] stopped.')
+    process.exit()
   })
 
-  app.use(cors())
-  // back-end api routes
-  app.use('/logs', logsRouter)
-  app.use('/file', logsFileRouter)
-  app.use('/stats', statsRouter)
-  app.use('/parse', parseRoute)
-  app.use('/process', processRouter)
-
-  clientApp.listen(clientPort, () => {
-    console.log(`Web Client listening : http://localhost:${clientPort}`)
-  })
-
-  app.listen(serverPort, () => {
-    console.log(`Server listening : http://localhost:${serverPort}`)
+  process.on('SIGTERM', function () {
+    console.log('[uipath-log-analyzer] stopped.')
+    process.exit()
   })
 } catch (error) {
   console.error(error)
