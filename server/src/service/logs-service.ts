@@ -10,8 +10,6 @@ import {
   findLatestLogInSpecifyDate,
   selectAllLogsSql,
   countAllLogsSql,
-  countLogStateGroupByPN,
-  countByProcessNameSql,
   selectRecentlyErrorSpecifyPNSql
 } from '../db/sql/logs-sql'
 import { selectLogsFileInfoById, updateFileLastParseTime } from '../db/sql/logsfile-info-sql'
@@ -78,29 +76,6 @@ const insertLogDataIntoDB = (logData: ILogObj): boolean => {
   return true
 }
 
-/* write json to file. if it is not exist, will created */
-/* const writeToJson = (time: string, jsonData: string) => {
-  const fileWholeName = time + '.json'
-  fs.writeFile(path.join(__dirname, '../../output/' + fileWholeName), jsonData, 'utf8', (err) => {
-    if (err) {
-      console.log('write file error')
-    }
-  })
-} */
-
-/**
- * @returns handle multi file log
- */
-/* const multiFileHandler = () => {
-  let res: ILogObj[] = []
-  for (let i = 0, len = filesObjArr.length; i < 1; i++) {
-    res = logFormatterMain(filesObjArr[i])
-    const resToJson = JSON.stringify(res)
-    writeToJson(filesObjArr[i].time, resToJson)
-  }
-  return res
-} */
-
 const updateFileTime = (id: string) => {
   db.run(updateFileLastParseTime, [nowTime(), id])
 }
@@ -114,7 +89,7 @@ export const doParseLogsBySpecifyFile = (id: string) => {
   const fileRes = db.get(selectLogsFileInfoById, [id]) as TLogFile
   if (!fileRes) {
     return handleFailed({
-      message: `根据UUId获取文件信息失败!`
+      message: `Get file information failed by UUId`
     })
   }
   const formattedLogsArr = logFormatterMain(fileRes)
@@ -134,11 +109,13 @@ export const doParseLogsBySpecifyFile = (id: string) => {
     const res = insertLogDataIntoDB(latestLogsArr[i])
     if (!res) {
       updateFileTime(id)
-      return handleFailed({ message: `当前日志日期: ${fileRes.time}, 日志数据解析&插入DB失败!` })
+      return handleFailed({
+        message: `Parsed and insert DB logs data failed!!! current date: ${fileRes.time},`
+      })
     }
   }
   updateFileTime(id)
-  return handleSuccess({ message: '日志数据解析&插入DB成功' })
+  return handleSuccess({ message: 'Parsed and insert DB logs data successfully' })
 }
 
 /**
@@ -153,7 +130,7 @@ export const getAllLogs = (curPage: string, pageSize: string) => {
   const total = db.query(countAllLogsSql)[0] as { total: number }
 
   return handleSuccess({
-    message: '获取全部日志信息成功',
+    message: 'Get all log information successfully',
     data: {
       ...total,
       list: res
@@ -171,7 +148,7 @@ export const getDataByProcessName = (pn: string, curPage: string, pageSize: stri
   const res = db.query(selectSpecifyProcessNameSql, [pn, pageSize, offset])
   const total = db.query(countSpecifyProcessNameSql, [pn])[0] as { total: number }
   return handleSuccess({
-    message: '根据process name获取Logs信息成功',
+    message: 'GEt log info by process name successfully',
     data: {
       ...total,
       list: res
@@ -191,7 +168,7 @@ export const getLogsSpecifyLogTime = (timeStr: string, pageSize: string, curPage
   const total = db.query(countSpecifyLogTimeSql, [logTime])[0] as { total: number }
 
   return handleSuccess({
-    message: `根据log time获取Logs信息成功`,
+    message: `Get log information by log time successfully`,
     data: {
       ...total,
       list: res
@@ -199,29 +176,15 @@ export const getLogsSpecifyLogTime = (timeStr: string, pageSize: string, curPage
   })
 }
 
-export const getPNCountLogState = (curPage: string, pageSize: string) => {
-  const offset = calcOffset(curPage, pageSize)
-  const res = db.query(countLogStateGroupByPN, [pageSize, offset])
-  const total = db.query(countByProcessNameSql, [])[0] as { total: number }
-
-  return handleSuccess({
-    message: `根据Process name统计不同状态的Logs数量成功`,
-    data: {
-      ...total,
-      list: res
-    }
-  })
-}
-
-export const getLogOfRecentlyErrorByPN = (pn: string) => {
+export const getLogOfRecentlyErrorByProcessName = (pn: string) => {
   if (!pn.length) {
     return handleFailed({
-      message: `根据Process name获取最近的Error日志失败, Process name为空`
+      message: `Get recently logs by process name failed, Process name is empty!!!`
     })
   }
   const res = db.query(selectRecentlyErrorSpecifyPNSql, [pn])
   return handleSuccess({
-    message: `根据Process name获取最近的Error日志成功`,
+    message: `Get recently logs by process name successfully`,
     data: {
       log_data: res[0] || {}
     }

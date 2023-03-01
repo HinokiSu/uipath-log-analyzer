@@ -16,11 +16,11 @@ export const getStatsByLogState = () => {
   const res = db.query(countNumberByLogStateSql)
   if (!res.length) {
     handleFailed({
-      message: `根据log 获取Logs信息失败!`
+      message: `Get logs information failed in statistics`
     })
   }
   return handleSuccess({
-    message: `根据log time获取Logs信息成功`,
+    message: `Get logs information successfully in statistics`,
     data: {
       list: res
     }
@@ -29,18 +29,18 @@ export const getStatsByLogState = () => {
 
 /**
  * obtain recently error logs
- * @param limt number of error logs
+ * @param limit number of error logs
  * @returns error logs array
  */
 export const getLogsOfRecentlyError = (qty: number) => {
   if (qty === 0) {
     return handleFailed({
-      message: `获取最近日志状态为Error的数据失败!`
+      message: `Get recently log state Of error failed in statistics`
     })
   }
   const res = db.query(selectLogsOfRecentlyErrorSql, [qty])
   return handleSuccess({
-    message: `获取最近日志状态为Error的数据成功!`,
+    message: `Get recently log state Of error successfully in statistics!`,
     data: {
       list: res
     }
@@ -54,7 +54,7 @@ export const getLogsOfRecentlyError = (qty: number) => {
 export const getStatsByLogTime = () => {
   const res = db.query(countByLogTimeSql)
   return handleSuccess({
-    message: `根据log time统计log数量成功`,
+    message: `count log number by log time successfully`,
     data: {
       total: res.length,
       list: res
