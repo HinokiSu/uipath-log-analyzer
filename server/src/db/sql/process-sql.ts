@@ -30,7 +30,7 @@ process_name ORDER BY log_time DESC LIMIT ? OFFSET ?;`
  * @param limit
  * @param offset
  */
-export const selectExecuteInfoByProcessName = `SELECT id, log_time, log_state, message, time_stamp,total_execution_time from logs WHERE process_name = ? and (message = ? or message = ?) ORDER BY log_time DESC LIMIT ? OFFSET ?`
+export const selectAllExecInfoByProcessName = `SELECT id, log_time, log_state, message, time_stamp,total_execution_time from logs WHERE process_name = ? and (message = ? or message = ?) ORDER BY log_time DESC LIMIT ? OFFSET ?`
 
 /**
  * count stated or ended execution info total by process name
@@ -38,7 +38,41 @@ export const selectExecuteInfoByProcessName = `SELECT id, log_time, log_state, m
  * @param startedExecutionInfo
  * @param endedExecutionInfo
  */
-export const countExecuteInfoTotalByProcessName = `SELECT COUNT(*) as total from logs WHERE process_name = ? and (message = ? or message = ?)`
+export const countAllExecInfoTotalByProcessName = `SELECT COUNT(*) as total from logs WHERE process_name = ? and (message = ? or message = ?)`
+
+/**
+ * get all execution info by process name and range date
+ * @param process_name
+ * @param log_timeOfStartTime  ex: '2022-11-14 00:00:00.000'
+ * @param log_timeOfEndTime  ex: '2022-11-15 23:59:59.999'
+ * @param startedExecutionInfo
+ * @param endedExecutionInfo
+ * @param limit
+ * @param offset
+ */
+export const selectExecInfoByProcessNameAndRangeDate = `SELECT id, log_time, log_state, message, time_stamp, total_execution_time 
+FROM logs WHERE
+process_name = ?
+AND ( log_time >= ? AND log_time <= ?) 
+AND ( message = ? OR message = ? ) 
+ORDER BY log_time LIMIT ? OFFSET ?;`
+
+
+/**
+ * count all execution info by process name and range date
+ * @param process_name
+ * @param log_timeOfStartTime  ex: '2022-11-14 00:00:00.000'
+ * @param log_timeOfEndTime  ex: '2022-11-15 23:59:59.999'
+ * @param startedExecutionInfo
+ * @param endedExecutionInfo
+ * @param limit
+ * @param offset
+ */
+export const countExecInfoTotalByProcessNameAndRangeDate = `SELECT COUNT(*) as total 
+FROM logs WHERE
+process_name = ?
+AND ( log_time >= ? AND log_time <= ?) 
+AND ( message = ? OR message = ? );`
 
 /**
  * During specify execution time and process, get error or warn info
@@ -57,12 +91,19 @@ export const countTotalExecutionTimesByProcessName = `SELECT COUNT(*) as total F
 
 /**
  * get execution info by specify date and process
- * process_name, log_time ('2022-12-22%'), message Of Started & Ended
+ * @param process_name
+ * @param log_time
+ * @param startedExecutionInfo
+ * @param endedExecutionInfo
  */
 export const selectExecutionInfoBySpecifyDateAndProcessName = `SELECT *  from (SELECT * FROM logs WHERE process_name = ? AND log_time LIKE ?) WHERE  message = ? or message = ? ORDER BY log_time`
 
 /**
- *  get last execution info by process name and start time
- *  process name, log_time, started info , ended info
+ * get last execution info by process name and start time
+ * @param process_name @param log_time
+ * @param startedExecutionInfo
+ * @param endedExecutionInfo
  */
 export const selectLastExecutionInfoByProcessNameAndStartTime = `SELECT id, log_time, log_state, message, time_stamp,total_execution_time FROM logs WHERE process_name = ? and (log_time < ?) AND (message = ? or message = ?) ORDER BY log_time DESC LIMIT 1`
+
+

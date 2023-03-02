@@ -9,23 +9,39 @@ export const fetchExecutionAllInfo = (
   curPage: number,
   pageSize: number
 ): Promise<TBaseResult> =>
-  ApiClient.get(apiURLHandler(apiBasePath, `/execution/info/all`), {
+  ApiClient.get(apiURLHandler(apiBasePath, `/exec/info/all`), {
     pn,
     curpage: curPage,
     pagesize: pageSize
   })
 
+/* only process name, all */
 export const fetchExecutionTimeline = (
   pn: string,
   curPage: number,
   pageSize: number
 ): Promise<TPaginationResult> =>
-  ApiClient.get(apiURLHandler(apiBasePath, `/execution/timeline`), {
+  ApiClient.get(apiURLHandler(apiBasePath, `/exec/timeline`), {
     pn,
     curpage: curPage,
     pagesize: pageSize
   })
 
+/* range date and process name */
+export const fetchExecTimelineByRangeDate = (
+  pn: string,
+  start: string,
+  end: string,
+  curPage: number,
+  pageSize: number
+): Promise<TPaginationResult> =>
+  ApiClient.get(apiURLHandler(apiBasePath, `/exec/timeline/date`), {
+    pn,
+    start,
+    end,
+    curpage: curPage,
+    pagesize: pageSize
+  })
 
 // get all process and it's logs stats
 export const fetchProcessesLogStats = (
@@ -37,6 +53,3 @@ export const fetchProcessesLogStats = (
     pagesize: pageSize
   })
 }
-
-
-

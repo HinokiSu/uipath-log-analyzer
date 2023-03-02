@@ -9,6 +9,10 @@
       <div class="content-time">
         {{ time }}
       </div>
+      <div v-if="state === 1" class="total-execution-time">
+        <span>⏱ Total execution time:</span>
+        {{ totaltime }}
+      </div>
       <div class="content-msg">
         {{ content }}
       </div>
@@ -105,9 +109,15 @@ export default defineComponent({
 
     .content-time {
       font-size: 16px;
-      padding-bottom: 4px;
+    }
+
+    .total-execution-time {
+      font-size: 0.8rem;
+      padding-bottom: 2px;
+
     }
     .content-msg {
+      padding-top: 2px;
     }
   }
 }
