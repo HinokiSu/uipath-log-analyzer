@@ -11,14 +11,11 @@ import parseRoute from './routes/parse-route'
 import statsRouter from './routes/stats-route'
 import processRouter from './routes/process-route'
 // config
-import { serverConfig } from './app-config'
 import { checkPortIsOccupied, killProcessByPid } from './utils/kill-port'
 import * as readline from 'readline'
 
-export function BootstrapServer() {
+export function BootstrapServer(port: string) {
   const app = express()
-
-  const serverPort = serverConfig.SERVER_PORT
 
   app.use(cors())
   // back-end api routes
@@ -29,10 +26,10 @@ export function BootstrapServer() {
   app.use('/process', processRouter)
 
   const startServer = async () => {
-    const res = await checkPortIsOccupied(serverPort)
+    const res = await checkPortIsOccupied(port)
     const start = () =>
-      app.listen(serverPort, () => {
-        console.log(`Server: http://localhost:${serverPort}`)
+      app.listen(port, () => {
+        console.log(`Server: http://localhost:${port}`)
         console.log('Hit CTRL-C to stop the server')
       })
     if (!res) {

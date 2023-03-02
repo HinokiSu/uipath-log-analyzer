@@ -3,18 +3,16 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 import express from 'express'
-import { serverConfig } from './app-config'
 import { checkPortIsOccupied, killProcessByPid } from './utils/kill-port'
 import path from 'path'
 import * as readline from 'readline'
 
 
 declare const process: any
-export function BootstrapWeb() {
+export function BootstrapWeb(port: string) {
   // express
   const clientApp = express()
   // Port
-  const clientPort = serverConfig.CLIENT_PORT
 
   const getDir = () => {
     if (process.pkg) {
@@ -31,10 +29,10 @@ export function BootstrapWeb() {
   })
 
   const startWeb = async () => {
-    const res = await checkPortIsOccupied(clientPort)
+    const res = await checkPortIsOccupied(port)
     const start = () =>
-      clientApp.listen(clientPort, () => {
-        console.log(`Web: http://localhost:${clientPort}`)
+      clientApp.listen(port, () => {
+        console.log(`Web: http://localhost:${port}`)
       })
     if (!res) {
       start()

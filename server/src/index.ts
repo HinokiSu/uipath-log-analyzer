@@ -3,12 +3,16 @@ dotenv.config()
 
 import { BootstrapWeb } from './bootstrap-web'
 import { BootstrapServer } from './bootstrap-server'
+import { serverConfig } from './app-config'
 
 try {
+  const clientPort = serverConfig.CLIENT_PORT
+  const serverPort = serverConfig.SERVER_PORT
+
   const Bootstrap = async () => {
-    const web = await BootstrapWeb()
+    const web = await BootstrapWeb(clientPort)
     if (web) {
-      await BootstrapServer()
+      await BootstrapServer(serverPort)
     }
   }
 
