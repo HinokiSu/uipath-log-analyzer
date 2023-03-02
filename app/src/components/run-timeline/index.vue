@@ -1,7 +1,7 @@
 <template>
   <div class="run-timeline">
-    <a-skeleton :loading="loading" active>
-      <ula-card>
+    <ula-card>
+      <a-skeleton :loading="loading" active>
         <run-timeline-item
           v-for="item in executionInfoList"
           :key="item.id"
@@ -9,14 +9,20 @@
           :state="item.run_state"
           :time="item.log_time"
           :content="item.message"
+          :totaltime="item.total_execution_time"
         />
-        <a-skeleton :loading="showMoreLoading" active v-if="!isAllLoaded">
-          <div class="show-more" >
+        <a-skeleton
+          :loading="showMoreLoading"
+          active
+          v-if="!isAllLoaded && executionInfoList.length"
+        >
+          <div class="show-more">
             <div class="show-more-button" @click="changePage()">More</div>
           </div>
         </a-skeleton>
-      </ula-card>
-    </a-skeleton>
+        <a-empty v-if="!executionInfoList.length" :description="null" />
+      </a-skeleton>
+    </ula-card>
   </div>
 </template>
 
@@ -32,55 +38,27 @@ export default defineComponent({
     RunTimeLineItem,
     UlaCard
   },
-  props: {
-    pn: {
-      type: String,
-      default: ''
-    }
-  },
-  setup(props) {
+  emits: ['load-more'],
+  setup(props, { emit }) {
     const processStore = useProcessStore()
-    const pagination = reactive({
-      curPage: 1,
-      pageSize: 10,
-      total: computed(() => processStore.total)
-    })
-    const loading = ref(true)
+
+    const loading = computed(() => processStore.loading)
     const isAllLoaded = computed(() => processStore.isAllLoaded)
     const showMoreLoading = ref(false)
-    const propsVal = computed(() => props)
     const executionInfoList = computed(() => processStore.executionInfoList)
-    const getDataAndWait = () => {
-      loading.value = true
-      processStore
-        .getExecutionTimeline(propsVal.value.pn, pagination.curPage, pagination.pageSize)
-        .then(() => {
-          loading.value = false
-        })
-    }
 
     // need debounce ,but not work
     const changePage = useDebounce(() => {
-      pagination.curPage += 1
       showMoreLoading.value = true
-      // const timer = setTimeout(() => {
-      processStore
-        .getExecutionTimeline(propsVal.value.pn, pagination.curPage, pagination.pageSize)
-        .then(() => {
-          showMoreLoading.value = false
-        })
+      emit('load-more')
+      showMoreLoading.value = false
     }, 600)
-
-    onMounted(() => {
-      getDataAndWait()
-    })
 
     onUnmounted(() => {
       processStore.clearState()
     })
 
     return {
-      pagination,
       loading,
       executionInfoList,
       changePage,
@@ -108,6 +86,7 @@ export default defineComponent({
       border-radius: 8px;
 
       &:hover {
+        border: 1px solid #888;
       }
     }
   }
