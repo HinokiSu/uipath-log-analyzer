@@ -12,7 +12,7 @@ const processRouter = express.Router()
 
 // root route path: '/process'
 
-processRouter.get('/execution/total', (req: any, res, next) => {
+processRouter.get('/exec/total', (req: any, res, next) => {
   try {
     const pn = req.query?.pn
     res.json(getTotalStartedExecutionTimesByProcessName(pn))
@@ -22,7 +22,7 @@ processRouter.get('/execution/total', (req: any, res, next) => {
   }
 })
 
-processRouter.get('/execution/date', (req: any, res, next) => {
+processRouter.get('/exec/date', (req: any, res, next) => {
   type TExecutionDate = {
     pn: string
     date: string
@@ -36,7 +36,7 @@ processRouter.get('/execution/date', (req: any, res, next) => {
   }
 })
 
-processRouter.get('/execution/timeline', (req: any, res, next) => {
+processRouter.get('/exec/timeline', (req: any, res, next) => {
   try {
     type TQuery = TPaginationQuery & { pn: string }
     const query: TQuery = req.query
@@ -47,7 +47,7 @@ processRouter.get('/execution/timeline', (req: any, res, next) => {
   }
 })
 
-processRouter.get('/execution/timeline/date', (req: any, res, next) => {
+processRouter.get('/exec/timeline/date', (req: any, res, next) => {
   try {
     type TQuery = TPaginationQuery & { pn: string; start: string; end: string }
     const query: TQuery = req.query

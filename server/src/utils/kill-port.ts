@@ -34,9 +34,7 @@ export const findPidByPort = async (port: number) => {
 
 export const killProcessByPid = async (pid: any) => {
   pid = Number.parseInt(pid)
-  if (!pid) {
-    return Promise.reject(new Error('Invalid pid number provided'))
-  }
+  if (!pid) return
   return await sh(`TaskKill /F /PID ${pid}`)
 }
 
@@ -97,10 +95,12 @@ export const checkPortIsOccupied = async (port: any) => {
   // port not exist
   if (!pid) return
   const processInfo = await checkProcessInfoByPid(pid)
+
   if (processInfo && Object.keys(processInfo).length !== 0) {
     console.log(
       `Current Port: [${port}] is used, process information: \n ${JSON.stringify(processInfo)}`
     )
     return pid
   }
+  return
 }
