@@ -1,4 +1,5 @@
-import { formatConfig } from '../app-config'
+import { formatConfig, getConfigFilePath } from '../app-config'
+
 describe('App config', () => {
   it('parse server config', () => {
     const configStr = {
@@ -15,5 +16,15 @@ describe('App config', () => {
     }
     const res = formatConfig(JSON.stringify(configStr))
     expect(res).toMatchObject(exceptedRes)
+  })
+
+  it('config is empty', () => {
+    expect(() => {
+      formatConfig('')
+    }).toThrowError('Error:  Server config file content is null!')
+  })
+
+  it('platform linux', () => {
+    expect(getConfigFilePath('linux')).toContain('/server.config.json')
   })
 })

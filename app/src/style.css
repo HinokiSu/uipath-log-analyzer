@@ -19,6 +19,11 @@
   --menu-background-color: #001529;
 
   /* status */
+  /* success */
+  --success-status-color: #096dd9;
+  --success-status-background:#e6f7ff;
+  --success-status-border-color:  #91d5ff;
+
   /* info */
   --info-status-color: #389e0d;
   --info-status-background: #f6ffed;

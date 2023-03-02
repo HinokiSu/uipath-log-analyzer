@@ -1,0 +1,23 @@
+{
+    "cSpell.ignoreWords": [
+        "Hinoki",
+        "IMAGENAME",
+        "MEMUSAGE",
+        "SESSIONNAME",
+        "UIPATH",
+        "copyfiles",
+        "curpage",
+        "findstr",
+        "logsfile",
+        "logtime",
+        "pagin",
+        "pids",
+        "pinia",
+        "popconfirm",
+        "portfinder",
+        "uuidv"
+    ],
+    "cSpell.words": [
+        "totaltime"
+    ]
+}

@@ -1,5 +1,5 @@
 <template>
-  <div class="logs-pn_wrapper">
+  <div class="processes_wrapper">
     <a-list
       :grid="{ gutter: 12, xs: 1, sm: 1, md: 1, lg: 2, xl: 3, xxl: 3, xxxl: 4 }"
       :data-source="dataSource"
@@ -29,7 +29,7 @@
     </a-list>
 
     <a-pagination
-      class="pagin-container"
+      class="pagination-container"
       v-model:current="pagination.curPage"
       :total="pagination.total"
       @change="changeCurrentPage"
@@ -48,35 +48,31 @@
 import { useLogsStore } from '@/stores/logs-store'
 import { computed, defineComponent, onMounted, onUnmounted, reactive, ref } from 'vue'
 import PnCard from '@components/pn-card/index.vue'
-import { useRouter } from 'vue-router'
+import { useProcessStore } from '@/stores/process-store'
 export default defineComponent({
-  name: 'LogsProcessName',
+  name: 'Processes',
   components: {
     PnCard
   },
   setup() {
     const logsStore = useLogsStore()
-    const router = useRouter()
+    const processStore = useProcessStore()
     const pagination = reactive({
       curPage: 1,
       pageSize: 10,
-      total: computed(() => logsStore.total)
+      total: computed(() => processStore.total)
     })
     const loading = ref(false)
-    const dataSource = computed(() => logsStore.pnList)
+    const dataSource = computed(() => processStore.processes)
 
     const getDataAndWait = () => {
       loading.value = true
-      logsStore.getAllPNStats(pagination.pageSize, pagination.curPage).then(() => {
+      processStore.getAllProcessLogStats(pagination.pageSize, pagination.curPage).then(() => {
         loading.value = false
       })
     }
     onMounted(() => {
       getDataAndWait()
-    })
-
-    onUnmounted(() => {
-      logsStore.clearState()
     })
 
     const changeCurrentPage = () => {
@@ -94,8 +90,8 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-.logs-pn_wrapper {
-  .pagin-container {
+.processes_wrapper {
+  .pagination-container {
     width: 100%;
     margin-top: 30px;
     margin-bottom: 20px;

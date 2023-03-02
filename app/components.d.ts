@@ -22,6 +22,7 @@ declare module '@vue/runtime-core' {
     AStatistic: typeof import('ant-design-vue/es')['Statistic']
     ASubMenu: typeof import('ant-design-vue/es')['SubMenu']
     ATable: typeof import('ant-design-vue/es')['Table']
+    Card: typeof import('./src/components/card/card.vue')['default']
     Clock: typeof import('./src/components/clock/index.vue')['default']
     LogErrorMsg: typeof import('./src/components/log-message/log-error-msg.vue')['default']
     LogState: typeof import('./src/components/logs-info/log-state.vue')['default']
@@ -33,7 +34,9 @@ declare module '@vue/runtime-core' {
     RecentlyErrCard: typeof import('./src/components/recently-err-card/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    RunTimeline: typeof import('./src/components/run-timeline/index.vue')['default']
+    RunTimelineItem: typeof import('./src/components/run-timeline/run-timeline-item.vue')['default']
+    RunTlItemIcon: typeof import('./src/components/run-timeline/run-tl-item-icon.vue')['default']
     StateIcon: typeof import('./src/components/logs-info/state-icon.vue')['default']
-    Timeline: typeof import('./src/components/timeline/index.vue')['default']
   }
 }

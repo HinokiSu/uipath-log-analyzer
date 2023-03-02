@@ -21,12 +21,3 @@ export type TLogInfo = {
   organization_unit_id: string
 }
 
-
-export type TPNOfLogState = {
-  pn: string
-  totalCount: number
-  infoCount: number
-  errorCount: number
-  traceCount: number
-  warnCount: number
-}

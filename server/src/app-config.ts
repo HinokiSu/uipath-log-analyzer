@@ -22,8 +22,7 @@ export const formatConfig = (configStr: string) => {
     SERVER_PORT: string
   }
   if (configStr === '') {
-    console.error('Error:  Server config file content is null!')
-    process.exit(-1)
+    throw new Error('Error:  Server config file content is null!')
   }
   const serverConfigObj: TServerConfig = JSON.parse(configStr)
   return serverConfigObj

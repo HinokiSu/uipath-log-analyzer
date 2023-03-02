@@ -1,104 +1,131 @@
 import db from '../db'
 import {
-  countExcuteInfoTotalByProcessName,
-  countTotalExcutionTimeByProcessName,
-  selectErrorOrWarnDuringExcutionByProcessName,
-  selectExcuteInfoByProcessName,
-  selectExcutionInfoBySpecifyDateAndProcessName
+  countByProcessNameSql,
+  countLogStateGroupByPN,
+  countTotalExecutionTimesByProcessName,
+  selectExecutionInfoBySpecifyDateAndProcessName
 } from '../db/sql/process-sql'
+import { handleExecutionInfo } from './common/execution-info-handler'
 import { calcOffset } from './common/pagin-handler'
 import { handleSuccess } from './common/result-handler'
+import {
+  getAllExecutionInfoByPN,
+  getErrorOrWarnDuringExecutionByProcessName,
+  getLastExecutionInfoByProcessNameAndStartTime,
+  sortArrByLogTime
+} from './run-timeline-service'
 
-export type TExcuteInfo = {
+export type TExecuteInfo = {
   id: string
   log_time: string
   log_state: string
   message: string
   time_stamp: string
   total_execution_time: string
+  /* 0: execute started, 1: execute ended, -1: others */
+  run_state: number
 }
 
-/**
- * handle excution info of process
- * @param processName string
- * @param type boolean, default: true, excution started info
- * @returns handled excution info
- */
-const handleExcutionInfo = (processName: string, type = true): string => {
-  if (type) {
-    return processName + ' execution started'
-  } else {
-    return processName + ' execution ended'
-  }
-}
-
-export const getAllExcutionInfoByPN = (processName: string, curPage: string, pageSize: string) => {
-  const offsetPage = calcOffset(curPage, pageSize)
-  // id, log_time, log_state, message, time_stamp,total_execution_time
-  const res = db.query(selectExcuteInfoByProcessName, [
+export const getTotalStartedExecutionTimesByProcessName = (processName: string) => {
+  const totalRes = db.query(countTotalExecutionTimesByProcessName, [
     processName,
-    handleExcutionInfo(processName),
-    handleExcutionInfo(processName, false),
-    pageSize,
-    offsetPage
-  ])
-  const totalRes = db.query(countExcuteInfoTotalByProcessName, [
-    processName,
-    handleExcutionInfo(processName),
-    handleExcutionInfo(processName, false)
+    handleExecutionInfo(processName)
   ])[0] as { total: number }
-  handleSuccess({
-    message: '根据ProcessName, 获取执行信息成功',
-    data: {
-      ...totalRes,
-      list: res.reverse
-    }
-  })
-}
-
-export const getErrorOrWarnDuringExcutionByProcessName = (
-  processName: string,
-  startTime: string,
-  endTime: string
-) => {
-  const res = db.query(selectErrorOrWarnDuringExcutionByProcessName, [
-    processName,
-    startTime,
-    endTime
-  ])
-
-  handleSuccess({
-    message: '根据ProcessName及执行的起始日期, 获取Error 或 Warn信息成功',
-    data: {
-      list: res
-    }
-  })
-}
-
-export const getTotalExcutionTimesByProcessName = (processName: string) => {
-  const totalRes = db.query(countTotalExcutionTimeByProcessName, [
-    processName,
-    handleExcutionInfo(processName)
-  ])[0] as { total: number }
-  handleSuccess({
-    message: '根据ProcessName, 获取总执行次数成功',
+  return handleSuccess({
+    message: 'Get the total number of executions successfully by ProcessName, ',
     data: {
       ...totalRes
     }
   })
 }
 
-export const getExcutionInfoBySpecifyTimeAndProcessName = (processName: string, date: string) => {
+export const getExecutionInfoBySpecifyTimeAndProcessName = (processName: string, date: string) => {
+  // Features: Maybe it will be executed many times a day
   const specifyDate = date.concat('%')
-  const res = db.query(selectExcutionInfoBySpecifyDateAndProcessName, [
+  const res = db.query(selectExecutionInfoBySpecifyDateAndProcessName, [
     processName,
     specifyDate,
-    handleExcutionInfo(processName),
-    handleExcutionInfo(processName, false)
+    handleExecutionInfo(processName),
+    handleExecutionInfo(processName, false)
   ])
-  handleSuccess({
-    message: '根据指定日期和ProcessName,获取执行信息成功',
+  return handleSuccess({
+    message:
+      'Get execution information is obtained successfully by the specified date and ProcessName, ',
     data: {
+      list: res
+    }
+  })
+}
+
+export const getExecutionInfoAndErrorByProcessName = (
+  processName: string,
+  curPage: string,
+  pageSize: string
+) => {
+  const { total, data: allExecutionInfoArr } = getAllExecutionInfoByPN(
+    processName,
+    curPage,
+    pageSize
+  )
+  if (allExecutionInfoArr.length === 0)
+    return handleSuccess({
+      message: 'Get execution info and error during execution, successfully',
+      data: {
+        total: 0,
+        list: []
+      }
+    })
+
+  let tidyArr = allExecutionInfoArr
+  for (let i = 0, len = allExecutionInfoArr.length; i < len; i++) {
+    const endedTime = allExecutionInfoArr[i].log_time
+    let startedTime: string
+    if (i !== len - 1) {
+      startedTime = allExecutionInfoArr[i + 1].log_time
+    } else {
+      const time = allExecutionInfoArr[len - 1].log_time
+      const lastExecutionInfo = getLastExecutionInfoByProcessNameAndStartTime(processName, time)
+      if (lastExecutionInfo.length === 0) {
+        break
+      }
+      startedTime = lastExecutionInfo[0].log_time
+    }
+    const errorInfoArr = getErrorOrWarnDuringExecutionByProcessName(
+      processName,
+      startedTime,
+      endedTime
+    )
+    if (errorInfoArr.length !== 0) {
+      errorInfoArr.map((_t: TExecuteInfo) => {
+        _t.run_state = -1
+        return _t
+      })
+      // push all error info during execution to tidyArr
+      errorInfoArr.forEach((item) => {
+        tidyArr.push(item)
+      })
+    }
+  }
+  // sort tidy arr by log_time, ascending order(old -> now)
+  tidyArr = sortArrByLogTime(tidyArr)
+  return handleSuccess({
+    message: 'Get execution info and error during execution, successfully',
+    data: {
+      ...total,
+      list: tidyArr
+    }
+  })
+}
+
+export const getProcessesLogStats = (curPage: string, pageSize: string) => {
+  const offset = calcOffset(curPage, pageSize)
+  const res = db.query(countLogStateGroupByPN, [pageSize, offset])
+  const total = db.query(countByProcessNameSql, [])[0] as { total: number }
+
+  return handleSuccess({
+    message: `According Process name, get stats of diff state logs number, successfully`,
+    data: {
+      ...total,
       list: res
     }
   })

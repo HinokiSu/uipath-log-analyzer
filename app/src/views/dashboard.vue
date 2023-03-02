@@ -1,32 +1,32 @@
 <template>
   <div class="dashboard__wrapper">
     <recently-error-card></recently-error-card>
-    <a-card class="custom-card log-state_card__wrapper" title="日志状态" :bordered="false">
+    <ula-card class="log-state_card__wrapper" title="日志状态" :bordered="false">
       <log-state-chart></log-state-chart>
-    </a-card>
+    </ula-card>
 
-    <a-card class="custom-card log-time_card__warpper" title="时间&日志状态" :bordered="false">
+    <ula-card class="log-time_card__wrapper" title="时间&日志状态" :bordered="false">
       <log-time-chart></log-time-chart>
-    </a-card>
+    </ula-card>
   </div>
 </template>
 
 <script lang="ts">
-import { useStatsStore } from '@/stores/stats-store'
 import { defineComponent } from 'vue'
 import LogTimeChart from '@components/charts/log-time-stats/log-time-chart.vue'
 import LogStateChart from '@components/charts/log-state-stats/log-state-chart.vue'
 import RecentlyErrorCard from '@components/recently-err-card/index.vue'
+import UlaCard from '@components/card/card.vue'
+
 export default defineComponent({
   name: 'Dashboard',
   components: {
     LogTimeChart,
     LogStateChart,
-    RecentlyErrorCard
+    RecentlyErrorCard,
+    UlaCard
   },
   setup() {
-    const statsStore = useStatsStore()
-
     return {}
   }
 })
@@ -47,18 +47,7 @@ export default defineComponent({
     grid-template-columns: 1fr;
   }
 
-  .custom-card {
-    background-color: rgb(255, 255, 255);
-    color: rgba(0, 0, 0, 0.87);
-    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-    overflow: hidden;
-    border-radius: 20px;
-    padding: 14px;
-    margin: 15px;
-    box-shadow: rgba(90, 114, 123, 0.11) 0px 7px 30px 0px;
-  }
-
-  .log-time_card__warpper {
+  .log-time_card__wrapper {
     width: 100%;
     min-width: 400px;
     overflow: auto;

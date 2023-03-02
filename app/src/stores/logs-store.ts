@@ -1,17 +1,15 @@
 import {
   fetchAllLogsToList,
   fetchListByLogTime,
-  fetchListByProcessName,
-  fetchPNCountLogState,
-  fetchRecentlyErrorByPN
+  fetchLogsByProcessName,
+  fetchRecentlyErrorByProcessName
 } from '@/api/logs-api'
-import { TLogInfo, TPNOfLogState } from '@/interface/log-info'
+import { TLogInfo } from '@/interface/log-info'
 import { defineStore } from 'pinia'
 
 type State = {
   total: number
   logsList: TLogInfo[]
-  pnList: TPNOfLogState[]
   logData: TLogInfo
 }
 const initLogData = {
@@ -41,7 +39,6 @@ export const useLogsStore = defineStore('logsStore', {
   state: (): State => ({
     total: 0,
     logsList: [],
-    pnList: [],
     logData: initLogData
   }),
   getters: {},
@@ -62,18 +59,13 @@ export const useLogsStore = defineStore('logsStore', {
       this.total = res.data.total
       this.logsList = res.data.list
     },
-    async getLogsListByProcessName(pn: string, pageSize: number, curPage: number) {
-      const res = await fetchListByProcessName(pn, pageSize, curPage)
+    async getLogsByProcessName(pn: string, curPage: number, pageSize: number) {
+      const res = await fetchLogsByProcessName(pn, curPage, pageSize)
       this.logsList = res.data.list
       this.total = res.data.total
     },
-    async getAllPNStats(pageSize: number, curPage: number) {
-      const res = await fetchPNCountLogState(curPage, pageSize)
-      this.pnList = res.data.list
-      this.total = res.data.total
-    },
-    async getLogOfRecentlyErrByPN(pn: string) {
-      const res = await fetchRecentlyErrorByPN(pn)
+    async getRecentlyErrorByProcessName(pn: string) {
+      const res = await fetchRecentlyErrorByProcessName(pn)
       this.logData = res.data.log_data
     }
   }

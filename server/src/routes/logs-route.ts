@@ -3,11 +3,10 @@ import {
   getDataByProcessName,
   getLogsSpecifyLogTime,
   getAllLogs,
-  getPNCountLogState,
-  getLogOfRecentlyErrorByPN
+  getLogOfRecentlyErrorByProcessName
 } from '../service/logs-service'
 import express from 'express'
-import { TPaginQuery } from './types'
+import { TPaginationQuery } from './types'
 
 // root route path: '/logs'
 const logsRouter = express.Router()
@@ -19,7 +18,7 @@ logsRouter.get('/', (req: any, res, next) => {
       res.json(doParseLogsBySpecifyFile(fileName))
     } else {
       res.json({
-        messgae: 'log文件名称参数为空',
+        message: 'log文件名称参数为空',
         status: 0
       })
     }
@@ -31,7 +30,7 @@ logsRouter.get('/', (req: any, res, next) => {
 
 logsRouter.get('/all', (req: any, res, next) => {
   try {
-    const query: TPaginQuery = req.query
+    const query: TPaginationQuery = req.query
     if (!query.curpage) {
       res.json({
         message: '分页查询参数不能为空',
@@ -45,10 +44,10 @@ logsRouter.get('/all', (req: any, res, next) => {
   }
 })
 
-// process name
-logsRouter.get('/pn', (req: any, res, next) => {
+// get logs by process name
+logsRouter.get('/pn/all', (req: any, res, next) => {
   try {
-    type TQuery = TPaginQuery & { pn: string }
+    type TQuery = TPaginationQuery & { pn: string }
     const query: TQuery = req.query
     if (query.pn.length) {
       res.json(getDataByProcessName(query.pn, query.pagesize, query.curpage))
@@ -64,31 +63,20 @@ logsRouter.get('/pn', (req: any, res, next) => {
   }
 })
 
-logsRouter.get('/pn/stats', (req: any, res, next) => {
-  try {
-    const query: TPaginQuery = req.query
-    res.json(getPNCountLogState(query.curpage, query.pagesize))
-  } catch (err: any) {
-    console.error(`Error while getting logs `, err.message)
-    next(err)
-  }
-})
-
 logsRouter.get('/pn/recent/error', (req: any, res, next) => {
   try {
     const pn = (req.query.pn as string) || ''
-    return res.json(getLogOfRecentlyErrorByPN(pn))
+    return res.json(getLogOfRecentlyErrorByProcessName(pn))
   } catch (err: any) {
     console.error(`Error while getting logs `, err.message)
     next(err)
   }
 })
-
 
 logsRouter.get('/logtime', (req: any, res, next) => {
   try {
     const query: TQuery = req.query
-    type TQuery = TPaginQuery & { logtime: string }
+    type TQuery = TPaginationQuery & { logtime: string }
     if (!query.logtime) {
       res.json({
         message: 'log time参数不能为空',

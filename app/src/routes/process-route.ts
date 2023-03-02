@@ -3,12 +3,12 @@ import { RouteRecordRaw } from 'vue-router'
 export const processRoutes: RouteRecordRaw[] = [
   {
     path: '/process',
-    name: 'process',
-    component: () => import('@views/logs-info/logs-pn.vue')
+    name: 'Processes',
+    component: () => import('@views/process/processes.vue')
   },
   {
     path: '/process/detail/:pn',
     name: 'ProcessDetail',
-    component: () => import('@views/logs-info/logs-pn-detail.vue')
+    component: () => import('@views/process/process-detail.vue')
   }
 ]

@@ -27,3 +27,6 @@ dist-ssr
 
 # visualizer
 stats.html
+
+# coverage
+coverage

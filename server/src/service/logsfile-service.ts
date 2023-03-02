@@ -40,7 +40,7 @@ const insertSingleFileInfoToDB = (fileObj: IFileInfoObj): boolean => {
         return false
       }
     } catch (err) {
-      throw 'Error: add log file info faild, errInfo: ' + err
+      throw 'Error: add log file info failed, errInfo: ' + err
     }
     return true
   }
@@ -60,12 +60,12 @@ export const doParseAllLogsFileInfo = () => {
     const _res = insertSingleFileInfoToDB(filesObjArr[i])
     if (!_res) {
       return handleFailed({
-        message: '日志文件信息解析&写入DB失败!'
+        message: 'Parsed log file information and write database failed!!!'
       })
     }
   }
   return handleSuccess({
-    message: '日志文件信息解析&写入DB成功'
+    message: 'Parsed log file information and write database successfully'
   })
 }
 
@@ -81,7 +81,7 @@ export const getLogsFileDataByPagination = (curPage: string, pageSize: string) =
   const total = db.query(selectCountLogsFileInfoSql)[0]
 
   return handleSuccess({
-    message: '分页获取日志文件信息成功',
+    message: 'Get log file information by pagination successfully',
     data: {
       ...total,
       list: res
@@ -98,12 +98,12 @@ export const getTotalOfLogsFile = () => {
 
   if (!res.length) {
     return handleFailed({
-      message: '获取日志文件总数失败!'
+      message: 'Get log file total failed!!!'
     })
   }
   const total = res[0] as { total: string }
   return handleSuccess({
-    message: '获取日志文件总数成功',
+    message: 'Get log file total successfully',
     data: {
       ...total
     }
@@ -119,11 +119,11 @@ export const getLogsFileDataById = (id: string) => {
   const res = db.query(selectLogsFileInfoById, [id])
   if (!res.length) {
     return handleFailed({
-      message: '根据Id获取日志文件信息失败!'
+      message: 'Get log file information failed by id'
     })
   }
   return handleSuccess({
-    message: '根据Id获取日志文件信息成功',
+    message: 'Get log ile information by id successfully',
     data: {
       list: res
     }
@@ -133,24 +133,16 @@ export const getLogsFileDataById = (id: string) => {
 export const doParseAllLogsByAllLogsFile = () => {
   // get all log file info id
   const allIdRes = db.query(selectAllIdLogsFile)
-  if (allIdRes.length === 0) {
-    return handleSuccess({
-      message: '获取所有日志信息的id,数组为空,解析完成',
-      data: {
-        list: []
-      }
-    })
-  }
-  // arr no 0
+
   for (const item of allIdRes) {
     const res = doParseLogsBySpecifyFile(item.id)
     if (res.status !== 200) {
       return handleFailed({
-        message: `解析全部日志文件,出现异常!当前日志文件id值为: ${item.id}`
+        message: `Parsed all log files failed, current log file UUId: ${item.id}`
       })
     }
   }
   return handleSuccess({
-    message: `解析全部日志文件,已完成.`
+    message: `Parsed all log files is done, successfully.`
   })
 }
