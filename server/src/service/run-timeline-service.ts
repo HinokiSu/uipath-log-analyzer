@@ -3,7 +3,8 @@ import {
   selectAllExecInfoByProcessName,
   selectLastExecutionInfoByProcessNameAndStartTime,
   countExecInfoTotalByProcessNameAndRangeDate,
-  selectExecInfoByProcessNameAndRangeDate
+  selectExecInfoByProcessNameAndRangeDate,
+  countAllExecInfoTotalByProcessName
 } from '../db/sql/process-sql'
 import db from '../db'
 import { calcOffset } from './common/pagin-handler'
@@ -24,7 +25,9 @@ const getRunState = (origin: any[]) =>
     return _t
   })
 
-// according to process name, get all execution info
+/*
+ * Only process name
+ */
 export const getAllExecutionInfoByProcessName = (
   processName: string,
   curPage: string,
@@ -40,7 +43,7 @@ export const getAllExecutionInfoByProcessName = (
     pageSize,
     offsetPage
   ])
-  const totalRes = db.query(countExecInfoTotalByProcessNameAndRangeDate, [
+  const totalRes = db.query(countAllExecInfoTotalByProcessName, [
     processName,
     handleExecutionInfo(processName),
     handleExecutionInfo(processName, false)
@@ -57,7 +60,9 @@ export const getAllExecutionInfoByProcessName = (
 
 const rangeDateFormatter = (date: string, isStart = true) =>
   isStart ? date.concat(' 00:00:00.000') : date.concat(' 23:59:59.999')
-// according to process name and range date, get execution info
+/*
+ * Range Date and process name
+ */
 export const getExecInfoByProcessNameAndRangeDate = (
   pn: string,
   startDate: string,
