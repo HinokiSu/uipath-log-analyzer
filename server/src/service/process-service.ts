@@ -9,8 +9,9 @@ import { handleExecutionInfo } from './common/execution-info-handler'
 import { calcOffset } from './common/pagin-handler'
 import { handleSuccess } from './common/result-handler'
 import {
-  getAllExecutionInfoByPN,
+  getAllExecutionInfoByProcessName,
   getErrorOrWarnDuringExecutionByProcessName,
+  getExecInfoByProcessNameAndRangeDate,
   getLastExecutionInfoByProcessNameAndStartTime,
   sortArrByLogTime
 } from './run-timeline-service'
@@ -57,44 +58,22 @@ export const getExecutionInfoBySpecifyTimeAndProcessName = (processName: string,
   })
 }
 
-export const getExecutionInfoAndErrorByProcessName = (
-  processName: string,
-  curPage: string,
-  pageSize: string
-) => {
-  const { total, data: allExecutionInfoArr } = getAllExecutionInfoByPN(
-    processName,
-    curPage,
-    pageSize
-  )
-  if (allExecutionInfoArr.length === 0)
-    return handleSuccess({
-      message: 'Get execution info and error during execution, successfully',
-      data: {
-        total: 0,
-        list: []
-      }
-    })
-
-  let tidyArr = allExecutionInfoArr
-  for (let i = 0, len = allExecutionInfoArr.length; i < len; i++) {
-    const endedTime = allExecutionInfoArr[i].log_time
+const timelineHandler = (pn: string, execInfoArr: Array<TExecuteInfo>) => {
+  let tidyArr = execInfoArr
+  for (let i = 0, len = execInfoArr.length; i < len; i++) {
+    const endedTime = execInfoArr[i].log_time
     let startedTime: string
     if (i !== len - 1) {
-      startedTime = allExecutionInfoArr[i + 1].log_time
+      startedTime = execInfoArr[i + 1].log_time
     } else {
-      const time = allExecutionInfoArr[len - 1].log_time
-      const lastExecutionInfo = getLastExecutionInfoByProcessNameAndStartTime(processName, time)
+      const time = execInfoArr[len - 1].log_time
+      const lastExecutionInfo = getLastExecutionInfoByProcessNameAndStartTime(pn, time)
       if (lastExecutionInfo.length === 0) {
         break
       }
       startedTime = lastExecutionInfo[0].log_time
     }
-    const errorInfoArr = getErrorOrWarnDuringExecutionByProcessName(
-      processName,
-      startedTime,
-      endedTime
-    )
+    const errorInfoArr = getErrorOrWarnDuringExecutionByProcessName(pn, startedTime, endedTime)
     if (errorInfoArr.length !== 0) {
       errorInfoArr.map((_t: TExecuteInfo) => {
         _t.run_state = -1
@@ -108,20 +87,65 @@ export const getExecutionInfoAndErrorByProcessName = (
   }
   // sort tidy arr by log_time, ascending order(old -> now)
   tidyArr = sortArrByLogTime(tidyArr)
+  return tidyArr
+}
+
+export const getTimelineByProcessName = (
+  processName: string,
+  curPage: string,
+  pageSize: string
+) => {
+  const { total, data: allExecutionInfoArr } = getAllExecutionInfoByProcessName(
+    processName,
+    curPage,
+    pageSize
+  )
+  if (allExecutionInfoArr.length === 0)
+    return handleSuccess({
+      message: 'Get execution info and error during execution, successfully',
+      data: {
+        total: 0,
+        list: []
+      }
+    })
+  const tl = timelineHandler(processName, allExecutionInfoArr)
   return handleSuccess({
     message: 'Get execution info and error during execution, successfully',
     data: {
       ...total,
-      list: tidyArr
+      list: tl
     }
   })
 }
 
+export const getTimelineBySpecifyProcessNameAndRangeDate = (
+  pn: string,
+  startDate: string,
+  endDate: string,
+  curPage: string,
+  pageSize: string
+) => {
+  const { total, data: execInfoArr } = getExecInfoByProcessNameAndRangeDate(
+    pn,
+    startDate,
+    endDate,
+    curPage,
+    pageSize
+  )
+
+  const tl = timelineHandler(pn, execInfoArr)
+  return handleSuccess({
+    message: 'Get execution info and error during execution, successfully',
+    data: {
+      ...total,
+      list: tl
+    }
+  })
+}
 export const getProcessesLogStats = (curPage: string, pageSize: string) => {
   const offset = calcOffset(curPage, pageSize)
   const res = db.query(countLogStateGroupByPN, [pageSize, offset])
   const total = db.query(countByProcessNameSql, [])[0] as { total: number }
-
   return handleSuccess({
     message: `According Process name, get stats of diff state logs number, successfully`,
     data: {

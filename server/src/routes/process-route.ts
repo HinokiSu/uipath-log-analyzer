@@ -1,9 +1,10 @@
 import express from 'express'
 import {
-  getExecutionInfoAndErrorByProcessName,
+  getTimelineByProcessName,
   getExecutionInfoBySpecifyTimeAndProcessName,
   getProcessesLogStats,
-  getTotalStartedExecutionTimesByProcessName
+  getTotalStartedExecutionTimesByProcessName,
+  getTimelineBySpecifyProcessNameAndRangeDate
 } from '../service/process-service'
 import { TPaginationQuery } from './types'
 
@@ -39,7 +40,26 @@ processRouter.get('/execution/timeline', (req: any, res, next) => {
   try {
     type TQuery = TPaginationQuery & { pn: string }
     const query: TQuery = req.query
-    res.json(getExecutionInfoAndErrorByProcessName(query.pn, query.curpage, query.pagesize))
+    res.json(getTimelineByProcessName(query.pn, query.curpage, query.pagesize))
+  } catch (err: any) {
+    console.error(`Error: Process Service `, err.message)
+    next(err)
+  }
+})
+
+processRouter.get('/execution/timeline/date', (req: any, res, next) => {
+  try {
+    type TQuery = TPaginationQuery & { pn: string; start: string; end: string }
+    const query: TQuery = req.query
+    res.json(
+      getTimelineBySpecifyProcessNameAndRangeDate(
+        query.pn,
+        query.start,
+        query.end,
+        query.curpage,
+        query.pagesize
+      )
+    )
   } catch (err: any) {
     console.error(`Error: Process Service `, err.message)
     next(err)
