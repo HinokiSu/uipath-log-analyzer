@@ -4,6 +4,6 @@ export const logsFileRoutes: RouteRecordRaw[] = [
   {
     path: '/files',
     name: 'files',
-    component: () => import('@views/logs-file.vue')
+    component: () => import('@views/logs-file/logs-file.vue')
   }
 ]
