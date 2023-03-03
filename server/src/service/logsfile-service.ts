@@ -5,6 +5,7 @@ import {
   insertLogsFileInfoSql,
   selectAllIdLogsFile,
   selectCountLogsFileInfoSql,
+  selectLogsFileIdByRangeDate,
   selectLogsFileInfoById,
   selectLogsFileInfoByPaginationSql,
   selectLogsFileInfoSql
@@ -130,6 +131,29 @@ export const getLogsFileDataById = (id: string) => {
   })
 }
 
+/*
+ * According to range date, do parse log file log
+ */
+export const doParseLogsFileByRangeDate = (startDate: string, endDate: string) => {
+  const idRes = db.query(selectLogsFileIdByRangeDate, [startDate, endDate])
+
+  // loop parse logs
+  for (const _t of idRes) {
+    const res = doParseLogsBySpecifyFile(_t.id)
+    if (res.status !== 200) {
+      return handleFailed({
+        message: `Parsed log files by range date failed, current log file UUId: ${_t.id}`
+      })
+    }
+  }
+  return handleSuccess({
+    message: `Parsed log files by range date successfully`
+  })
+}
+
+/*
+ * do parse all log file log
+ */
 export const doParseAllLogsByAllLogsFile = () => {
   // get all log file info id
   const allIdRes = db.query(selectAllIdLogsFile)
