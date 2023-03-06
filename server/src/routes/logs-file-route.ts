@@ -1,6 +1,5 @@
 import {
   doParseAllLogsFileInfo,
-  doParseLogsFileByRangeDate,
   getLogsFileDataByPagination,
   getTotalOfLogsFile
 } from '../service/logsfile-service'
@@ -13,19 +12,6 @@ const logsFileRouter = express.Router()
 logsFileRouter.get('/parse', (req, res, next) => {
   try {
     res.json(doParseAllLogsFileInfo())
-  } catch (err: any) {
-    console.error(`Error while getting logs file info`, err.message)
-    next(err)
-  }
-})
-
-logsFileRouter.get('/parse/date', (req: any, res, next) => {
-  try {
-    const query: {
-      start: string
-      end: string
-    } = req.query
-    res.json(doParseLogsFileByRangeDate(query.start, query.end))
   } catch (err: any) {
     console.error(`Error while getting logs file info`, err.message)
     next(err)
