@@ -84,29 +84,20 @@ export default defineComponent({
 
     // use pick date, timeline
     const queryDate = async () => {
-      // check
-      if (!rangeDate.value?.length) {
-        msg.warn('未选择指定日期')
-      } else {
-        // reinit
-        isUsePickDate.value = true
-        pagination.curPage = 1
-        processStore.clearState()
-        processStore.loading = true
+      // reinit
+      isUsePickDate.value = true
+      pagination.curPage = 1
+      processStore.clearState()
+      processStore.loading = true
 
-        await getTimelineDataByRangeDate().then(() => {
-          processStore.loading = false
-        })
-      }
+      await getTimelineDataByRangeDate().then(() => {
+        processStore.loading = false
+      })
     }
 
     const loadMoreTimeline = async () => {
       if (isUsePickDate.value) {
-        if (!rangeDate.value?.length) {
-          msg.warn('未选择指定日期')
-        } else {
-          await getTimelineDataByRangeDate()
-        }
+        await getTimelineDataByRangeDate()
       } else {
         pagination.curPage = pagination.curPage + 1
         await processStore.getExecutionTimeline(pn.value, pagination.curPage, pagination.pageSize)
@@ -151,7 +142,6 @@ export default defineComponent({
     .run-timeline__content {
       .pick-date {
         padding-left: 18px;
-        
       }
     }
   }
