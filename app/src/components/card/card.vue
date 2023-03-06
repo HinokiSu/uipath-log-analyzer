@@ -17,6 +17,10 @@ export default defineComponent({
     radius: {
       type: String,
       default: '20px'
+    },
+    'inner-pad': {
+      type: String,
+      default: '14px'
     }
   },
   setup(props) {
@@ -24,7 +28,8 @@ export default defineComponent({
     const propsVal = computed(() => props)
 
     styles.value = inlineStyles({
-      'border-radius': propsVal.value.radius
+      'border-radius': propsVal.value.radius,
+      'padding': propsVal.value['inner-pad']
     })
     return {
       styles
