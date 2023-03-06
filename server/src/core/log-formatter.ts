@@ -24,7 +24,7 @@ const formatDelimiterArr = (sepFlagArr: Array<string>) => {
 }
 
 /* create delimiter array of latest Uipath version */
-const createLatestVerDelimterArr = () => {
+const createLatestVerDelimiterArr = () => {
   const separatedFlagArr = [
     'message',
     'level',
@@ -48,8 +48,8 @@ const createLatestVerDelimterArr = () => {
 }
 
 /* create delimiter array of older Uipath version */
-const createOlderVerDelimeiterArr = () => {
-  const oldseparatedFlagArr = [
+const createOlderVerDelimiterArr = () => {
+  const oldSeparatedFlagArr = [
     'message',
     'level',
     'logType',
@@ -66,16 +66,15 @@ const createOlderVerDelimeiterArr = () => {
     'totalExecutionTime',
     'fileName'
   ]
-  return formatDelimiterArr(oldseparatedFlagArr)
+  return formatDelimiterArr(oldSeparatedFlagArr)
 }
 
-
 /**
- * 
+ *
  * @param fileTime time in this log file name
  * @param logData log string
  * @param delimiterArr delimiter
- * @returns 
+ * @returns
  */
 const generalLogHandler = (fileTime: string, logData: string, delimiterArr: ILogDataObjItem[]) => {
   const logObj = Object.create(null)
@@ -84,7 +83,7 @@ const generalLogHandler = (fileTime: string, logData: string, delimiterArr: ILog
   logObj['id'] = uuidv4()
   /* log info */
   // fix bug: use dayjs parse timestamp.
-  // bug repr: maybe first log in logs file cause bug. when use strftime( '%Y-%m-%d %H:%M:%f', '2022-12-05T10:59:41.6338' ) in sqlite, it will return null
+  // bug rep: maybe first log in logs file cause bug. when use strftime( '%Y-%m-%d %H:%M:%f', '2022-12-05T10:59:41.6338' ) in sqlite, it will return null
   logObj['logTime'] = dayjs(fileTime.concat(' ', logInfo[0])).format('YYYY-MM-DD HH:mm:ss.SSS')
   logObj['logState'] = logInfo[1]
 
@@ -92,7 +91,7 @@ const generalLogHandler = (fileTime: string, logData: string, delimiterArr: ILog
   let logMainData = logData.split(`{"message":`)[1]
 
   let _temp: string[] = []
-  // temporay storage logObj key
+  // temp array storage logObj key
   let _key = ''
   // loop handle
   for (let i = 0, len = delimiterArr.length; i < len - 1; i++) {
@@ -112,7 +111,7 @@ const generalLogHandler = (fileTime: string, logData: string, delimiterArr: ILog
       }
       logMainData = _temp[1]
     } else {
-      // when there is no initiatedBy or others,it will is setted empty string
+      // when there is no initiatedBy or others,it will is set empty string
       logObj[delimiterArr[i + 1].name] = ''
       if (_key === '') {
         _key = delimiterArr[i].name
@@ -130,12 +129,12 @@ const mainLogHandler = (fileTime: string, logData: string) => {
   const isLatestVer = logData.includes(`,"organizationUnitId":`)
   if (isLatestVer) {
     // uipath version >= 2019.10
-    const DelimeiterArr = createLatestVerDelimterArr()
+    const DelimiterArr = createLatestVerDelimiterArr()
     // Need reBuild: get organizationUnitId value
     const { handledLogObj: processedLogObj, restData } = generalLogHandler(
       fileTime,
       logData,
-      DelimeiterArr
+      DelimiterArr
     )
     if (restData === '') {
       throw 'Error: Latest Uipath version, restData is null'
@@ -144,11 +143,11 @@ const mainLogHandler = (fileTime: string, logData: string) => {
     }
     return processedLogObj
   } else {
-    const DelimeiterArr: ILogDataObjItem[] = createOlderVerDelimeiterArr()
+    const DelimiterArr: ILogDataObjItem[] = createOlderVerDelimiterArr()
     const { handledLogObj: processedLogObj, restData } = generalLogHandler(
       fileTime,
       logData,
-      DelimeiterArr
+      DelimiterArr
     )
     if (restData === '') {
       throw 'Error: Older Version Uipath, restData is null'
@@ -163,6 +162,6 @@ const mainLogHandler = (fileTime: string, logData: string) => {
 
 export default {
   readLogsFile,
-  createLatestVerDelimterArr,
+  createLatestVerDelimiterArr,
   mainLogHandler
 }

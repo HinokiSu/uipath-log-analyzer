@@ -5,8 +5,8 @@ import { IFileInfoObj } from '../types/log-types'
 
 // judge logs file and filter it
 export const filterLogsFile = (fileName: string) => {
-  const splitedArr = fileName.split('_')
-  if (splitedArr.length === 2 && fileName.includes('Execution')) {
+  const splittedArr = fileName.split('_')
+  if (splittedArr.length === 2 && fileName.includes('Execution')) {
     return true
   } else {
     return false
@@ -47,10 +47,9 @@ export const getFileObj = (fileName: string, rootPath: string): IFileInfoObj => 
 }
 
 /**
- * @returns parsered file name
+ * @returns parsed file name
  */
 export const fileNameAnalyzer = () => {
-  // TODO: get uipath logs folder path .env config
   // const uipathLogsFolderPath: string = process.env.UIPATH_LOGS_FOLDER_PATH || ''
   const uipathLogsFolderPath: string = serverConfig.UIPATH_LOGS_FOLDER_PATH
 
