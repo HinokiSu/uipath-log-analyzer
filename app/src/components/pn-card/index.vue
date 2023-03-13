@@ -1,63 +1,70 @@
 <template>
   <div class="pn-card_container">
-    <a-statistic class="card-stats" title="总 计" :value="pn.totalCount" />
-    <div class="progress-group__wrapper">
-      <a-progress
-        class="progress-item"
-        type="circle"
-        strokeColor="var(--info-status-color)"
-        :percent="progPer.info"
-        :width="progWidth"
-      >
-        <template #format="percent">
-          <span style="color: var(--info-status-color)">{{ pn.infoCount }}</span>
-        </template>
-      </a-progress>
+    <a-card class="process-card" :title="process.pn">
+      <template #extra>
+        <router-link
+          :to="{
+            name: 'ProcessDetail',
+            params: {
+              pn: process.pn
+            }
+          }"
+        >
+          more
+        </router-link>
+      </template>
+      <div class="run-times">
+        <div class="run-times-title">Total Runs:</div>
 
-      <a-progress
-        type="circle"
-        strokeColor="var(--trace-status-color)"
-        :percent="progPer.trace"
-        :width="progWidth"
-      >
-        <template #format="percent">
-          <span style="color: var(--trace-status-color)">{{ pn.traceCount }}</span>
-        </template>
-      </a-progress>
+        <div class="run-times-content">
+          {{ process.runTimes }}
+        </div>
+      </div>
+      <div class="state-count-group">
+        <div class="state-count-item total">
+          <div class="state-count-item-title">Total</div>
+          <div class="state-count-item-content">
+            {{ process.totalCount }}
+          </div>
+        </div>
+        <div class="state-count-item info">
+          <div class="state-count-item-title">Info</div>
+          <div class="state-count-item-content">
+            {{ process.infoCount }}
+          </div>
+        </div>
+        <div class="state-count-item error">
+          <div class="state-count-item-title">Error</div>
+          <div class="state-count-item-content">
+            {{ process.errorCount }}
+          </div>
+        </div>
+        <div class="state-count-item warn">
+          <div class="state-count-item-title">Warn</div>
+          <div class="state-count-item-content">
+            {{ process.warnCount }}
+          </div>
+        </div>
 
-      <a-progress
-        type="circle"
-        strokeColor="var(--warn-status-color)"
-        :percent="progPer.warn"
-        :width="progWidth"
-      >
-        <template #format="percent">
-          <span style="color: var(--warn-status-color)">{{ pn.warnCount }}</span>
-        </template>
-      </a-progress>
-
-      <a-progress
-        type="circle"
-        strokeColor="var(--error-status-color)"
-        :percent="progPer.err"
-        :width="progWidth"
-      >
-        <template #format="percent">
-          <span style="color: var(--error-status-color)">{{ pn.errorCount }}</span>
-        </template>
-      </a-progress>
-    </div>
+        <div class="state-count-item trace">
+          <div class="state-count-item-title">Trace</div>
+          <div class="state-count-item-content">
+            {{ process.traceCount }}
+          </div>
+        </div>
+      </div>
+    </a-card>
   </div>
 </template>
 
 <script lang="ts">
 import { TProcessLogStats } from '@/interface/process'
-import { computed, defineComponent, PropType, reactive, ref } from 'vue'
-
+import { defineComponent, PropType } from 'vue'
+import UlaCard from '@components/card/card.vue'
 export default defineComponent({
   name: 'ProcessNameCard',
   props: {
-    pn: {
+    process: {
       type: Object as PropType<TProcessLogStats>,
       default: {
         pn: '',
@@ -65,47 +72,103 @@ export default defineComponent({
         infoCount: 0,
         errorCount: 0,
         traceCount: 0,
-        warnCount: 0
+        warnCount: 0,
+        runTime: 0
       }
     }
   },
-  setup(props) {
-    const pnVal = computed(() => props.pn)
-    const progWidth = ref(70)
-    const calcPer = (num: number, total: number = pnVal.value.totalCount) => {
-      return (num / total) * 100
-    }
-    const progPer = reactive({
-      info: calcPer(pnVal.value.infoCount),
-      trace: calcPer(pnVal.value.traceCount),
-      warn: calcPer(pnVal.value.warnCount),
-      err: calcPer(pnVal.value.errorCount)
-    })
-
-    return { progWidth, progPer }
+  components: {
+    UlaCard
+  },
+  setup() {
+    return {}
   }
 })
 </script>
 
 <style lang="less" scoped>
 .pn-card_container {
-  overflow: auto;
-  display: grid;
-  grid-template-columns: 1fr 4fr;
-
-  .card-stats {
-    // min-width: 90px;
-    margin-right: 20px;
+  .process-card {
+    background-color: rgb(255, 255, 255);
+    color: rgba(0, 0, 0, 0.87);
+    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    overflow: hidden;
+    border-radius: 20px;
+    padding: 14px;
+    margin: 15px;
+    box-shadow: rgba(90, 114, 123, 0.11) 0px 7px 30px 0px;
   }
 
-  .progress-group__wrapper {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    column-gap: 12px;
+  .run-times {
+    display: flex;
+    padding-left: 16px;
+    padding-bottom: 4px;
+    align-items: center;
+    margin-top: -6px;
+    &-title {
+      padding-right: 8px;
+      color: #00000073;
+      font-size: 14px;
+    }
 
-    @media (max-width: 500px) {
-      grid: repeat(2, 90px) / auto-flow 80px;
+    &-content {
+      color: #000000d9;
+      font-size: 18px;
+    }
+  }
+  .state-count {
+    &-group {
+      // display: flex;
+      // align-items: center;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    &-item {
+      padding: 2px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+
+      box-sizing: border-box;
+      color: #000000d9;
+      font-size: 14px;
+      font-variant: tabular-nums;
+      line-height: 1.5715;
+      list-style: none;
+      font-feature-settings: 'tnum';
+
+      &-title {
+        margin-bottom: 4px;
+        color: #00000073;
+        font-size: 14px;
+      }
+      &-content {
+        font-size: 24px;
+        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial,
+          Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', Segoe UI Symbol,
+          'Noto Color Emoji';
+      }
+
+      &.total {
+        color: #000000b9;
+      }
+
+      &.info {
+        color: var(--info-status-color);
+      }
+
+      &.error {
+        color: var(--error-status-color);
+      }
+      &.warn {
+        color: var(--warn-status-color);
+      }
+
+      &.trace {
+        color: var(--trace-status-color);
+      }
     }
   }
 }

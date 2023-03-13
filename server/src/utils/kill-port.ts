@@ -93,14 +93,14 @@ export const checkPortIsOccupied = async (port: any) => {
   checkWin32Platform()
   const pid = await findPidByPort(port)
   // port not exist
-  if (!pid) return
-  const processInfo = await checkProcessInfoByPid(pid)
+  if (pid) {
+    const processInfo = await checkProcessInfoByPid(pid)
 
-  if (processInfo && Object.keys(processInfo).length !== 0) {
-    console.log(
-      `Current Port: [${port}] is used, process information: \n ${JSON.stringify(processInfo)}`
-    )
-    return pid
+    if (processInfo && Object.keys(processInfo).length !== 0) {
+      console.log(
+        `Current Port: [${port}] is used, process information: \n ${JSON.stringify(processInfo)}`
+      )
+      return pid
+    }
   }
-  return
 }

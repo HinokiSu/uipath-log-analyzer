@@ -32,3 +32,10 @@ export const updateFileLastParseTime = `UPDATE logsfile_info SET updated_at = ?,
 
 // select all id of logs info
 export const selectAllIdLogsFile = `SELECT id FROM logsfile_info`
+
+/**
+ * according to range date, get log file id
+ * @param startDate
+ * @param endDate
+ */
+export const selectLogsFileIdByRangeDate = `SELECT id FROM logsfile_info WHERE time >= ? AND time <= ?`

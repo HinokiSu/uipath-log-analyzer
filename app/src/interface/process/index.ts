@@ -16,6 +16,7 @@ export type TProcessLogStats = {
   errorCount: number
   traceCount: number
   warnCount: number
+  runTimes: number
 }
 
 

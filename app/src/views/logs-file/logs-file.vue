@@ -1,16 +1,7 @@
 <template>
   <div class="logs-file-info_wrapper">
-    <div class="header-features">
-      <a-button type="primary" @click="updateLogsFiles"> ⛏ 获取最新日志文件信息 </a-button>
-      <!-- TODO:解析全部按钮 && 首次进入该页面，存在无数据情况 -->
-      <a-popconfirm
-        title="是否全部解析"
-        @confirm="confirmOfParseAll"
-        @cancel="cancelOfParseAll"
-        overlayClassName="logs-file_custom-popover"
-      >
-        <a-button type="primary" :loading="loadingOfParseAll"> 解析全部 </a-button>
-      </a-popconfirm>
+    <div class="head-features">
+      <ula-parse-tabs></ula-parse-tabs>
     </div>
     <a-table :dataSource="dataSource" :columns="columns" :pagination="false" :loading="loading">
       <template #bodyCell="{ column, text, record }">
@@ -20,7 +11,7 @@
           </div>
         </template>
         <template v-if="column.dataIndex === 'operation'">
-          <div class="tb-operation__container" style="display: flex;align-items: center;">
+          <div class="tb-operation__container" style="display: flex; align-items: center">
             <a @click="onViewDetail(record)">View</a>
             <a-popconfirm
               title="是否解析"
@@ -36,7 +27,6 @@
         </template>
       </template>
     </a-table>
-
     <a-pagination
       v-model:current="pagination.curPage"
       :total="pagination.total"
@@ -49,27 +39,25 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, watch } from 'vue'
 import { useLogsFileStore } from '@stores/logs-file-store'
-import { TableColumnsType } from '@/interface/common-type'
-import {
-  fetchParseAllLogFileInfo,
-  fetchParseLogsByAllLogFile,
-  fetchParseSpecifyFile
-} from '@/api/parse-api'
-import msg from '@/utils/message'
-import { useRouter } from 'vue-router'
 import { useMenuStore } from '@/stores/menu-store'
 import { TLogsFileInfo } from '@/interface/logs-file'
+import { useRouter } from 'vue-router'
+import { TableColumnsType } from '@/interface/common-type'
+import { fetchParseSpecifyFile } from '@/api/parse-api'
+import msg from '@/utils/message'
 import inlineStyles from '@/hooks/inline-styles'
-
+import UlaParseTabs from '@components/parse-tabs/index.vue'
 export default defineComponent({
   name: 'LogsFile',
+  components: { UlaParseTabs },
   setup() {
     const logsFileStore = useLogsFileStore()
+    const menuStore = useMenuStore()
     const pagination = computed(() => logsFileStore.pagination)
     const router = useRouter()
     const dataSource = computed(() => logsFileStore.infoList)
     const loading = ref(false)
-    const btnDisabled = ref(false)
+    const btnDisabled = computed(() => logsFileStore.isParsing)
     const columns: TableColumnsType[] = [
       {
         title: '文件名称',
@@ -97,7 +85,6 @@ export default defineComponent({
         width: '20%'
       }
     ]
-    const menuStore = useMenuStore()
 
     const getDataAndWait = () => {
       loading.value = true
@@ -110,21 +97,21 @@ export default defineComponent({
       if (val === '是') {
         return inlineStyles({
           'text-align': 'center',
-          'padding': '4px 16px',
+          padding: '4px 16px',
           'border-radius': '12px',
-          'color': 'var(--success-status-color)',
+          color: 'var(--success-status-color)',
           'background-color': 'var(--success-status-background)',
-          'display': 'inline-flex',
+          display: 'inline-flex',
           'justify-item': 'center'
         })
-      } else if(val === '否') {
+      } else if (val === '否') {
         return inlineStyles({
           'text-align': 'center',
-          'padding': '4px 16px',
+          padding: '4px 16px',
           'border-radius': '12px',
-          'color': 'var(--warn-status-color)',
+          color: 'var(--warn-status-color)',
           'background-color': 'var(--warn-status-background)',
-          'display': 'inline-flex',
+          display: 'inline-flex',
           'justify-item': 'center'
         })
       }
@@ -143,21 +130,13 @@ export default defineComponent({
     }
 
     // table operations
-    const updateLogsFiles = async () => {
-      msg.info('🕛 开始获取...')
-      await fetchParseAllLogFileInfo().then(() => {
-        msg.ok('获取最新日志文件信息，完成 🎉')
-        getDataAndWait()
-      })
-    }
-
     const confirmOfPop = (id: string) => {
-      btnDisabled.value = true
+      logsFileStore.isParsing = true
       msg.info('正在解析...')
       return new Promise((resolve) => {
         setTimeout(() => {
           fetchParseSpecifyFile(id).then(() => {
-            btnDisabled.value = false
+            logsFileStore.isParsing = false
             msg.ok('解析成功')
             getDataAndWait()
             resolve(true)
@@ -169,6 +148,7 @@ export default defineComponent({
     const cancelOfPop = () => {
       msg.warn('已取消解析')
     }
+
     const onViewDetail = (val: TLogsFileInfo) => {
       if (val.is_parsed === '是') {
         // redirect logs time table page
@@ -184,26 +164,6 @@ export default defineComponent({
       }
     }
 
-    // top features
-    // parse all logs file
-    const loadingOfParseAll = ref(false)
-    const parseAllLogsFiles = () => {}
-
-    const confirmOfParseAll = () => {
-      loadingOfParseAll.value = true
-      btnDisabled.value = true
-      msg.info('正在解析...')
-      fetchParseLogsByAllLogFile().then(() => {
-        btnDisabled.value = false
-        loadingOfParseAll.value = false
-        msg.ok('已全部解析完成🎉')
-        getDataAndWait()
-      })
-    }
-    const cancelOfParseAll = () => {
-      msg.warn('已取消全部日志解析')
-    }
-
     return {
       columns,
       dataSource,
@@ -214,11 +174,6 @@ export default defineComponent({
       confirmOfPop,
       cancelOfPop,
       btnDisabled,
-      updateLogsFiles,
-      parseAllLogsFiles,
-      confirmOfParseAll,
-      cancelOfParseAll,
-      loadingOfParseAll,
       getStyles
     }
   }
@@ -227,11 +182,8 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .logs-file-info_wrapper {
-  .header-features {
+  .head-features {
     margin: 0 0 8px 8px;
-    display: flex;
-    flex-direction: row;
-    column-gap: 20px;
   }
   .paging-container {
     margin-top: 30px;

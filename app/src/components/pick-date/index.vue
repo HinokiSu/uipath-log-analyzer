@@ -7,7 +7,7 @@
       v-model:value="rangeDate"
       :disabled-date="disabledDate"
     />
-    <a-button class="query-btn" :disabled="isDisabled" @click="clickQuery">查询</a-button>
+    <a-button type="primary" class="query-btn" :disabled="isDisabled" @click="clickQuery">{{ name }}</a-button>
   </div>
 </template>
 
@@ -25,6 +25,10 @@ export default defineComponent({
     gap: {
       type: String,
       default: '16px'
+    },
+    name: {
+      type: String,
+      default: '查询'
     }
   },
   emits: ['update:range-date', 'click'],

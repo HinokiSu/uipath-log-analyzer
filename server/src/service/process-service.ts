@@ -7,7 +7,7 @@ import {
 } from '../db/sql/process-sql'
 import { handleExecutionInfo } from './common/execution-info-handler'
 import { calcOffset } from './common/pagin-handler'
-import { handleSuccess } from './common/result-handler'
+import { handleFailed, handleSuccess } from './common/result-handler'
 import {
   getAllExecutionInfoByProcessName,
   getErrorOrWarnDuringExecutionByProcessName,
@@ -32,12 +32,7 @@ export const getTotalStartedExecutionTimesByProcessName = (processName: string) 
     processName,
     handleExecutionInfo(processName)
   ])[0] as { total: number }
-  return handleSuccess({
-    message: 'Get the total number of executions successfully by ProcessName, ',
-    data: {
-      ...totalRes
-    }
-  })
+  return totalRes
 }
 
 export const getExecutionInfoBySpecifyTimeAndProcessName = (processName: string, date: string) => {
@@ -143,11 +138,34 @@ export const getTimelineBySpecifyProcessNameAndRangeDate = (
   })
 }
 export const getProcessesLogStats = (curPage: string, pageSize: string) => {
+  type TCountLogStateByProcess = {
+    pn: string
+    runTimes: number
+    totalCount: number
+    infoCount: number
+    errorCount: number
+    warnCount: number
+    traceCount: number
+  }
   const offset = calcOffset(curPage, pageSize)
-  const res = db.query(countLogStateGroupByPN, [pageSize, offset])
+  const res = db.query(countLogStateGroupByPN, [pageSize, offset]) as TCountLogStateByProcess[]
+  for (const item of res) {
+    if (item.pn !== '') {
+      const { total } = getTotalStartedExecutionTimesByProcessName(item.pn)
+      const idxRes = res.findIndex((_t) => _t.pn === item.pn)
+      if (idxRes !== -1) {
+        res[idxRes].runTimes = total
+      }
+    } else {
+      return handleFailed({
+        message: `According to process name, get stats of diff state logs number, failed, due to pn is empty`
+      })
+    }
+  }
+
   const total = db.query(countByProcessNameSql, [])[0] as { total: number }
   return handleSuccess({
-    message: `According Process name, get stats of diff state logs number, successfully`,
+    message: `According to Process name, get stats of diff state logs number, successfully`,
     data: {
       ...total,
       list: res

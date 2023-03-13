@@ -7,23 +7,9 @@
     >
       <template #renderItem="{ item }">
         <a-list-item>
-          <a-card :title="item.pn">
-            <a-skeleton :loading="!!item.loading" active>
-              <pn-card :pn="item"></pn-card>
-            </a-skeleton>
-            <template #extra>
-              <router-link
-                :to="{
-                  name: 'ProcessDetail',
-                  params: {
-                    pn: item.pn
-                  }
-                }"
-              >
-                more
-              </router-link>
-            </template>
-          </a-card>
+          <a-skeleton :loading="!!item.loading" active>
+            <pn-card :process="item"></pn-card>
+          </a-skeleton>
         </a-list-item>
       </template>
     </a-list>
@@ -45,7 +31,6 @@
 </template>
 
 <script lang="ts">
-import { useLogsStore } from '@/stores/logs-store'
 import { computed, defineComponent, onMounted, onUnmounted, reactive, ref } from 'vue'
 import PnCard from '@components/pn-card/index.vue'
 import { useProcessStore } from '@/stores/process-store'
@@ -55,11 +40,10 @@ export default defineComponent({
     PnCard
   },
   setup() {
-    const logsStore = useLogsStore()
     const processStore = useProcessStore()
     const pagination = reactive({
       curPage: 1,
-      pageSize: 10,
+      pageSize: 12,
       total: computed(() => processStore.total)
     })
     const loading = ref(false)
