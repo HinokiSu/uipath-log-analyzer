@@ -35,7 +35,17 @@ export const selectAllLogsSql = `SELECT * from logs ORDER BY log_time DESC LIMIT
 export const countAllLogsSql = `SELECT COUNT(*) as total from logs`
 
 // select logs info by process_name
+/**
+ * get all log by process name
+ * @param process_name
+ * @param limit
+ * @param offset
+ */
 export const selectSpecifyProcessNameSql = `SELECT * FROM logs WHERE process_name = ? ORDER BY log_time DESC limit ? offset ? `
+/**
+ * count log row by process name
+ * @param process_name
+ */
 export const countSpecifyProcessNameSql = `SELECT count(*) as total FROM logs WHERE process_name = ?`
 
 export const selectRecentlyErrorSpecifyPNSql = `SELECT * from logs WHERE process_name = ? AND log_state = 'Error' ORDER BY log_time DESC LIMIT 1`
@@ -50,4 +60,3 @@ export const countSpecifyLogTimeSql = `SELECT count(*) as total FROM logs WHERE 
 
 // find latest log in specify date
 export const findLatestLogInSpecifyDate = `SELECT log_time from logs WHERE log_time LIKE ? ORDER BY log_time DESC LIMIT 1`
-
