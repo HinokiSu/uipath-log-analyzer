@@ -6,6 +6,7 @@ import express from 'express'
 import { checkPortIsOccupied, killProcessByPid } from './utils/kill-port'
 import path from 'path'
 import * as readline from 'readline'
+import logger from './utils/winston'
 
 
 declare const process: any
@@ -32,7 +33,7 @@ export function BootstrapWeb(port: string) {
     const res = await checkPortIsOccupied(port)
     const start = () =>
       clientApp.listen(port, () => {
-        console.log(`Web: http://localhost:${port}`)
+        logger.info(`Web: http://localhost:${port}`)
       })
     if (!res) {
       start()
@@ -44,12 +45,12 @@ export function BootstrapWeb(port: string) {
       })
       rl.question(`[Web]: Whether kill process? reply: [y/n] `, async (reply: string) => {
         if (reply.includes('y') || reply.includes('Y')) {
-          console.log(`You choice ${reply}, Kill process...`)
+          logger.info(`You choice ${reply}, Kill process...`)
           await killProcessByPid(res)
-          console.log('Restarting...')
+          logger.info('Restarting...')
           start()
         } else {
-          console.log(`You choice ${reply}, Quit kill process, Closing services...`)
+          logger.warn(`You choice ${reply}, Quit kill process, Closing services...`)
           process.exit()
         }
         rl.close()
