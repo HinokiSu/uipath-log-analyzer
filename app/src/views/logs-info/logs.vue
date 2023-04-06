@@ -20,7 +20,6 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onMounted, reactive, onUnmounted } from 'vue'
-import { TableColumnsType } from '@/interface/common-type'
 import { useLogsStore } from '@/stores/logs-store'
 import LogState from '@components/logs-info/log-state.vue'
 export default defineComponent({
@@ -71,43 +70,7 @@ export default defineComponent({
       pagination.curPage = 1
       pagination.pageSize = pageSize
     }
-    const columns: TableColumnsType[] = [
-      {
-        title: '状态',
-        dataIndex: 'log_state',
-        key: 'log_state'
-      },
-      {
-        title: '时间',
-        dataIndex: 'log_time',
-        key: 'log_time'
-      },
-      {
-        title: '信息',
-        dataIndex: 'message',
-        key: 'message'
-      },
-      {
-        title: '进程名称',
-        dataIndex: 'process_name',
-        key: 'process_name'
-      },
-      {
-        title: '类型',
-        dataIndex: 'log_type',
-        key: 'log_type'
-      },
-      {
-        title: '发起人',
-        dataIndex: 'initiated_by',
-        key: 'initiated_by'
-      },
-      {
-        title: '文件名称',
-        dataIndex: 'file_name',
-        key: 'file_name'
-      }
-    ]
+    const columns = computed(() => logsStore.columns)
     return {
       loading,
       columns,

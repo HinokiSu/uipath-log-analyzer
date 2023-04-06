@@ -37,7 +37,6 @@ $ yarn dev
 ```json
 {
   "UIPATH_LOGS_FOLDER_PATH": "C:\\Users\\example\\AppData\\Localogs",
-  "DB_PATH": "D:\\GitHub\\uipath-logs-analyzer\\logs_db.db",
   "CLIENT_PORT": "4301",
   "SERVER_PORT": "4302"
 }
@@ -46,7 +45,6 @@ $ yarn dev
 - Configuration parameter description
 
 > `UIPATH_LOGS_FOLDER_PATH` : Uipath log file root path
-> `DB_PATH` : Database(Sqlite3) used by the back-end
 > `CLIENT_PORT` : The port that provides the web service
 > `SERVER_PORT` : The port that provides the backend service
 
@@ -57,7 +55,7 @@ $ yarn dev
 # Tips: current path: **/*/uipath-logs-analyzer/
 $ cd server
 
-# Intall all deps
+# Install all deps
 $ yarn
 
 # Bootstrap
@@ -95,10 +93,7 @@ $ yarn run build:pkg
 > [pkg github](https://github.com/vercel/pkg#usage)
 
 ### TODO
-
-- [ ] add more services
-- [ ] rebulid db service
-- [ ] ring query logs file (like real time)
+- font-end: i18n
 
 ### LICENSE
 

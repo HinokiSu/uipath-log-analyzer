@@ -24,7 +24,7 @@ describe('App config', () => {
     }).toThrowError('Error:  Server config file content is null!')
   })
 
-  it('platform linux', () => {
-    expect(getConfigFilePath('linux')).toContain('/server.config.json')
+  it('get config path', () => {
+    expect(getConfigFilePath()).toContain('server.config.json')
   })
 })

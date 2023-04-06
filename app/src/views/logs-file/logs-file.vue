@@ -42,7 +42,7 @@ import { useLogsFileStore } from '@stores/logs-file-store'
 import { useMenuStore } from '@/stores/menu-store'
 import { TLogsFileInfo } from '@/interface/logs-file'
 import { useRouter } from 'vue-router'
-import { TableColumnsType } from '@/interface/common-type'
+import { TTableColumnsType } from '@/interface/common-type'
 import { fetchParseSpecifyFile } from '@/api/parse-api'
 import msg from '@/utils/message'
 import inlineStyles from '@/hooks/inline-styles'
@@ -58,7 +58,9 @@ export default defineComponent({
     const dataSource = computed(() => logsFileStore.infoList)
     const loading = ref(false)
     const btnDisabled = computed(() => logsFileStore.isParsing)
-    const columns: TableColumnsType[] = [
+    const columns: TTableColumnsType[] = 
+    
+    [
       {
         title: '文件名称',
         dataIndex: 'file_name',

@@ -1,5 +1,6 @@
 // reference: https://github.com/tiaanduplessis/kill-port/blob/master/index.js
 import sh from './shell-exec'
+import logger from './winston'
 const method = 'tcp'
 
 // check whether current platform is win32
@@ -27,7 +28,7 @@ export const findPidByPort = async (port: number) => {
       return pids[0]
     })
     .catch((err) => {
-      console.log('Error: findPidByPort, --> ' + err)
+      logger.error('Error: findPidByPort, --> ' + err)
       return ''
     })
 }
@@ -51,7 +52,8 @@ export const checkProcessInfoByPid = async (pid: any) => {
   checkWin32Platform()
   pid = Number.parseInt(pid)
   if (!pid) {
-    return Promise.reject(new Error('Invalid pid number provided'))
+    return false
+    // return Promise.reject(new Error('Invalid pid number provided'))
   }
 
   /* 
@@ -81,7 +83,7 @@ export const checkProcessInfoByPid = async (pid: any) => {
       return infoObj
     })
     .catch((err) => {
-      console.log('Error: show process Info By Pid -->' + err)
+      logger.error('Error: show process Info By Pid -->' + err)
     })
 }
 
@@ -97,7 +99,7 @@ export const checkPortIsOccupied = async (port: any) => {
     const processInfo = await checkProcessInfoByPid(pid)
 
     if (processInfo && Object.keys(processInfo).length !== 0) {
-      console.log(
+      logger.info(
         `Current Port: [${port}] is used, process information: \n ${JSON.stringify(processInfo)}`
       )
       return pid

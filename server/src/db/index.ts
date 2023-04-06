@@ -1,4 +1,5 @@
 import Database from 'better-sqlite3'
+import logger from '../utils/winston'
 import { serverConfig } from '../app-config'
 import {
   checkLogsFileInfoExist,
@@ -6,8 +7,22 @@ import {
   createLogsFileInfoTable,
   createLogsTable
 } from './sql/db-init-sql'
+import { existsSync, mkdirSync } from 'fs'
+import path from 'path'
 
-const db = new Database(serverConfig.DB_PATH)
+declare const process: any
+const dbPath = () => {
+  let rootDir = ''
+  // pkg environment
+  rootDir = path.join(process.cwd(), path.sep, 'ula', path.sep, 'database')
+  if (!existsSync(rootDir)) {
+    mkdirSync(rootDir)
+  }
+  const dbPath = path.join(rootDir, path.sep, 'logs_db.db')
+  logger.info(`Database file Path: ${dbPath}`)
+  return dbPath
+}
+const db = new Database(dbPath())
 db.pragma('journal_mode = WAL')
 
 const initDB = () => {
@@ -17,7 +32,7 @@ const initDB = () => {
   const logsTBStmt = db.prepare(checkLogsTableExist)
   const logsTBRow = logsTBStmt.get()
   if (logsTBRow === undefined) {
-    console.log('The logs table does not exist, it will be created.')
+    logger.warn('The logs table does not exist, it will be created.')
     // create logs table
     db.exec(createLogsTable)
   }
@@ -26,7 +41,7 @@ const initDB = () => {
   const logsFileInfoTBStmt = db.prepare(checkLogsFileInfoExist)
   const logsFileInfoTBRow = logsFileInfoTBStmt.get()
   if (logsFileInfoTBRow === undefined) {
-    console.log('The logsfile_info table does not exist, it will be created.')
+    logger.warn('The logsfile_info table does not exist, it will be created.')
     // create table
     db.exec(createLogsFileInfoTable)
   }

@@ -13,6 +13,7 @@ import processRouter from './routes/process-route'
 // config
 import { checkPortIsOccupied, killProcessByPid } from './utils/kill-port'
 import * as readline from 'readline'
+import logger from './utils/winston'
 
 export function BootstrapServer(port: string) {
   const app = express()
@@ -29,8 +30,8 @@ export function BootstrapServer(port: string) {
     const res = await checkPortIsOccupied(port)
     const start = () =>
       app.listen(port, () => {
-        console.log(`Server: http://localhost:${port}`)
-        console.log('Hit CTRL-C to stop the server')
+        logger.info(`Server: http://localhost:${port}`)
+        logger.info('Hit CTRL-C to stop the server')
       })
     if (!res) {
       start()
@@ -42,12 +43,12 @@ export function BootstrapServer(port: string) {
       })
       rl.question(`[Server]: Whether kill process? reply: [y/n] `, async (reply: string) => {
         if (reply.includes('y') || reply.includes('Y')) {
-          console.log(`You choice ${reply}, Kill process...`)
+          logger.info(`You choice ${reply}, Kill process...`)
           await killProcessByPid(res)
-          console.log('Restarting...')
+          logger.info('Restarting...')
           start()
         } else {
-          console.log(`You choice ${reply}, Quit kill process, Closing services...`)
+          logger.info(`You choice ${reply}, Quit kill process, Closing services...`)
           process.exit()
         }
         rl.close()

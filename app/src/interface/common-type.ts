@@ -1,5 +1,5 @@
 // table columns
-export type TableColumnsType = {
+export type TTableColumnsType = {
   title: string
   dataIndex: string
   key?: string

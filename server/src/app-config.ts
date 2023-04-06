@@ -1,15 +1,17 @@
 import fs from 'fs'
+import path from 'path'
+import logger from './utils/winston'
 
-export const getConfigFilePath = (platform: string) => {
+// declare const process: any
+export const getConfigFilePath = () => {
   let configPath = ''
-
-  if (platform === 'linux') {
-    configPath = process.cwd() + '/server.config.json'
+  if (process.platform === 'linux') {
+    configPath = path.join(process.cwd(), path.sep, 'server.config.json')
   } else {
     // win32 or others
-    configPath = process.cwd() + '\\server.config.json'
+    configPath = path.join(process.cwd(), path.sep, 'ula', path.sep, 'server.config.json')
   }
-  console.log('Server Config File Path: ' + configPath)
+  logger.info('Server Config File Path: ' + configPath)
   return configPath
 }
 
@@ -29,7 +31,7 @@ export const formatConfig = (configStr: string) => {
 }
 
 const getAppConfig = () => {
-  const configFilePath = getConfigFilePath(process.platform)
+  const configFilePath = getConfigFilePath()
   const serverConfig = fs.readFileSync(configFilePath, 'utf8')
   return formatConfig(serverConfig)
 }

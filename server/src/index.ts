@@ -4,6 +4,7 @@ dotenv.config()
 import { BootstrapWeb } from './bootstrap-web'
 import { BootstrapServer } from './bootstrap-server'
 import { serverConfig } from './app-config'
+import logger from './utils/winston'
 
 try {
   const clientPort = serverConfig.CLIENT_PORT
@@ -33,15 +34,15 @@ try {
   }
 
   process.on('SIGINT', function () {
-    console.log('[uipath-log-analyzer] stopped.')
+    logger.info('[uipath-log-analyzer] stopped.')
     process.exit()
   })
 
   process.on('SIGTERM', function () {
-    console.log('[uipath-log-analyzer] stopped.')
+    logger.info('[uipath-log-analyzer] stopped.')
     process.exit()
   })
 } catch (error) {
-  console.error(error)
+  logger.error(error)
   process.exit(-1)
 }
