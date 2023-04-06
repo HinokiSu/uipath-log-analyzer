@@ -50,7 +50,7 @@ logsRouter.get('/pn/all', (req: any, res, next) => {
     type TQuery = TPaginationQuery & { pn: string }
     const query: TQuery = req.query
     if (query.pn.length) {
-      res.json(getDataByProcessName(query.pn, query.pagesize, query.curpage))
+      res.json(getDataByProcessName(query.pn, query.curpage, query.pagesize))
     } else {
       res.json({
         message: 'process version参数不能为空',
