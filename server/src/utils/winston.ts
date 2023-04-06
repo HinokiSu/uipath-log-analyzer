@@ -29,7 +29,7 @@ const winstonLogFilePath = () => {
   }
 }
 
-const { combine, timestamp,  printf } = winston.format
+const { combine, timestamp, printf } = winston.format
 
 const initLogger = () => {
   const myFormat = printf(({ level, message, timestamp }) => {
@@ -48,7 +48,7 @@ const initLogger = () => {
     )
   })
 
-  if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+  if (process.env.NODE_ENV === 'development') {
     const myFormat = printf(({ level, message }) => {
       return `${level}: ${message}`
     })
@@ -59,10 +59,12 @@ const initLogger = () => {
       })
     )
   } else {
+    if (process.env.NODE_ENV !== 'test') {
+      logger.add(new winston.transports.File({ filename: winstonLogFilePath() }))
+    }
     const customFormat = printf(({ level, message, timestamp }) => {
       return `${timestamp} [${level}] : ${message}`
     })
-    logger.add(new winston.transports.File({ filename: winstonLogFilePath() }))
     logger.add(
       new winston.transports.Console({
         format: customFormat
