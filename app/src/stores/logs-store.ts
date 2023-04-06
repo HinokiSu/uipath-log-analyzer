@@ -4,13 +4,15 @@ import {
   fetchLogsByProcessName,
   fetchRecentlyErrorByProcessName
 } from '@/api/logs-api'
+import { TTableColumnsType } from '@/interface/common-type'
 import { TLogInfo } from '@/interface/log-info'
 import { defineStore } from 'pinia'
 
 type State = {
   total: number
   logsList: TLogInfo[]
-  logData: TLogInfo
+  logData: TLogInfo,
+  columns: TTableColumnsType[]
 }
 const initLogData = {
   id: '',
@@ -34,12 +36,50 @@ const initLogData = {
   machine_id: '',
   organization_unit_id: ''
 }
+
 // logs store
 export const useLogsStore = defineStore('logsStore', {
   state: (): State => ({
     total: 0,
     logsList: [],
-    logData: initLogData
+    logData: initLogData,
+    columns: [
+      {
+        title: '状态',
+        dataIndex: 'log_state',
+        key: 'log_state'
+      },
+      {
+        title: '时间',
+        dataIndex: 'log_time',
+        key: 'log_time'
+      },
+      {
+        title: '信息',
+        dataIndex: 'message',
+        key: 'message'
+      },
+      {
+        title: '进程名称',
+        dataIndex: 'process_name',
+        key: 'process_name'
+      },
+      {
+        title: '类型',
+        dataIndex: 'log_type',
+        key: 'log_type'
+      },
+      {
+        title: '发起人',
+        dataIndex: 'initiated_by',
+        key: 'initiated_by'
+      },
+      {
+        title: '文件名称',
+        dataIndex: 'file_name',
+        key: 'file_name'
+      }
+    ]
   }),
   getters: {},
 
@@ -49,21 +89,25 @@ export const useLogsStore = defineStore('logsStore', {
       this.logsList.length = 0
       this.logData = initLogData
     },
+    /* all logs */
     async getAllLogsOfList(curPage: number, pageSize: number) {
       const res = await fetchAllLogsToList(curPage, pageSize)
       this.total = res.data.total
       this.logsList = res.data.list
     },
+    /* log time */
     async getLogsListByLogTime(logTime: string, curPage: number, pageSize: number) {
       const res = await fetchListByLogTime(logTime, curPage, pageSize)
       this.total = res.data.total
       this.logsList = res.data.list
     },
+    /* process name */
     async getLogsByProcessName(pn: string, curPage: number, pageSize: number) {
       const res = await fetchLogsByProcessName(pn, curPage, pageSize)
       this.logsList = res.data.list
       this.total = res.data.total
     },
+    /* recently error log by process name */
     async getRecentlyErrorByProcessName(pn: string) {
       const res = await fetchRecentlyErrorByProcessName(pn)
       this.logData = res.data.log_data

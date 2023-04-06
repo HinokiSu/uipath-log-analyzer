@@ -58,7 +58,9 @@ export default defineComponent({
     const dataSource = computed(() => logsFileStore.infoList)
     const loading = ref(false)
     const btnDisabled = computed(() => logsFileStore.isParsing)
-    const columns: TableColumnsType[] = [
+    const columns: TableColumnsType[] = 
+    
+    [
       {
         title: '文件名称',
         dataIndex: 'file_name',
