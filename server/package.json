@@ -1,6 +1,6 @@
 {
   "name": "uipath-logs-analyzer_server",
-  "version": "1.1.0",
+  "version": "1.0.5",
   "author": "Hinoki",
   "main": "index.js",
   "license": "MIT",
@@ -10,7 +10,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "test": "jest",
+    "test": "set NODE_ENV=test&&jest",
     "clean": "rimraf dist/ && rimraf src/public/",
     "copy-app-dist": "copyfiles -u 3 \"../app/dist/**/*.*\" \"./src/public/\"",
     "copy-views": "yarn copy-app-dist && copyfiles -u 2 \"./src/public/**/*.*\" \"./dist/public/\"",

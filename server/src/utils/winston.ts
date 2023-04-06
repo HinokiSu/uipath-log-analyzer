@@ -29,7 +29,7 @@ const winstonLogFilePath = () => {
   }
 }
 
-const { combine, timestamp, prettyPrint, printf } = winston.format
+const { combine, timestamp,  printf } = winston.format
 
 const initLogger = () => {
   const myFormat = printf(({ level, message, timestamp }) => {
@@ -45,14 +45,10 @@ const initLogger = () => {
       // myFormat
       winston.format.json()
       // prettyPrint()
-    ),
-    transports: [
-      // - Write all logs with importance  all level to `combined.log`
-      new winston.transports.File({ filename: winstonLogFilePath() })
-    ]
+    )
   })
 
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
     const myFormat = printf(({ level, message }) => {
       return `${level}: ${message}`
     })
@@ -66,6 +62,7 @@ const initLogger = () => {
     const customFormat = printf(({ level, message, timestamp }) => {
       return `${timestamp} [${level}] : ${message}`
     })
+    logger.add(new winston.transports.File({ filename: winstonLogFilePath() }))
     logger.add(
       new winston.transports.Console({
         format: customFormat

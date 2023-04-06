@@ -5,6 +5,7 @@ import logger from './utils/winston'
 declare const process: any
 export const getConfigFilePath = () => {
   let configPath = ''
+
   // win32 or others
   configPath = path.join(process.cwd(), path.sep, 'ula', path.sep, 'server.config.json')
   logger.info('Server Config File Path: ' + configPath)
