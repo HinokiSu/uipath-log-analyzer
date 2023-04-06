@@ -4,14 +4,57 @@
       <a-page-header class="page-header" title="进程名称列表" :sub-title="pn" @back="onBack()" />
       <log-error-msg :log="logDataOfRecErr"></log-error-msg>
     </div>
-    <div class="run-timeline__content">
-      <ula-pick-date
-        class="pick-date"
-        v-model:range-date="rangeDate"
-        @click="queryDate"
-      ></ula-pick-date>
-      <run-timeline :pn="pn" @load-more="loadMoreTimeline"> </run-timeline>
-    </div>
+    <a-tabs
+      v-model:activeKey="activeTabsKey"
+      centered
+      :tabBarGutter="40"
+      @tabClick="clickTabOfLogTB"
+    >
+      <a-tab-pane key="1">
+        <template #tab>
+          <span>
+            <branches-outlined />
+            TimeLine
+          </span>
+        </template>
+        <div class="run-timeline__content">
+          <ula-pick-date
+            class="pick-date"
+            v-model:range-date="rangeDate"
+            @click="queryDate"
+          ></ula-pick-date>
+          <run-timeline :pn="pn" @load-more="loadMoreTimeline"> </run-timeline>
+        </div>
+      </a-tab-pane>
+      <a-tab-pane key="2">
+        <template #tab>
+          <span>
+            <table-outlined />
+            Log Table
+          </span>
+        </template>
+        <a-table
+          :dataSource="logDataSource"
+          :columns="columns"
+          :pagination="false"
+          :loading="loadingOfLogTB"
+        >
+          <template #bodyCell="{ column, record }">
+            <template v-if="column.key === 'log_state'">
+              <log-state :state="record.log_state"></log-state>
+            </template>
+          </template>
+        </a-table>
+
+        <a-pagination
+          v-if="logTBPagination.total !== 0"
+          v-model:current="logTBPagination.curPage"
+          :total="logTBPagination.total"
+          @change="changePaginOfLogTB"
+          class="pagin-container"
+        />
+      </a-tab-pane>
+    </a-tabs>
   </div>
 </template>
 
@@ -26,37 +69,36 @@ import UlaPickDate from '@components/pick-date/index.vue'
 import { TRangeDateVal } from '@/interface/pick-date-type'
 import { useProcessStore } from '@/stores/process-store'
 import msg from '@/utils/message'
+import { BranchesOutlined, TableOutlined } from '@ant-design/icons-vue'
+
 export default defineComponent({
   name: 'ProcessDetail',
   components: {
     LogErrorMsg,
     RunTimeLine,
-    UlaPickDate
+    UlaPickDate,
+    // icons
+    BranchesOutlined,
+    TableOutlined
   },
   setup() {
     const route = useRoute()
     const logsStore = useLogsStore()
     const processStore = useProcessStore()
     const pn = computed(() => (route.params.pn as string) || '')
+    /* tabs:  Timeline */
     const pagination = reactive({
       curPage: 1,
       pageSize: 10,
       total: computed(() => processStore.total)
     })
+
     const isUsePickDate = ref(false)
     const rangeDate = ref<TRangeDateVal>()
 
     const logDataOfRecErr = computed(() => logsStore.logData)
-    /*
-    // get table
-    const getDataAndWait = async () => {
-      loading.value = true
-      await logsStore
-        .getLogsByProcessName(pn.value, pagination.curPage, pagination.pageSize)
-        .then(() => {
-          loading.value = false
-        })
-    } */
+    // tabs
+    const activeTabsKey = ref('1')
 
     // main timeline data
     const getTimelineDataAndWait = async () => {
@@ -84,7 +126,7 @@ export default defineComponent({
 
     // use pick date, timeline
     const queryDate = async () => {
-      // reinit
+      // re init
       isUsePickDate.value = true
       pagination.curPage = 1
       processStore.clearState()
@@ -102,6 +144,45 @@ export default defineComponent({
         pagination.curPage = pagination.curPage + 1
         await processStore.getExecutionTimeline(pn.value, pagination.curPage, pagination.pageSize)
       }
+    }
+
+    /*
+     *  Tabs 2: Log table
+     */
+    const logTBPagination = reactive({
+      curPage: 1,
+      pageSize: 10,
+      total: computed(() => logsStore.total)
+    })
+    const logDataSource = computed(() => logsStore.logsList)
+    const loadingOfLogTB = ref(false)
+    const isFirstClickTabOfLogTB = ref(true)
+    const columns = computed(() => logsStore.columns)
+    const getLogDataAndWait = () => {
+      loadingOfLogTB.value = true
+      logsStore
+        .getLogsByProcessName(pn.value, logTBPagination.curPage, logTBPagination.pageSize)
+        .then(() => {
+          loadingOfLogTB.value = false
+        })
+    }
+    const clickTabOfLogTB = () => {
+      watch(
+        () => activeTabsKey.value,
+        (newVal, oldVal) => {
+          /* when enter process-detail page, not load tab 2, but instead first switch it's tab to do */
+          if (newVal === '2' && isFirstClickTabOfLogTB.value) {
+            // first fetch log table data
+            getLogDataAndWait()
+            isFirstClickTabOfLogTB.value = false
+          }
+        }
+      )
+    }
+
+    const changePaginOfLogTB = (page: number) => {
+      logTBPagination.curPage = page
+      getLogDataAndWait()
     }
 
     onMounted(async () => {
@@ -125,12 +206,20 @@ export default defineComponent({
     })
     return {
       pn,
-      onBack,
+      activeTabsKey,
       pagination,
       logDataOfRecErr,
       rangeDate,
+      onBack,
       queryDate,
-      loadMoreTimeline
+      loadMoreTimeline,
+      /* tabs 2: log table */
+      columns,
+      loadingOfLogTB,
+      logTBPagination,
+      logDataSource,
+      changePaginOfLogTB,
+      clickTabOfLogTB
     }
   }
 })
@@ -143,6 +232,13 @@ export default defineComponent({
       .pick-date {
         padding-left: 18px;
       }
+    }
+
+    .pagin-container {
+      margin-top: 32px;
+      padding-bottom: 35px;
+      display: flex;
+      place-content: center;
     }
   }
 }
