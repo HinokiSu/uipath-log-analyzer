@@ -48,6 +48,10 @@ const initLogger = () => {
     )
   })
 
+  if (process.env.NODE_ENV !== 'test') {
+    logger.add(new winston.transports.File({ filename: winstonLogFilePath() }))
+  }
+  
   if (process.env.NODE_ENV === 'development') {
     const myFormat = printf(({ level, message }) => {
       return `${level}: ${message}`
@@ -59,9 +63,6 @@ const initLogger = () => {
       })
     )
   } else {
-    if (process.env.NODE_ENV !== 'test') {
-      logger.add(new winston.transports.File({ filename: winstonLogFilePath() }))
-    }
     const customFormat = printf(({ level, message, timestamp }) => {
       return `${timestamp} [${level}] : ${message}`
     })
