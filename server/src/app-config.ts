@@ -2,12 +2,15 @@ import fs from 'fs'
 import path from 'path'
 import logger from './utils/winston'
 
-declare const process: any
+// declare const process: any
 export const getConfigFilePath = () => {
   let configPath = ''
-
-  // win32 or others
-  configPath = path.join(process.cwd(), path.sep, 'ula', path.sep, 'server.config.json')
+  if (process.platform === 'linux') {
+    configPath = path.join(process.cwd(), path.sep, 'server.config.json')
+  } else {
+    // win32 or others
+    configPath = path.join(process.cwd(), path.sep, 'ula', path.sep, 'server.config.json')
+  }
   logger.info('Server Config File Path: ' + configPath)
   return configPath
 }
