@@ -1,6 +1,6 @@
 {
   "name": "uipath-logs-analyzer_server",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": "Hinoki",
   "main": "index.js",
   "license": "MIT",
@@ -18,7 +18,7 @@
     "preview": "node dist/index.js",
     "watch:server": "set NODE_ENV=development&&nodemon  --watch src/**/* -e ts,tsx --exec ts-node src/index.ts",
     "dev:server": "set NODE_ENV=development&&nodemon  --watch src/**/* -e ts,tsx --exec ts-node src/index.ts",
-    "copy-server-config": "mkdirp ./build/ula && cp server.config.json ./build/ula/",
+    "copy-server-config": "mkdirp ./build/resources/ula && cp server.config.json ./build/resources/ula/",
     "prod:pkg": "set NODE_ENV=production&&yarn build && pkg . -o ./build/uipath-log-analyzer_win.exe && yarn run copy-server-config"
   },
   "pkg": {

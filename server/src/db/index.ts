@@ -14,7 +14,7 @@ declare const process: any
 const dbPath = () => {
   let rootDir = ''
   // pkg environment
-  rootDir = path.join(process.cwd(), path.sep, 'ula', path.sep, 'database')
+  rootDir = path.join(process.cwd(), path.sep, 'resources', path.sep, 'ula', path.sep, 'database')
   if (!existsSync(rootDir)) {
     mkdirSync(rootDir)
   }
