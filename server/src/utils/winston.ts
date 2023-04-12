@@ -8,6 +8,8 @@ const winstonLogFilePath = () => {
     const logPath = path.join(
       process.cwd(),
       path.sep,
+      'resources',
+      path.sep,
       'ula',
       path.sep,
       'logger',
@@ -15,6 +17,7 @@ const winstonLogFilePath = () => {
       'ula_execution.log'
     )
     if (existsSync(logPath)) {
+      // delete exist log file
       unlink(logPath)
         .then(() => {
           console.log('[Logger]: Existing log files have been deleted')
@@ -51,7 +54,7 @@ const initLogger = () => {
   if (process.env.NODE_ENV !== 'test') {
     logger.add(new winston.transports.File({ filename: winstonLogFilePath() }))
   }
-  
+
   if (process.env.NODE_ENV === 'development') {
     const myFormat = printf(({ level, message }) => {
       return `${level}: ${message}`

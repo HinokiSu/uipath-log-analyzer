@@ -9,7 +9,15 @@ export const getConfigFilePath = () => {
     configPath = path.join(process.cwd(), path.sep, 'server.config.json')
   } else {
     // win32 or others
-    configPath = path.join(process.cwd(), path.sep, 'ula', path.sep, 'server.config.json')
+    configPath = path.join(
+      process.cwd(),
+      path.sep,
+      'resources',
+      path.sep,
+      'ula',
+      path.sep,
+      'server.config.json'
+    )
   }
   logger.info('Server Config File Path: ' + configPath)
   return configPath
