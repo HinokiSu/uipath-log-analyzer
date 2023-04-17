@@ -45,6 +45,7 @@ const zhLocale = {
     queryButton: '查询'
   },
   process: {
+    totalRuns: '总运行次数',
     pnIsEmptyWarn: '当前Process name为空',
     latestErrorLogTitle: '最新的错误日志',
     timeTitle: '时间',

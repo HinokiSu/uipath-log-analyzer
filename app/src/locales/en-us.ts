@@ -45,6 +45,7 @@ const enLocale = {
     queryButton: 'Search'
   },
   process: {
+    totalRuns: 'Total Runs',
     pnIsEmptyWarn: 'Process name is empty currently',
     latestErrorLogTitle: 'Latest error log',
     timeTitle: 'Time',
