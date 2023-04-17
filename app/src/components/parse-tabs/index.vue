@@ -59,9 +59,11 @@ export default defineComponent({
     }
 
     const confirmOfParseAll = async () => {
+      msg.info(i18n.t('msg.logFile.parsingInfo') + '...')
       isRunBtn.value = true
       await logsFileStore.parseLogOfAllLogFile().then(() => {
         isRunBtn.value = false
+        msg.ok(i18n.t('msg.logFile.parseDoneInfo'))
       })
     }
     const cancelOfParseAll = () => {

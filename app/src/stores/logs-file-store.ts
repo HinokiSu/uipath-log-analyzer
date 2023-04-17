@@ -54,13 +54,10 @@ export const useLogsFileStore = defineStore('logsFileStore', {
       })
     },
     async parseLogOfAllLogFile() {
-      const i18n = useI18n()
       this.isParsing = true
-      msg.info(i18n.t('msg.logFile.ParingInfo') + '...')
 
       const res = await fetchParseLogsByAllLogFile().then(() => {
         this.isParsing = false
-        msg.ok(i18n.t('msg.logFile.parseDoneInfo') + ' 🎉')
         this.getLogsFileInfo()
       })
     },

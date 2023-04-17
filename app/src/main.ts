@@ -14,7 +14,6 @@ import { Charts } from './plugins/echarts'
 
 // antd-vue
 import 'ant-design-vue/es/message/style/css'
-import { useLangStore } from './stores/lang-store'
 
 // vue app
 const app = createApp(App)
@@ -27,8 +26,4 @@ app.use(router)
 app.use(createPinia())
 const i18n = installI18n(app)
 app.mount('#app')
-// const langStore = useLangStore()
-/* langStore.$subscribe((_, state) => {
-  console.info(state)
-  i18n.global.locale = state.locale
-}) */
+

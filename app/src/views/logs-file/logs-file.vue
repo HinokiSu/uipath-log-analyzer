@@ -57,6 +57,7 @@ export default defineComponent({
   name: 'LogsFile',
   components: { UlaParseTabs },
   setup() {
+    const i18n = useI18n()
     const logsFileStore = useLogsFileStore()
     const menuStore = useMenuStore()
     const pagination = computed(() => logsFileStore.pagination)
@@ -64,7 +65,6 @@ export default defineComponent({
     const dataSource = computed(() => logsFileStore.infoList)
     const loading = ref(false)
     const btnDisabled = computed(() => logsFileStore.isParsing)
-    const i18n = useI18n()
     const columns: TTableColumnsType[] = [
       {
         title: '文件名称',
