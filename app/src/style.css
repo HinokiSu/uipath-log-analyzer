@@ -105,3 +105,8 @@ h1 {
 .ant-popover.ant-popconfirm.ant-popover-placement-top.logs-file_custom-popover .ant-popover-buttons {
   display: flex;
 }
+
+/* table header font */
+.ant-table-thead > tr > th {
+  font-weight: 400 !important;
+}

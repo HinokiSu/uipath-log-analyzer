@@ -1,11 +1,19 @@
 <template>
   <div class="dashboard__wrapper">
     <recently-error-card></recently-error-card>
-    <ula-card class="log-state_card__wrapper" title="日志状态" :bordered="false">
+    <ula-card
+      class="log-state_card__wrapper"
+      :title="$t('msg.dashboard.logStateTitle')"
+      :bordered="false"
+    >
       <log-state-chart></log-state-chart>
     </ula-card>
 
-    <ula-card class="log-time_card__wrapper" title="时间&日志状态" :bordered="false">
+    <ula-card
+      class="log-time_card__wrapper"
+      :title="$t('msg.dashboard.logStateAndTimeTitle')"
+      :bordered="false"
+    >
       <log-time-chart></log-time-chart>
     </ula-card>
   </div>

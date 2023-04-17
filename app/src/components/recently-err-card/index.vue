@@ -1,7 +1,9 @@
 <template>
   <a-card class="recently-err-wrapper" :loading="loading">
     <template #title>
-      <div style="color: rgb(228 106 118 / 95%); font-weight: 600">❌ 最新错误日志</div>
+      <div style="color: rgb(228 106 118 / 95%); font-weight: 600">
+        ❌ {{ $t('msg.dashboard.latestErrorLogTitle') }}
+      </div>
     </template>
     <div class="card-body__wrapper">
       <div class="error-group">

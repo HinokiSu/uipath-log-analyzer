@@ -11,7 +11,7 @@ import { defineStore } from 'pinia'
 type State = {
   total: number
   logsList: TLogInfo[]
-  logData: TLogInfo,
+  logData: TLogInfo
   columns: TTableColumnsType[]
 }
 const initLogData = {
@@ -46,36 +46,43 @@ export const useLogsStore = defineStore('logsStore', {
     columns: [
       {
         title: '状态',
+        nameI18n: 'msg.logColumn.state',
         dataIndex: 'log_state',
         key: 'log_state'
       },
       {
         title: '时间',
+        nameI18n: 'msg.logColumn.time',
         dataIndex: 'log_time',
         key: 'log_time'
       },
       {
         title: '信息',
+        nameI18n: 'msg.logColumn.info',
         dataIndex: 'message',
         key: 'message'
       },
       {
         title: '进程名称',
+        nameI18n: 'msg.logColumn.processName',
         dataIndex: 'process_name',
         key: 'process_name'
       },
       {
         title: '类型',
+        nameI18n: 'msg.logColumn.type',
         dataIndex: 'log_type',
         key: 'log_type'
       },
       {
         title: '发起人',
+        nameI18n: 'msg.logColumn.initiatedBy',
         dataIndex: 'initiated_by',
         key: 'initiated_by'
       },
       {
         title: '文件名称',
+        nameI18n: 'msg.logColumn.fileName',
         dataIndex: 'file_name',
         key: 'file_name'
       }

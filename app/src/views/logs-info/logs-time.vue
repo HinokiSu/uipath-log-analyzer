@@ -2,11 +2,16 @@
   <div class="logs-time_wrapper">
     <div class="card-header_container">
       <a-date-picker v-model:value="pickDate" :disabled-date="disabledDate" />
-      <a-button class="query-btn" @click="onClickQuery" type="primary" :disabled="isDisabled"
-        >查询</a-button
-      >
+      <a-button class="query-btn" @click="onClickQuery" type="primary" :disabled="isDisabled">{{
+        $t('msg.log.queryButton')
+      }}</a-button>
     </div>
     <a-table :dataSource="dataSource" :columns="columns" :pagination="false" :loading="loading">
+      <template #headerCell="{ column }">
+        <span>
+          {{ $t(column.nameI18n) }}
+        </span>
+      </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'log_state'">
           <log-state :state="record.log_state"></log-state>
@@ -31,12 +36,14 @@ import { useLogsStore } from '@/stores/logs-store'
 import LogState from '@components/logs-info/log-state.vue'
 import { useRoute } from 'vue-router'
 import msg from '@/utils/message'
+import { useI18n } from 'vue-i18n'
 export default defineComponent({
   name: 'LogsTime',
   components: {
     LogState
   },
   setup() {
+    const i18n = useI18n()
     const logsStore = useLogsStore()
     const pickDate = ref<Dayjs>(dayjs())
     const pagination = reactive({
@@ -88,7 +95,7 @@ export default defineComponent({
       if (pickDate.value) {
         getAndWaitData(formatPickDate())
       } else {
-        msg.warn('选择的日期为空')
+        msg.warn(i18n.t('msg.warn.noSelectDateWarn'))
       }
     }
 

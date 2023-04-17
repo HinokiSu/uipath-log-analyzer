@@ -10,7 +10,7 @@
         {{ time }}
       </div>
       <div v-if="state === 1" class="total-execution-time">
-        <span>⏱ Total execution time:</span>
+        <span>⏱ {{ $t('msg.process.totalExecutionTimeText') }}: </span>
         {{ totaltime }}
       </div>
       <div class="content-msg">
@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import { useProcessStore } from '@/stores/process-store'
-import { computed, defineComponent, ref, watchEffect } from 'vue'
+import { computed, defineComponent } from 'vue'
 import RunTlItemIcon from './run-tl-item-icon.vue'
 export default defineComponent({
   name: 'RunTimeLineItem',
@@ -114,7 +114,6 @@ export default defineComponent({
     .total-execution-time {
       font-size: 0.8rem;
       padding-bottom: 2px;
-
     }
     .content-msg {
       padding-top: 2px;

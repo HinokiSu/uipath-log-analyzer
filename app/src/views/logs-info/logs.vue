@@ -1,6 +1,11 @@
 <template>
   <div class="logs__wrapper">
     <a-table :dataSource="dataSource" :columns="columns" :pagination="false" :loading="loading">
+      <template #headerCell="{ column }">
+        <span>
+          {{ $t(column.nameI18n) }}
+        </span>
+      </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'log_state'">
           <log-state :state="record.log_state"></log-state>

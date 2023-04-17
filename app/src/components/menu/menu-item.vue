@@ -4,7 +4,7 @@
     <template #icon>
       <menu-icon :name="menuItem.icon"></menu-icon>
     </template>
-    <span>{{ menuItem.title }}</span>
+    <span>{{ $t(menuItem.title) }}</span>
   </a-menu-item>
   <!-- Menu has sub menu item -->
   <template v-else>
@@ -12,14 +12,14 @@
       <template #icon>
         <menu-icon :name="menuItem.icon" />
       </template>
-      <template #title>{{ menuItem.title }}</template>
+      <template #title>{{ $t(menuItem.title) }}</template>
       <!-- sub menus -->
       <div v-for="item in menuItem.children" :key="item.key">
         <a-menu-item :key="item.key">
           <template #icon v-if="item.icon">
             <menu-icon :name="item.icon" />
           </template>
-          {{ item.title }}
+          {{ $t(item.title) }}
         </a-menu-item>
       </div>
     </a-sub-menu>
