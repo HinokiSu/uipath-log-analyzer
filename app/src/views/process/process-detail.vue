@@ -9,12 +9,7 @@
       />
       <log-error-msg :log="logDataOfRecErr"></log-error-msg>
     </div>
-    <a-tabs
-      v-model:activeKey="activeTabsKey"
-      centered
-      :tabBarGutter="40"
-      @tabClick="clickTabOfLogTB"
-    >
+    <a-tabs v-model:activeKey="activeTabsKey" centered :tabBarGutter="40" @change="changeTab">
       <a-tab-pane key="1">
         <template #tab>
           <span>
@@ -173,24 +168,22 @@ export default defineComponent({
     const columns = computed(() => logsStore.columns)
     const getLogDataAndWait = () => {
       loadingOfLogTB.value = true
-      logsStore
-        .getLogsByProcessName(pn.value, logTBPagination.curPage, logTBPagination.pageSize)
-        .then(() => {
-          loadingOfLogTB.value = false
-        })
+      setTimeout(() => {
+        logsStore
+          .getLogsByProcessName(pn.value, logTBPagination.curPage, logTBPagination.pageSize)
+          .then(() => {
+            loadingOfLogTB.value = false
+          })
+      }, 500)
     }
-    const clickTabOfLogTB = () => {
-      watch(
-        () => activeTabsKey.value,
-        (newVal, oldVal) => {
-          /* when enter process-detail page, not load tab 2, but instead first switch it's tab to do */
-          if (newVal === '2' && isFirstClickTabOfLogTB.value) {
-            // first fetch log table data
-            getLogDataAndWait()
-            isFirstClickTabOfLogTB.value = false
-          }
-        }
-      )
+
+    const changeTab = (activeKey: string) => {
+      /* when enter process-detail page, not load tab 2, but instead first switch it's tab to do */
+      if (activeKey === '2' && isFirstClickTabOfLogTB.value) {
+        // first fetch log table data
+        getLogDataAndWait()
+        isFirstClickTabOfLogTB.value = false
+      }
     }
 
     const changePaginOfLogTB = (page: number) => {
@@ -232,7 +225,7 @@ export default defineComponent({
       logTBPagination,
       logDataSource,
       changePaginOfLogTB,
-      clickTabOfLogTB
+      changeTab
     }
   }
 })
