@@ -1,5 +1,6 @@
 import { MenuItemType } from '@interface/menu'
 import { defineStore } from 'pinia'
+import { useI18n } from 'vue-i18n'
 
 type State = {
   collapsed: boolean
@@ -8,6 +9,7 @@ type State = {
   menuWidth: string
   openKeys: string[]
 }
+
 export const useMenuStore = defineStore('MenuStore', {
   state: (): State => ({
     collapsed: false,
@@ -36,31 +38,32 @@ export const useMenuStore = defineStore('MenuStore', {
     },
     getMenuList() {
       // menu item
+
       const menuList: Array<MenuItemType> = [
         {
           key: '1',
           icon: 'dot-chart-outlined',
-          title: '仪表盘',
+          title: 'msg.menu.dashboardMenuItem',
           path: '/dashboard'
         },
         {
           key: '2',
           icon: 'folder-outlined',
-          title: '日志文件',
+          title: 'msg.menu.logFileMenuItem',
           path: '/files'
         },
         {
           key: '3',
           icon: 'file-text-outlined',
-          title: '日志',
+          title: 'msg.menu.logMenuItem',
           children: [
             {
-              title: '全部',
+              title: 'msg.menu.allMenuSubItem',
               key: '3.1',
               path: '/logs/all'
             },
             {
-              title: '时间',
+              title: 'msg.menu.timeMenuSubItem',
               key: '3.2',
               path: '/logs/time'
             }
@@ -69,7 +72,7 @@ export const useMenuStore = defineStore('MenuStore', {
         {
           key: '4',
           icon: 'code-outlined',
-          title: '进程',
+          title: 'msg.menu.processMenuItem',
           path: '/process'
         }
       ]

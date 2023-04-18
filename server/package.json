@@ -1,6 +1,6 @@
 {
   "name": "uipath-logs-analyzer_server",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "author": "Hinoki",
   "main": "index.js",
   "license": "MIT",

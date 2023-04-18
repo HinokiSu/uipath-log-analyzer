@@ -4,23 +4,28 @@
       <ula-parse-tabs></ula-parse-tabs>
     </div>
     <a-table :dataSource="dataSource" :columns="columns" :pagination="false" :loading="loading">
+      <template #headerCell="{ column }">
+          <span>
+            {{ $t(column.nameI18n) }}
+          </span>
+      </template>
       <template #bodyCell="{ column, text, record }">
         <template v-if="column.dataIndex === 'is_parsed'">
           <div :style="getStyles(record.is_parsed)">
-            {{ record.is_parsed }}
+            {{ record.is_parsed === 'true' ? $t('msg.common.yes') : $t('msg.common.no') }}
           </div>
         </template>
         <template v-if="column.dataIndex === 'operation'">
           <div class="tb-operation__container" style="display: flex; align-items: center">
             <a @click="onViewDetail(record)">View</a>
             <a-popconfirm
-              title="是否解析"
+              :title="$t('msg.logFile.isParseTitle')"
               @confirm="confirmOfPop(record.id)"
               @cancel="cancelOfPop"
               overlayClassName="logs-file_custom-popover"
             >
               <a-button style="margin-left: 20px" type="primary" :disabled="btnDisabled">
-                解析
+                {{ $t('msg.logFile.parseButton') }}
               </a-button>
             </a-popconfirm>
           </div>
@@ -47,10 +52,12 @@ import { fetchParseSpecifyFile } from '@/api/parse-api'
 import msg from '@/utils/message'
 import inlineStyles from '@/hooks/inline-styles'
 import UlaParseTabs from '@components/parse-tabs/index.vue'
+import { useI18n } from 'vue-i18n'
 export default defineComponent({
   name: 'LogsFile',
   components: { UlaParseTabs },
   setup() {
+    const i18n = useI18n()
     const logsFileStore = useLogsFileStore()
     const menuStore = useMenuStore()
     const pagination = computed(() => logsFileStore.pagination)
@@ -58,31 +65,34 @@ export default defineComponent({
     const dataSource = computed(() => logsFileStore.infoList)
     const loading = ref(false)
     const btnDisabled = computed(() => logsFileStore.isParsing)
-    const columns: TTableColumnsType[] = 
-    
-    [
+    const columns: TTableColumnsType[] = [
       {
         title: '文件名称',
+        nameI18n: 'msg.logFileColumn.fileName',
         dataIndex: 'file_name',
         width: '30%'
       },
       {
         title: '是否解析',
+        nameI18n: 'msg.logFileColumn.isParsed',
         dataIndex: 'is_parsed',
         width: '10%'
       },
       {
         title: '创建时间',
+        nameI18n: 'msg.logFileColumn.createdAt',
         dataIndex: 'created_at',
         width: '20%'
       },
       {
         title: '最近解析时间',
+        nameI18n: 'msg.logFileColumn.updatedAt',
         dataIndex: 'updated_at',
         width: '20%'
       },
       {
         title: '操作',
+        nameI18n: 'msg.logFileColumn.operation',
         dataIndex: 'operation',
         width: '20%'
       }
@@ -96,7 +106,7 @@ export default defineComponent({
     }
 
     const getStyles = (val: string) => {
-      if (val === '是') {
+      if (val === 'true') {
         return inlineStyles({
           'text-align': 'center',
           padding: '4px 16px',
@@ -106,7 +116,7 @@ export default defineComponent({
           display: 'inline-flex',
           'justify-item': 'center'
         })
-      } else if (val === '否') {
+      } else if (val === 'false') {
         return inlineStyles({
           'text-align': 'center',
           padding: '4px 16px',
@@ -134,12 +144,12 @@ export default defineComponent({
     // table operations
     const confirmOfPop = (id: string) => {
       logsFileStore.isParsing = true
-      msg.info('正在解析...')
+      msg.info(i18n.t('msg.logFile.parsingInfo') + '...')
       return new Promise((resolve) => {
         setTimeout(() => {
           fetchParseSpecifyFile(id).then(() => {
             logsFileStore.isParsing = false
-            msg.ok('解析成功')
+            msg.ok(i18n.t('msg.logFile.parseDoneInfo'))
             getDataAndWait()
             resolve(true)
           })
@@ -148,11 +158,11 @@ export default defineComponent({
     }
 
     const cancelOfPop = () => {
-      msg.warn('已取消解析')
+      msg.warn(i18n.t('msg.logFile.cancelParseWarn'))
     }
 
     const onViewDetail = (val: TLogsFileInfo) => {
-      if (val.is_parsed === '是') {
+      if (val.is_parsed === 'true') {
         // redirect logs time table page
         router.push({
           name: 'logsTime',
@@ -162,7 +172,7 @@ export default defineComponent({
         })
         menuStore.updateSelectedKeys(['3.2'])
       } else {
-        msg.info('该日志文件未被解析⚒，请先解析再进行查看')
+        msg.info(i18n.t('msg.logFile.viewButNoParseWarn'))
       }
     }
 

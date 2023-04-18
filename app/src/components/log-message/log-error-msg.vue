@@ -1,29 +1,32 @@
 <template>
   <div class="error-msg__wrapper">
-    <div class="msg_title">❌最新的错误日志</div>
+    <div class="msg_title">❌{{ $t('msg.process.latestErrorLogTitle') }}</div>
     <a-skeleton :loading="loading" :paragraph="{ rows: 4 }" active>
-      <div class="error-msg__container">
+      <div class="error-msg__container" v-if="hasError">
         <div class="left-box">
           <div class="msg-time__container">
-            <span class="msg-time_title">时 间</span>
+            <span class="msg-time_title">{{ $t('msg.process.timeTitle') }}</span>
             <div class="msg-time">
               {{ logData.log_time }}
             </div>
           </div>
           <div class="file-name__container">
-            <div class="file-name_title">文件 名称</div>
+            <div class="file-name_title">{{ $t('msg.process.fileNameTitle') }}</div>
             <div class="file-name">
-              {{ logData.file_name || '无' }}
+              {{ logData.file_name }}
             </div>
           </div>
         </div>
 
         <div class="right-box">
-          <div class="msg-desc_title">错误 信息</div>
+          <div class="msg-desc_title">{{ $t('msg.process.errorInfoTitle') }}</div>
           <div class="msg-description">
             {{ logData.message }}
           </div>
         </div>
+      </div>
+      <div v-else>
+          <a-empty class="no-data" :description="$t('msg.common.empty') " :image="simpleImage" />
       </div>
     </a-skeleton>
   </div>
@@ -31,9 +34,8 @@
 
 <script lang="ts">
 import { TLogInfo } from '@/interface/log-info'
-import { clear } from 'console'
 import { computed, defineComponent, onMounted, PropType, ref, watchEffect } from 'vue'
-
+import { Empty } from 'ant-design-vue';
 export default defineComponent({
   name: 'LogErrorMessage',
   props: {
@@ -44,7 +46,13 @@ export default defineComponent({
   setup(props) {
     const logData = computed(() => props.log as TLogInfo)
     const loading = ref(true)
-    let timer:NodeJS.Timeout
+    const hasError = computed(() => {
+      if (Object.keys(logData.value).length !== 0) {
+        return true
+      }
+      return false
+    })
+    let timer: NodeJS.Timeout
 
     watchEffect(() => {
       if (logData.value.log_time || Object.keys(logData.value).length === 0) {
@@ -58,7 +66,7 @@ export default defineComponent({
       clearTimeout(timer)
     })
 
-    return { logData, loading }
+    return { logData, loading, hasError, simpleImage: Empty.PRESENTED_IMAGE_SIMPLE }
   }
 })
 </script>
@@ -127,6 +135,10 @@ export default defineComponent({
       text-overflow: ellipsis;
       color: var(--error-status-color);
     }
+  }
+
+  .no-data {
+    margin: 10px 0px;
   }
 }
 </style>

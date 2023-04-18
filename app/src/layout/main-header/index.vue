@@ -4,7 +4,11 @@
       <menu-unfold-outlined v-if="collapsed" />
       <menu-fold-outlined v-else />
     </a-button>
-    <real-time-clock class="clock"></real-time-clock>
+    <div class="right-tools">
+      <real-time-clock class="clock"></real-time-clock>
+
+      <lang-select></lang-select>
+    </div>
   </div>
 </template>
 
@@ -13,12 +17,14 @@ import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons-vue'
 import { computed, defineComponent } from 'vue'
 import { useMenuStore } from '@stores/menu-store'
 import RealTimeClock from '@components/clock/index.vue'
+import LangSelect from '@/components/lang-select/lang-select.vue'
 export default defineComponent({
   name: 'MainHeader',
   components: {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
-    RealTimeClock
+    RealTimeClock,
+    LangSelect
   },
   setup() {
     const menuStore = useMenuStore()
@@ -40,8 +46,15 @@ export default defineComponent({
   justify-content: space-between;
   align-items: center;
 
-  .clock {
-    margin-right: 20px;
+  .right-tools {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    .clock {
+      padding-right: 24px;
+    }
   }
 }
 .menu-collapse_btn {

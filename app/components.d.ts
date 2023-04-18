@@ -9,6 +9,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AButton: typeof import('ant-design-vue/es')['Button']
     ACard: typeof import('ant-design-vue/es')['Card']
+    AConfigProvider: typeof import('ant-design-vue/es')['ConfigProvider']
     ADatePicker: typeof import('ant-design-vue/es')['DatePicker']
     AEmpty: typeof import('ant-design-vue/es')['Empty']
     AList: typeof import('ant-design-vue/es')['List']
@@ -26,6 +27,7 @@ declare module '@vue/runtime-core' {
     ATabs: typeof import('ant-design-vue/es')['Tabs']
     Card: typeof import('./src/components/card/card.vue')['default']
     Clock: typeof import('./src/components/clock/index.vue')['default']
+    LangSelect: typeof import('./src/components/lang-select/lang-select.vue')['default']
     LogErrorMsg: typeof import('./src/components/log-message/log-error-msg.vue')['default']
     LogState: typeof import('./src/components/logs-info/log-state.vue')['default']
     LogStateChart: typeof import('./src/components/charts/log-state-stats/log-state-chart.vue')['default']

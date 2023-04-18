@@ -8,6 +8,7 @@ import { TLogsFileInfo } from '@/interface/logs-file'
 import msg from '@/utils/message'
 
 import { defineStore } from 'pinia'
+import { useI18n } from 'vue-i18n'
 
 type State = {
   pagination: {
@@ -48,17 +49,15 @@ export const useLogsFileStore = defineStore('logsFileStore', {
       const res = await fetchList(this.pagination.curPage, this.pagination.pageSize)
       this.pagination.total = res.data.total
       this.infoList = res.data.list.map((item: TLogsFileInfo) => {
-        item.is_parsed = item.is_parsed ? '是' : '否'
+        item.is_parsed = item.is_parsed ? 'true' : 'false'
         return item
       })
     },
     async parseLogOfAllLogFile() {
       this.isParsing = true
-      msg.info('正在解析...')
 
       const res = await fetchParseLogsByAllLogFile().then(() => {
         this.isParsing = false
-        msg.ok('已全部解析完成🎉')
         this.getLogsFileInfo()
       })
     },

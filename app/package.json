@@ -2,7 +2,7 @@
   "name": "uipath-logs-analyzer_app",
   "author": "Hinoki",
   "private": true,
-  "version": "1.0.6",
+  "version": "1.1.0",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/HinokiSu/uipath-log-analyzer"
@@ -23,6 +23,7 @@
     "nprogress": "^0.2.0",
     "pinia": "^2.0.28",
     "vue": "^3.2.41",
+    "vue-i18n": "^9.2.2",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {

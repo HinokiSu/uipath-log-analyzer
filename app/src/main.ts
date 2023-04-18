@@ -6,17 +6,14 @@ import { createPinia } from 'pinia'
 // router
 import router from '@routes/index'
 // ant-design-vue manual import
-// import { AntdUIRegister } from '@utils/antd-vue'
-
-// pinia
-const pinia = createPinia()
+import { installI18n } from './locales/index'
 
 // echart
 import * as echarts from 'echarts/core'
 import { Charts } from './plugins/echarts'
 
 // antd-vue
-import 'ant-design-vue/es/message/style/css';
+import 'ant-design-vue/es/message/style/css'
 
 // vue app
 const app = createApp(App)
@@ -24,7 +21,9 @@ const app = createApp(App)
 // ant-design-vue
 // AntdUIRegister(app)
 
-app.use(router)
-app.use(pinia)
 echarts.use(Charts)
+app.use(router)
+app.use(createPinia())
+const i18n = installI18n(app)
 app.mount('#app')
+

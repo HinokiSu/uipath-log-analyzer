@@ -25,7 +25,7 @@ statsRouter.get('/recent/error', (req: any, res, next) => {
       res.json(getLogsOfRecentlyError(qty))
     } else {
       res.json({
-        message: '数量参数不能为空',
+        message: 'The parameter cannot be empty',
         status: 0
       })
     }

@@ -1,26 +1,27 @@
 <template>
   <div class="ula-process-detail__wrapper">
     <div class="detail-overview__container">
-      <a-page-header class="page-header" title="进程名称列表" :sub-title="pn" @back="onBack()" />
+      <a-page-header
+        class="page-header"
+        :title="$t('msg.process.processNameListTitle')"
+        :sub-title="pn"
+        @back="onBack()"
+      />
       <log-error-msg :log="logDataOfRecErr"></log-error-msg>
     </div>
-    <a-tabs
-      v-model:activeKey="activeTabsKey"
-      centered
-      :tabBarGutter="40"
-      @tabClick="clickTabOfLogTB"
-    >
+    <a-tabs v-model:activeKey="activeTabsKey" centered :tabBarGutter="40" @change="changeTab">
       <a-tab-pane key="1">
         <template #tab>
           <span>
             <branches-outlined />
-            TimeLine
+            {{ $t('msg.process.timelineTab') }}
           </span>
         </template>
         <div class="run-timeline__content">
           <ula-pick-date
             class="pick-date"
             v-model:range-date="rangeDate"
+            :name="$t('msg.common.queryButton')"
             @click="queryDate"
           ></ula-pick-date>
           <run-timeline :pn="pn" @load-more="loadMoreTimeline"> </run-timeline>
@@ -30,7 +31,7 @@
         <template #tab>
           <span>
             <table-outlined />
-            Log Table
+            {{ $t('msg.process.logTableTab') }}
           </span>
         </template>
         <a-table
@@ -39,6 +40,11 @@
           :pagination="false"
           :loading="loadingOfLogTB"
         >
+          <template #headerCell="{ column }">
+            <span>
+              {{ $t(column.nameI18n) }}
+            </span>
+          </template>
           <template #bodyCell="{ column, record }">
             <template v-if="column.key === 'log_state'">
               <log-state :state="record.log_state"></log-state>
@@ -70,6 +76,7 @@ import { TRangeDateVal } from '@/interface/pick-date-type'
 import { useProcessStore } from '@/stores/process-store'
 import msg from '@/utils/message'
 import { BranchesOutlined, TableOutlined } from '@ant-design/icons-vue'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'ProcessDetail',
@@ -82,6 +89,7 @@ export default defineComponent({
     TableOutlined
   },
   setup() {
+    const i18n = useI18n()
     const route = useRoute()
     const logsStore = useLogsStore()
     const processStore = useProcessStore()
@@ -112,7 +120,7 @@ export default defineComponent({
 
     const getTimelineDataByRangeDate = async () => {
       if (!rangeDate.value?.length) {
-        msg.warn('未选择指定日期')
+        msg.warn(i18n.t('msg.warn.noSelectDateWarn'))
       } else {
         return await processStore.getExecTimelineByRangeDate(
           pn.value,
@@ -160,24 +168,22 @@ export default defineComponent({
     const columns = computed(() => logsStore.columns)
     const getLogDataAndWait = () => {
       loadingOfLogTB.value = true
-      logsStore
-        .getLogsByProcessName(pn.value, logTBPagination.curPage, logTBPagination.pageSize)
-        .then(() => {
-          loadingOfLogTB.value = false
-        })
+      setTimeout(() => {
+        logsStore
+          .getLogsByProcessName(pn.value, logTBPagination.curPage, logTBPagination.pageSize)
+          .then(() => {
+            loadingOfLogTB.value = false
+          })
+      }, 500)
     }
-    const clickTabOfLogTB = () => {
-      watch(
-        () => activeTabsKey.value,
-        (newVal, oldVal) => {
-          /* when enter process-detail page, not load tab 2, but instead first switch it's tab to do */
-          if (newVal === '2' && isFirstClickTabOfLogTB.value) {
-            // first fetch log table data
-            getLogDataAndWait()
-            isFirstClickTabOfLogTB.value = false
-          }
-        }
-      )
+
+    const changeTab = (activeKey: string) => {
+      /* when enter process-detail page, not load tab 2, but instead first switch it's tab to do */
+      if (activeKey === '2' && isFirstClickTabOfLogTB.value) {
+        // first fetch log table data
+        getLogDataAndWait()
+        isFirstClickTabOfLogTB.value = false
+      }
     }
 
     const changePaginOfLogTB = (page: number) => {
@@ -187,7 +193,7 @@ export default defineComponent({
 
     onMounted(async () => {
       if (!pn.value.length) {
-        console.log('pn is null')
+        msg.warn(i18n.t('msg.process.pnIsEmptyWarn'))
       } else {
         await logsStore.getRecentlyErrorByProcessName(pn.value)
         getTimelineDataAndWait()
@@ -219,7 +225,7 @@ export default defineComponent({
       logTBPagination,
       logDataSource,
       changePaginOfLogTB,
-      clickTabOfLogTB
+      changeTab
     }
   }
 })

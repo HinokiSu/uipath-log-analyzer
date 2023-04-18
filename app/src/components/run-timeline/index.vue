@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, reactive, ref, watchEffect } from 'vue'
+import { computed, defineComponent, onUnmounted, ref } from 'vue'
 import RunTimeLineItem from './run-timeline-item.vue'
 import UlaCard from '@components/card/card.vue'
 import { useProcessStore } from '@/stores/process-store'

@@ -14,7 +14,7 @@
         </router-link>
       </template>
       <div class="run-times">
-        <div class="run-times-title">Total Runs:</div>
+        <div class="run-times-title">{{ $t('msg.process.totalRuns') }}: </div>
 
         <div class="run-times-content">
           {{ process.runTimes }}
