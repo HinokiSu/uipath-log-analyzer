@@ -1,6 +1,5 @@
 import Database from 'better-sqlite3'
 import logger from '../utils/winston'
-import { serverConfig } from '../app-config'
 import {
   checkLogsFileInfoExist,
   checkLogsTableExist,

@@ -35,9 +35,7 @@ const winstonLogFilePath = () => {
 const { combine, timestamp, printf } = winston.format
 
 const initLogger = () => {
-  const myFormat = printf(({ level, message, timestamp }) => {
-    return `{"timestamp":"${timestamp}","level":"${level}","message":${JSON.stringify(message)}},`
-  })
+  
   const logger = winston.createLogger({
     level: 'info',
     defaultMeta: { service: 'ula-server' },
@@ -45,7 +43,6 @@ const initLogger = () => {
       timestamp({
         format: 'YYYY-MM-DD HH:mm:ss.SSS'
       }),
-      // myFormat
       winston.format.json()
       // prettyPrint()
     )
