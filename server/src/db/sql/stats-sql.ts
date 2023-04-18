@@ -6,7 +6,9 @@ export const countNumberByLogStateSql = `SELECT log_state, COUNT(*) as total fro
 // need limit number
 export const selectLogsOfRecentlyErrorSql = `SELECT * FROM logs WHERE log_state='Error' ORDER BY log_time DESC LIMIT ?`
 
-// count all logs number by log time
+/**
+ * count each log state by log time, limit 30
+ */
 export const countByLogTimeSql = `SELECT
 substr( log_time, 1, pos - 1 ) AS logtime,
 COUNT( * ) AS totalCount,
@@ -19,4 +21,4 @@ FROM
 GROUP BY
 logtime 
 ORDER BY
-logtime DESC`
+logtime DESC LIMIT 30`

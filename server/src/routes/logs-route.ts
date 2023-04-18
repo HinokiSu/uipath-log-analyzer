@@ -18,7 +18,7 @@ logsRouter.get('/', (req: any, res, next) => {
       res.json(doParseLogsBySpecifyFile(fileName))
     } else {
       res.json({
-        message: 'log文件名称参数为空',
+        message: 'The log file name parameter cannot be empty',
         status: 0
       })
     }
@@ -33,7 +33,7 @@ logsRouter.get('/all', (req: any, res, next) => {
     const query: TPaginationQuery = req.query
     if (!query.curpage) {
       res.json({
-        message: '分页查询参数不能为空',
+        message: 'Pagination query parameter cannot be empty',
         status: 0
       })
     }
@@ -53,7 +53,7 @@ logsRouter.get('/pn/all', (req: any, res, next) => {
       res.json(getDataByProcessName(query.pn, query.curpage, query.pagesize))
     } else {
       res.json({
-        message: 'process version参数不能为空',
+        message: 'The process version parameter cannot be empty',
         status: 0
       })
     }
@@ -79,7 +79,7 @@ logsRouter.get('/logtime', (req: any, res, next) => {
     type TQuery = TPaginationQuery & { logtime: string }
     if (!query.logtime) {
       res.json({
-        message: 'log time参数不能为空',
+        message: 'The log time parameter cannot be empty',
         status: 0
       })
     } else {
