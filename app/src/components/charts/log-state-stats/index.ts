@@ -1,5 +1,5 @@
 import { TLogStateObj } from '@/interface/dashboard'
-import * as echarts from 'echarts'
+import { graphic } from 'echarts/core'
 
 type TIndicator = {
   name: string
@@ -17,9 +17,6 @@ export class CustomRadar {
   chartConfig(myChart: any, options: any) {
     myChart.setOption({
       color: ['#80FFA5', '#00DDFF', '#FFBF00', '#FF0087'],
-      /* title: {
-        text: '日志状态&总量',
-      }, */
       ...options
     })
   }
@@ -69,9 +66,9 @@ export class CustomRadar {
           data: [
             {
               value: seriesData,
-              name: '状态',
+              name: 'State',
               areaStyle: {
-                color: new echarts.graphic.RadialGradient(0.1, 0.6, 1, [
+                color: new graphic.RadialGradient(0.1, 0.6, 1, [
                   {
                     color: 'rgba(255, 145, 124, 0.1)',
                     offset: 0

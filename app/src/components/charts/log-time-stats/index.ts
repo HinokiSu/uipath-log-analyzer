@@ -1,5 +1,5 @@
 import { TLogTimeObj } from '@/interface/dashboard'
-import * as echarts from 'echarts/core'
+import { graphic } from 'echarts/core'
 type TLineSeriesOption = {
   name: string
   type: string
@@ -31,7 +31,7 @@ export class CustomLineChart {
     this.sourceData = source
   }
 
-  buildSerieOptionObj(name: string, startColor: string, endcolor: string, data: number[]) {
+  buildSeriesOptionObj(name: string, startColor: string, endColor: string, data: number[]) {
     return {
       name,
       type: 'line',
@@ -42,14 +42,14 @@ export class CustomLineChart {
       showSymbol: false,
       areaStyle: {
         opacity: 0.8,
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+        color: new graphic.LinearGradient(0, 0, 0, 1, [
           {
             offset: 0,
             color: startColor
           },
           {
             offset: 1,
-            color: endcolor
+            color: endColor
           }
         ])
       },
@@ -112,7 +112,7 @@ export class CustomLineChart {
 
     options.forEach((item) => {
       seriesOption.unshift(
-        this.buildSerieOptionObj(item.name, item.startColor, item.endColor, item.data)
+        this.buildSeriesOptionObj(item.name, item.startColor, item.endColor, item.data)
       )
     })
     return { xAxisData, seriesOption }
@@ -121,9 +121,6 @@ export class CustomLineChart {
   chartConfig(myChart: any, xAxisData: string[], series: TLineSeriesOption[]) {
     myChart.setOption({
       color: ['#80FFA5', '#00DDFF', '#FFBF00', '#FF0087'],
-      /* title: {
-        text: '时间&日志状态'
-      }, */
       tooltip: {
         trigger: 'axis',
         axisPointer: {
@@ -135,11 +132,6 @@ export class CustomLineChart {
       },
       legend: {
         data: ['Error', 'Warn', 'Trace', 'Info']
-      },
-      toolbox: {
-        feature: {
-          saveAsImage: {}
-        }
       },
       grid: {
         left: '3%',
@@ -159,7 +151,7 @@ export class CustomLineChart {
           type: 'value'
         }
       ],
-      series
+      series,
     })
     window.onresize = () => {
       myChart.resize()
@@ -169,6 +161,5 @@ export class CustomLineChart {
   applyChartConfig() {
     const options = this.handleChartData()
     this.chartConfig(this.chartInstance, options.xAxisData, options.seriesOption)
-   
   }
 }
