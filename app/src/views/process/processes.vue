@@ -15,6 +15,7 @@
     </a-list>
 
     <a-pagination
+      v-if="dataSource.length !== 0"
       class="pagination-container"
       v-model:current="pagination.curPage"
       :total="pagination.total"
