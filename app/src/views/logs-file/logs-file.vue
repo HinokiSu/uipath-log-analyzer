@@ -33,6 +33,7 @@
       </template>
     </a-table>
     <a-pagination
+      v-if="dataSource.length !== 0"
       v-model:current="pagination.curPage"
       :total="pagination.total"
       @change="changeCurrentPage"

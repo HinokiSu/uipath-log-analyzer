@@ -40,8 +40,12 @@ export default defineConfig(({ mode }) => {
         output: {
           chunkFileNames: 'static/js/[name]-[hash].js',
           entryFileNames: 'static/js/[name]-[hash].js',
-          assetFileNames: 'static/[ext]/[name]-[hash].[ext]'
-        }
+          assetFileNames: 'static/[ext]/[name]-[hash].[ext]',
+          manualChunks: {
+            echarts: ['echarts']
+          }
+        },
+       
       }
     },
 
