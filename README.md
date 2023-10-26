@@ -92,8 +92,6 @@ $ yarn run build:pkg
 
 > [pkg github](https://github.com/vercel/pkg#usage)
 
-### TODO
-- font-end: i18n
 
 ### LICENSE
 
